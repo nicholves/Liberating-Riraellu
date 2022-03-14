@@ -1,0 +1,12 @@
+1. Create turret game object descend from enemy game object
+
+2. Create jet movement / thrust / acceleration
+
+3. Background display + sprite hunting (draw blue waves background with some island textured objects - create background objects vector to be rendered first)
+
+
+Nick - 1
+
+Carter - 2
+
+Austin - 3

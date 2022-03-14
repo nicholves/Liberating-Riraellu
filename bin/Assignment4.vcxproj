@@ -1,0 +1,292 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{68442AC1-263B-325F-8760-5F4894C26179}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>Assignment4</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assignment4.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Assignment4_d</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Assignment4.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Assignment4</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Assignment4.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Assignment4</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Assignment4.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Assignment4</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin;C:\Users\Nicholas Veselskiy\Desktop\Libraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin;C:\Users\Nicholas Veselskiy\Desktop\Libraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin;C:\Users\Nicholas Veselskiy\Desktop\Libraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>opengl32.lib;C:\Users\Nicholas Veselskiy\Desktop\Libraries\lib\glew32s.lib;C:\Users\Nicholas Veselskiy\Desktop\Libraries\lib\glfw3.lib;C:\Users\Nicholas Veselskiy\Desktop\Libraries\lib\SOIL.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/Users/Nicholas Veselskiy/Desktop/School Work/Winter 2022/Comp 2501/Group Project/Liberating-Riraellu/bin/Debug/Assignment4_d.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/Users/Nicholas Veselskiy/Desktop/School Work/Winter 2022/Comp 2501/Group Project/Liberating-Riraellu/bin/Debug/Assignment4_d.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin;C:\Users\Nicholas Veselskiy\Desktop\Libraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin;C:\Users\Nicholas Veselskiy\Desktop\Libraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin;C:\Users\Nicholas Veselskiy\Desktop\Libraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>opengl32.lib;C:\Users\Nicholas Veselskiy\Desktop\Libraries\lib\glew32s.lib;C:\Users\Nicholas Veselskiy\Desktop\Libraries\lib\glfw3.lib;C:\Users\Nicholas Veselskiy\Desktop\Libraries\lib\SOIL.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/Users/Nicholas Veselskiy/Desktop/School Work/Winter 2022/Comp 2501/Group Project/Liberating-Riraellu/bin/Release/Assignment4.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/Users/Nicholas Veselskiy/Desktop/School Work/Winter 2022/Comp 2501/Group Project/Liberating-Riraellu/bin/Release/Assignment4.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin;C:\Users\Nicholas Veselskiy\Desktop\Libraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin;C:\Users\Nicholas Veselskiy\Desktop\Libraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin;C:\Users\Nicholas Veselskiy\Desktop\Libraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>opengl32.lib;C:\Users\Nicholas Veselskiy\Desktop\Libraries\lib\glew32s.lib;C:\Users\Nicholas Veselskiy\Desktop\Libraries\lib\glfw3.lib;C:\Users\Nicholas Veselskiy\Desktop\Libraries\lib\SOIL.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/Users/Nicholas Veselskiy/Desktop/School Work/Winter 2022/Comp 2501/Group Project/Liberating-Riraellu/bin/MinSizeRel/Assignment4.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/Users/Nicholas Veselskiy/Desktop/School Work/Winter 2022/Comp 2501/Group Project/Liberating-Riraellu/bin/MinSizeRel/Assignment4.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin;C:\Users\Nicholas Veselskiy\Desktop\Libraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin;C:\Users\Nicholas Veselskiy\Desktop\Libraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin;C:\Users\Nicholas Veselskiy\Desktop\Libraries\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>opengl32.lib;C:\Users\Nicholas Veselskiy\Desktop\Libraries\lib\glew32s.lib;C:\Users\Nicholas Veselskiy\Desktop\Libraries\lib\glfw3.lib;C:\Users\Nicholas Veselskiy\Desktop\Libraries\lib\SOIL.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>C:/Users/Nicholas Veselskiy/Desktop/School Work/Winter 2022/Comp 2501/Group Project/Liberating-Riraellu/bin/RelWithDebInfo/Assignment4.lib</ImportLibrary>
+      <ProgramDataBaseFile>C:/Users/Nicholas Veselskiy/Desktop/School Work/Winter 2022/Comp 2501/Group Project/Liberating-Riraellu/bin/RelWithDebInfo/Assignment4.pdb</ProgramDataBaseFile>
+      <SubSystem>Console</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\file_utils.h" />
+    <ClInclude Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bullet_object.h" />
+    <ClInclude Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\buoy_object.h" />
+    <ClInclude Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\collectible_object.h" />
+    <ClInclude Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\enemy_game_object.h" />
+    <ClInclude Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\game.h" />
+    <ClInclude Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\game_object.h" />
+    <ClInclude Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\helicopter_blades.h" />
+    <ClInclude Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\player_game_object.h" />
+    <ClInclude Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\shader.h" />
+    <ClInclude Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\shield.h" />
+    <ClCompile Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\file_utils.cpp" />
+    <ClCompile Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bullet_object.cpp" />
+    <ClCompile Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\buoy_object.cpp" />
+    <ClCompile Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\collectible_object.cpp" />
+    <ClCompile Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\enemy_game_object.cpp" />
+    <ClCompile Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\game.cpp" />
+    <ClCompile Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\game_object.cpp" />
+    <ClCompile Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\helicopter_blades.cpp" />
+    <ClCompile Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\player_game_object.cpp" />
+    <ClCompile Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\shader.cpp" />
+    <ClCompile Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\shield.cpp" />
+    <ClCompile Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\main.cpp" />
+    <None Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\vertex_shader.glsl">
+    </None>
+    <None Include="C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\fragment_shader.glsl">
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

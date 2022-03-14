@@ -1,0 +1,90 @@
+﻿  file_utils.cpp
+  bullet_object.cpp
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bullet_object.cpp(12,23): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bullet_object.cpp(25,31): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+  buoy_object.cpp
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\buoy_object.cpp(17,37): warning C4244: '-=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\buoy_object.cpp(20,37): warning C4244: '-=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\buoy_object.cpp(23,37): warning C4244: '+=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\buoy_object.cpp(26,37): warning C4244: '+=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+  collectible_object.cpp
+  enemy_game_object.cpp
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\enemy_game_object.cpp(46,54): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\enemy_game_object.cpp(47,54): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\enemy_game_object.cpp(48,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\enemy_game_object.cpp(56,21): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\enemy_game_object.cpp(59,21): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\enemy_game_object.cpp(64,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\enemy_game_object.cpp(69,39): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  game.cpp
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\game.cpp(120,26): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\game.cpp(123,26): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\game.cpp(308,25): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\game.cpp(328,37): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\game.cpp(331,37): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\game.cpp(341,34): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\game.cpp(354,11): warning C4101: 'distance': unreferenced local variable
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\game.cpp(435,5): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\game.cpp(542,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\game.cpp(544,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\game.cpp(545,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\game.cpp(573,34): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\game.cpp(583,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\game.cpp(584,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  game_object.cpp
+  GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  helicopter_blades.cpp
+  player_game_object.cpp
+  shader.cpp
+  shield.cpp
+C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\shield.cpp(7,35): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  main.cpp
+  Generating Code...
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'glew32s.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\glew32s.pdb'; linking object as if no debug info
+glfw3.lib(init.c.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(init.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(window.c.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(window.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(input.c.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(input.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(context.c.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(context.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(win32_init.c.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(win32_init.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(win32_monitor.c.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(win32_monitor.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(win32_joystick.c.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(win32_joystick.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(win32_time.c.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(win32_time.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(win32_thread.c.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(win32_thread.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(monitor.c.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(monitor.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(vulkan.c.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(vulkan.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(win32_window.c.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(win32_window.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(wgl_context.c.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(wgl_context.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(egl_context.c.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(egl_context.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\glfw.pdb'; linking object as if no debug info
+glfw3.lib(osmesa_context.c.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'glfw3.lib(osmesa_context.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\glfw.pdb'; linking object as if no debug info
+SOIL.lib(SOIL.c.obj) : warning LNK4099: PDB 'soil.pdb' was not found with 'SOIL.lib(SOIL.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\soil.pdb'; linking object as if no debug info
+SOIL.lib(stb_image_aug.c.obj) : warning LNK4099: PDB 'soil.pdb' was not found with 'SOIL.lib(stb_image_aug.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\soil.pdb'; linking object as if no debug info
+SOIL.lib(image_helper.c.obj) : warning LNK4099: PDB 'soil.pdb' was not found with 'SOIL.lib(image_helper.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\soil.pdb'; linking object as if no debug info
+SOIL.lib(image_DXT.c.obj) : warning LNK4099: PDB 'soil.pdb' was not found with 'SOIL.lib(image_DXT.c.obj)' or at 'C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\soil.pdb'; linking object as if no debug info
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Assignment4.vcxproj -> C:\Users\Nicholas Veselskiy\Desktop\School Work\Winter 2022\Comp 2501\Group Project\Liberating-Riraellu\bin\Debug\Assignment4_d.exe
