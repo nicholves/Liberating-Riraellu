@@ -98,9 +98,16 @@ void Game::Setup(void)
     SetAllTextures();
 
     // Setup background
-    GameObject* background = new GameObject (glm::vec3 (0.0f, 0.0f, 0.0f), tex_[3], size_, false, 10);
-    background->SetScale (50.0);
-    game_objects_.push_back (background);
+    //GameObject* background = new GameObject (glm::vec3 (0.0f, 0.0f, 0.0f), tex_[3], size_, false, 10);
+    //background->SetScale (50.0);
+    //game_objects_.push_back (background);
+    for (int x = -5; x < 5; x++) {
+        for (int y = -5; y < 5; y++) {
+            GameObject* background = new GameObject(glm::vec3((float)x, (float)y, 0.0f), tex_[11], size_, false, 1);
+            background_objects_.push_back(background);
+        }
+    }
+
 
     // Setup the player object (position, texture, vertex count)
     // Note that, in this specific implementation, the player object should always be the first object in the game object vector (but not this one :) )
@@ -109,19 +116,19 @@ void Game::Setup(void)
     // Setup blades object
     game_objects_.push_back (new HelicopterBlades (glm::vec3 (0.0f, 0.13f, 0.0f), tex_[6], size_, false, 1));
 
-    HelicopterBlades* blades = (HelicopterBlades*)(game_objects_[2]);
-    blades->setParent (game_objects_[1]);
+    HelicopterBlades* blades = (HelicopterBlades*)(game_objects_[1]);
+    blades->setParent (game_objects_[0]);
 
     // Set up shields (applied to the player)
     game_objects_.push_back (new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], size_, false, 1, 0));
     game_objects_.push_back (new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], size_, false, 1, 90));
 
-    Shield* shield = (Shield*)(game_objects_[3]);
+    Shield* shield = (Shield*)(game_objects_[2]);
     shield->SetScale (0.2);
-    shield->setParent (game_objects_[1]);
-    shield = (Shield*)(game_objects_[4]);
+    shield->setParent (game_objects_[0]);
+    shield = (Shield*)(game_objects_[3]);
     shield->SetScale (0.2);
-    shield->setParent (game_objects_[1]);
+    shield->setParent (game_objects_[0]);
 
     // Set up enemy objects
     enemy_objects_.push_back (new EnemyGameObject (glm::vec3 (9.0f, 9.0f, 0.0f), tex_[1], size_, true, 1));
@@ -175,7 +182,7 @@ void Game::MainLoop(void)
         float cameraZoom = 0.25f;
         
         // Get player game object
-        GameObject* player = game_objects_[1];
+        GameObject* player = game_objects_[0];
         glm::vec3 curpos = player->GetPosition();
 
         glm::mat4 view_matrix = glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom));
@@ -294,6 +301,7 @@ void Game::SetAllTextures(void)
     SetTexture(tex_[8], (resources_directory_g+std::string ("/textures/orb.png")).c_str (), false);
     SetTexture (tex_[9], (resources_directory_g + std::string ("/textures/shieldpack.png")).c_str (), false);
     SetTexture (tex_[10], (resources_directory_g + std::string ("/textures/buoy.png")).c_str (), false);
+    SetTexture(tex_[11], (resources_directory_g + std::string("/textures/tilemap/plain-water.png")).c_str(), true);
     glBindTexture(GL_TEXTURE_2D, tex_[0]);
 }
 
@@ -301,7 +309,7 @@ void Game::SetAllTextures(void)
 void Game::Controls (double delta_time, double* bullet_cooldown)
 {
     // Get player game object
-    GameObject *player = game_objects_[1];
+    GameObject *player = game_objects_[0];
     glm::vec3 curpos = player->GetPosition();
     glm::vec3 curvelocity = player->GetVelocity ();
     float currot = player->GetRotation();
@@ -350,7 +358,7 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
 
 
 void Game::EnemyDetect (void) { // Used for enemy objects to detect the player
-    GameObject* player = game_objects_[1];
+    GameObject* player = game_objects_[0];
     float distance;    
     
     for (int i = 0; i < enemy_objects_.size(); ++i) {
@@ -446,13 +454,19 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
 
         if (i == 1) { // Exception to update the blades after the helicopter is updated, but it needs to be rendered first.
             if (!gameOver) {
-                game_objects_[2]->Update (delta_time);
+                game_objects_[1]->Update (delta_time);
             }
-            game_objects_[2]->Render (shader_);
+            game_objects_[1]->Render (shader_);
         }
 
         // Render game object
         current_game_object->Render (shader_);
+    }
+
+    // Update and render the background
+    for (int i = 0; i < background_objects_.size(); i++) {
+        background_objects_[i]->Update(delta_time);
+        background_objects_[i]->Render(shader_);
     }
 
     IterateCollision(num_shield);
@@ -461,7 +475,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
 
 // Does collision testing between all the objects in the game (except bullets for now)
 void Game::IterateCollision (int* num_shield) {
-    PlayerGameObject* player = (PlayerGameObject*)(game_objects_[1]);
+    PlayerGameObject* player = (PlayerGameObject*)(game_objects_[0]);
     bool playerHit = false;
     for (int i = 0; i < enemy_objects_.size (); ++i) {
         if (DetectCollision (player, enemy_objects_[i])) {
@@ -571,7 +585,7 @@ void Game::ApplyEffect (int* num_shield, int collectible_hit, CollectibleObject*
             *num_shield += 1;
             Shield* shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], size_, false, 1, game_objects_.back()->GetRotation());
             shield->SetScale (0.2);
-            shield->setParent (game_objects_[1]);
+            shield->setParent (game_objects_[0]);
             game_objects_.push_back (shield);
             collectible_objects_.erase (collectible_objects_.begin () + collectible_hit);
         }

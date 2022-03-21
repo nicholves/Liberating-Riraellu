@@ -48,8 +48,12 @@ namespace game {
             int size_;
 
             // References to textures
-#define NUM_TEXTURES 11
+#define NUM_TEXTURES 12
             GLuint tex_[NUM_TEXTURES];
+
+            // List for background game objects
+            // This is so we can create a tilemap without making the game_objects_ array overloaded with stuff
+            std::vector<GameObject*> background_objects_;
 
             // List for generic game objects
             std::vector<GameObject*> game_objects_;
