@@ -4,6 +4,7 @@
 #include <SOIL/SOIL.h>
 #include <typeinfo>
 #include <path_config.h>
+#include <iostream>
 
 #include "shader.h"
 #include "game.h"
@@ -18,7 +19,7 @@ namespace game {
 const char *window_title_g = "Game Demo";
 const unsigned int window_width_g = 800;
 const unsigned int window_height_g = 600;
-const glm::vec3 viewport_background_color_g(0.0, 0.0, 1.0);
+const glm::vec3 viewport_background_color_g(1.0, 0.0, 0.0);
 
 // Directory with game resources such as textures
 const std::string resources_directory_g = RESOURCES_DIRECTORY;
@@ -101,12 +102,18 @@ void Game::Setup(void)
     //GameObject* background = new GameObject (glm::vec3 (0.0f, 0.0f, 0.0f), tex_[3], size_, false, 10);
     //background->SetScale (50.0);
     //game_objects_.push_back (background);
-    for (int x = -5; x < 5; x++) {
-        for (int y = -5; y < 5; y++) {
-            GameObject* background = new GameObject(glm::vec3((float)x, (float)y, 0.0f), tex_[11], size_, false, 1);
+    //GameObject* background = new GameObject(glm::vec3((float)0, (float)0, 0.0f), tex_[11], size_, false, 1);
+    //background->SetScale(10.0f);
+    //background_objects_.push_back(background);
+    
+    for (int x = -10; x < 10; x++) {
+        for (int y = -10; y < 10; y++) {
+            GameObject* background = new GameObject(glm::vec3((float)x * 10, (float)y * 10, 0.0f), tex_[11], size_, false, 1);
+            background->SetScale(10.0f);
             background_objects_.push_back(background);
         }
     }
+    
 
 
     // Setup the player object (position, texture, vertex count)
@@ -280,8 +287,7 @@ void Game::SetTexture(GLuint w, const char *fname, bool tiling)
 
     // Texture Filtering
     glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 }
 
@@ -301,7 +307,7 @@ void Game::SetAllTextures(void)
     SetTexture(tex_[8], (resources_directory_g+std::string ("/textures/orb.png")).c_str (), false);
     SetTexture (tex_[9], (resources_directory_g + std::string ("/textures/shieldpack.png")).c_str (), false);
     SetTexture (tex_[10], (resources_directory_g + std::string ("/textures/buoy.png")).c_str (), false);
-    SetTexture(tex_[11], (resources_directory_g + std::string("/textures/tilemap/plain-water.png")).c_str(), true);
+    SetTexture(tex_[11], (resources_directory_g + std::string("/textures/tilemap/water.jpg")).c_str(), true);
     glBindTexture(GL_TEXTURE_2D, tex_[0]);
 }
 
