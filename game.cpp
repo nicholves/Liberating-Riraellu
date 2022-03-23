@@ -327,27 +327,30 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
     float currotRadians = currot * 3.14159 / 180;
 
     // Check for player input and make changes accordingly
-    if (glfwGetKey(window_, GLFW_KEY_W) == GLFW_PRESS) { // When moving forward, apply velocity in the bearing direction
-        player->SetVelocity (curvelocity + (glm::vec3 (
-            (-(0.05 * sin (currotRadians))),
-            ((0.05 * cos (currotRadians))),
-            0)));
+    if (glfwGetKey (window_, GLFW_KEY_W) == GLFW_PRESS) { // When moving forward, apply velocity in the bearing direction
+        player->SetVelocity (glm::vec3 (
+            (-(7 * sin (currotRadians))),
+            ((7 * cos (currotRadians))),
+            0));
 
     }
-    if (glfwGetKey(window_, GLFW_KEY_S) == GLFW_PRESS) {
-        // Velocity cannot be lower than 2.0 when trying to slow down. But the player can just turn around and apply positive velocity in that direction to cancel it out...
-        if ((abs (curvelocity.x - (-0.05 * sin (currotRadians)))) + (abs (curvelocity.y) + (-0.05 * cos (currotRadians))) > 2.0) { 
-            player->SetVelocity (curvelocity + (glm::vec3 (
-                (-(-0.05 * sin (currotRadians))),
-                ((-0.05 * cos (currotRadians))),
-                0)));
-        }
+    else if (glfwGetKey (window_, GLFW_KEY_S) == GLFW_PRESS) {
+        player->SetVelocity (glm::vec3 (
+            (-(3 * sin (currotRadians))),
+            ((3 * cos (currotRadians))),
+            0));
     }
-    if (glfwGetKey(window_, GLFW_KEY_D) == GLFW_PRESS) {
-        player->SetRotation (currot - 3.0);
+    else {
+        player->SetVelocity (glm::vec3 (
+            (-(5 * sin (currotRadians))),
+            ((5 * cos (currotRadians))),
+            0));
     }
-    if (glfwGetKey(window_, GLFW_KEY_A) == GLFW_PRESS) {
-        player->SetRotation (currot + 3.0);
+    if (glfwGetKey (window_, GLFW_KEY_D) == GLFW_PRESS) {
+        player->SetRotation (currot - 2.0);
+    }
+    if (glfwGetKey (window_, GLFW_KEY_A) == GLFW_PRESS) {
+        player->SetRotation (currot + 2.0);
     }
     if (glfwGetKey(window_, GLFW_KEY_Q) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window_, true);
