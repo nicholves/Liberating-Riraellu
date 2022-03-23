@@ -138,14 +138,9 @@ void Game::Setup(void)
     shield->setParent (game_objects_[0]);
 
     // Set up enemy objects
-    enemy_objects_.push_back (new EnemyGameObject (glm::vec3 (9.0f, 9.0f, 0.0f), tex_[1], size_, true, 1));
-    enemy_objects_.push_back (new EnemyGameObject (glm::vec3 (9.0f, 0.0f, 0.0f), tex_[1], size_, true, 1));
-    enemy_objects_.push_back (new EnemyGameObject (glm::vec3 (0.0f, 9.0f, 0.0f), tex_[1], size_, true, 1));
-    enemy_objects_.push_back (new EnemyGameObject (glm::vec3 (0.0f, -9.0f, 0.0f), tex_[1], size_, true, 1));
-    enemy_objects_.push_back (new EnemyGameObject (glm::vec3 (-9.0f, 0.0f, 0.0f), tex_[2], size_, true, 1));
-    enemy_objects_.push_back (new EnemyGameObject (glm::vec3 (9.0f, -9.0f, 0.0f), tex_[2], size_, true, 1));
-    enemy_objects_.push_back (new EnemyGameObject (glm::vec3 (-9.0f, 9.0f, 0.0f), tex_[2], size_, true, 1));
-    enemy_objects_.push_back (new EnemyGameObject (glm::vec3 (-9.0f, -9.0f, 0.0f), tex_[2], size_, true, 1));
+    Turret* turret = new Turret(glm::vec3(-2.0f, 2.0f, 0.0f), tex_[12], size_, true, 1); //creates a single turret
+    Turret::SetupBullets(&bullet_objects_, &tex_[7], &tex_[13], &size_, game_objects_[0]); //sets up bullet static variables
+    enemy_objects_.push_back (turret);
     
     // Set up collectibles
     collectible_objects_.push_back (new CollectibleObject (glm::vec3 (3.0f, 3.0f, 0.0f), tex_[9], size_, true, 1, 0));
@@ -308,6 +303,8 @@ void Game::SetAllTextures(void)
     SetTexture (tex_[9], (resources_directory_g + std::string ("/textures/shieldpack.png")).c_str (), false);
     SetTexture (tex_[10], (resources_directory_g + std::string ("/textures/buoy.png")).c_str (), false);
     SetTexture(tex_[11], (resources_directory_g + std::string("/textures/tilemap/water.jpg")).c_str(), true);
+    SetTexture(tex_[12], (resources_directory_g + std::string("/textures/CIWS.png")).c_str(), true);
+    SetTexture(tex_[13], (resources_directory_g + std::string("/textures/missile.png")).c_str(), true);
     glBindTexture(GL_TEXTURE_2D, tex_[0]);
 }
 
@@ -351,7 +348,7 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
         if (*bullet_cooldown <= 0) {
             BulletObject* bullet = new BulletObject
             (curpos + glm::vec3 ((-(0.25 * sin (currotRadians))), ((0.25 * cos (currotRadians))), 0),
-                tex_[7], size_, false, 1, currot);
+                tex_[7], size_, false, 1, currot, 30.0f);
             bullet->SetScale (0.3);
             bullet_objects_.push_back (bullet);
             *bullet_cooldown = 0.20;
@@ -369,7 +366,7 @@ void Game::EnemyDetect (void) { // Used for enemy objects to detect the player
     
     for (int i = 0; i < enemy_objects_.size(); ++i) {
         float distance = glm::length (player->GetPosition () - enemy_objects_[i]->GetPosition ());
-        if (distance <= 3.5) {
+        if (distance <= enemy_objects_[i]->getSightingRange()) {
             if (enemy_objects_[i]->getState () == 0) { // If the object was patrolling, change state.
                 enemy_objects_[i]->setState (1);
                 
@@ -412,12 +409,13 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     for (int i = 0; i < bullet_objects_.size (); i++) {
         bool hitTarget = false;
         current_bullet_object = bullet_objects_[i];
+        float duration = current_bullet_object->getDuration();
         if (!gameOver) {
             current_bullet_object->Update (delta_time);
         }
         hitTarget = BulletCastCollision (current_bullet_object);
         double bulletTime = current_bullet_object->getTimer ();
-        if (bulletTime > 0.2 || hitTarget) {
+        if (bulletTime > duration || hitTarget) {
             bullet_objects_.erase (bullet_objects_.begin () + i);
             --i;
         }

@@ -12,16 +12,17 @@ namespace game {
 			EnemyGameObject(const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles);
 
 			// Update function for moving the enemy object and swapping its state
-			void Update (double delta_time) override;
+			virtual void Update (double delta_time) override;
 
 			// Setters and getters
 			void setState (int state_);
 			int getState ();
 			void setTarget (glm::vec3 target);
+			inline double getSightingRange() { return sighting_range_; }
 
 			// Functions for different states of movement
-			void Patrol (double delta_time);
-			void Pursue (double delta_time);
+			virtual void Patrol (double delta_time);
+			virtual void Pursue (double delta_time);
 
 	protected:
 		
@@ -30,6 +31,7 @@ namespace game {
 		double internal_timer = 0;
 		glm::vec3 patrol_point;
 		glm::vec3 target;
+		double sighting_range_; //sighting range is the range at which this enemy will notice the player and switch to it's other state (patrol / pursue)
 		
 	}; // Class EnemyGameObject
 

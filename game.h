@@ -16,6 +16,7 @@
 #include "bullet_object.h"
 #include "collectible_object.h"
 #include "buoy_object.h"
+#include "turret.h"
 
 namespace game {
 
@@ -48,7 +49,7 @@ namespace game {
             int size_;
 
             // References to textures
-#define NUM_TEXTURES 12
+#define NUM_TEXTURES 14
             GLuint tex_[NUM_TEXTURES];
 
             // List for background game objects

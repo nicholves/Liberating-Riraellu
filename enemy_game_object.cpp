@@ -9,7 +9,9 @@ namespace game {
 	*/
 
 	EnemyGameObject::EnemyGameObject(const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles)
-		: GameObject (position, texture, num_elements, collidable, tiles) { state = 0; patrol_point = glm::vec3 (position_.x - patrol_radius, position_.y, position_.z); }
+		: GameObject(position, texture, num_elements, collidable, tiles) {
+		state = 0; patrol_point = glm::vec3(position_.x - patrol_radius, position_.y, position_.z); sighting_range_ = 3.5;
+	}
 
 	void EnemyGameObject::Update (double delta_time) {
 		if (state == 0) {

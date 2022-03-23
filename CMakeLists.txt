@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 # Name of project
-set(PROJ_NAME Assignment4)
+set(PROJ_NAME Liberating-Riraellu)
 project(${PROJ_NAME})
 
 # Specify project files: header files and source files
@@ -17,6 +17,8 @@ set(HDRS
     player_game_object.h
     shader.h
     shield.h
+    turret.h
+    missile.h
 )
  
 set(SRCS
@@ -31,10 +33,12 @@ set(SRCS
     player_game_object.cpp
     shader.cpp
     shield.cpp
+    turret.cpp
     file_utils.cpp
     main.cpp
     vertex_shader.glsl
     fragment_shader.glsl
+    missile.cpp
 )
 
 # Add path name to configuration file
