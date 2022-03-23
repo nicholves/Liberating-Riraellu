@@ -1,0 +1,14 @@
+1. Add invincibility frames when hit system, work on fixing collisions
+
+2. Adding missile player weapon, add missiles to own vector and fix turret statics
+
+3. Shield powerup and hp system for player/enemies
+
+
+
+
+
+
+1. Austin
+2. Nick
+3. Carter
