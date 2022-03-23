@@ -105,6 +105,10 @@ void Game::Setup(void)
     //GameObject* background = new GameObject(glm::vec3((float)0, (float)0, 0.0f), tex_[11], size_, false, 1);
     //background->SetScale(10.0f);
     //background_objects_.push_back(background);
+    //Islands
+    GameObject* island = new GameObject(glm::vec3(0.0f, 4.0f, 0.0f), tex_[12], size_, false, 1);
+    //island->SetScale(10.0f);
+    background_objects_.push_back(island);
     
     for (int x = -10; x < 10; x++) {
         for (int y = -10; y < 10; y++) {
@@ -113,6 +117,7 @@ void Game::Setup(void)
             background_objects_.push_back(background);
         }
     }
+
     
 
 
@@ -302,9 +307,12 @@ void Game::SetAllTextures(void)
     SetTexture(tex_[8], (resources_directory_g+std::string ("/textures/orb.png")).c_str (), false);
     SetTexture (tex_[9], (resources_directory_g + std::string ("/textures/shieldpack.png")).c_str (), false);
     SetTexture (tex_[10], (resources_directory_g + std::string ("/textures/buoy.png")).c_str (), false);
+    
+    //Tile map textures
     SetTexture(tex_[11], (resources_directory_g + std::string("/textures/tilemap/water.jpg")).c_str(), true);
     SetTexture(tex_[12], (resources_directory_g + std::string("/textures/CIWS.png")).c_str(), true);
     SetTexture(tex_[13], (resources_directory_g + std::string("/textures/missile.png")).c_str(), true);
+    SetTexture(tex_[14], (resources_directory_g + std::string("/textures/isle8.png")).c_str(), false);
     glBindTexture(GL_TEXTURE_2D, tex_[0]);
 }
 
