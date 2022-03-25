@@ -144,7 +144,7 @@ void Game::Setup(void)
 
     // Set up enemy objects
     Turret* turret = new Turret(glm::vec3(-2.0f, 2.0f, 0.0f), tex_[12], size_, true, 1); //creates a single turret
-    Turret::SetupBullets(&bullet_objects_, &tex_[7], &tex_[13], &size_, game_objects_[0]); //sets up bullet static variables
+    Turret::SetupBullets(&bullet_objects_, &missile_objects_, &tex_[7], &tex_[13], &size_, game_objects_[0]); //sets up bullet static variables
     enemy_objects_.push_back (turret);
     
     // Set up collectibles
@@ -404,6 +404,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     BulletObject* current_bullet_object;
     CollectibleObject* current_collectible_object;
     BuoyObject* current_buoy_object;
+    MissileObject* current_missile_object;
 
     EnemyDetect ();
 
@@ -452,6 +453,15 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
             current_buoy_object->Update (delta_time);
         }
         current_buoy_object->Render (shader_);
+    }
+
+    // Update and render missiles
+    for (int i = 0; i < missile_objects_.size(); i++) {
+        current_missile_object = missile_objects_[i];
+        if (!gameOver) {
+            current_missile_object->Update(delta_time);
+        }
+        current_missile_object->Render(shader_);
     }
 
     // Update and render other game objects

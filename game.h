@@ -14,6 +14,7 @@
 #include "helicopter_blades.h"
 #include "shield.h"
 #include "bullet_object.h"
+#include "missile.h"
 #include "collectible_object.h"
 #include "buoy_object.h"
 #include "turret.h"
@@ -64,7 +65,10 @@ namespace game {
 
             // List for specific operations on bullet objects as they are added and removed
             std::vector<BulletObject*> bullet_objects_;
-            
+
+            // // List for specific operations on missile objects as they are added and removed
+            std::vector<MissileObject*> missile_objects_;
+
             // List for specific operations on collectible objects as they are added and removed
             std::vector<CollectibleObject*> collectible_objects_;
 

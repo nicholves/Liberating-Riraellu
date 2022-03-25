@@ -6,6 +6,7 @@ namespace game {
 	
 	//initializing static variables to default values
 	std::vector<BulletObject*>* Turret::bullet_objects_ptr_ = NULL;
+	std::vector<MissileObject*>* Turret::missile_objects_ptr_ = NULL; 
 	GameObject* Turret::player_ = NULL;
 	GLuint* Turret::bulletTex_ = 0;
 	int* Turret::size_ = NULL;
@@ -79,14 +80,15 @@ namespace game {
 			MissileObject* missile = new MissileObject(position_ + glm::vec3((-(0.25 * sin((rotation_ + 90.0f) * 3.14159 / 180))), ((0.25 * cos((rotation_ + 90.0f) * 3.14159 / 180))), 0), *missileTex_, *size_, false, 1, rotation_ + 90.0f, 5.0f, player_);
 			missile->SetScale(0.5f);
 			missile->SetDuration(5.0f); //missiles last 5 seconds
-			bullet_objects_ptr_->push_back(missile);
+			missile_objects_ptr_->push_back(missile);
 			last_missile_fire_time_ = 0.0f;
 		}
 	}
 	
 	//static function to setup all of the turret's static variables
-	void Turret::SetupBullets(std::vector<BulletObject*>* ptr, GLuint* bulletTex, GLuint* missileTex, int* size, GameObject* player) {
+	void Turret::SetupBullets(std::vector<BulletObject*>* ptr, std::vector<MissileObject*>* misPtr, GLuint* bulletTex, GLuint* missileTex, int* size, GameObject* player) {
 		Turret::bullet_objects_ptr_ = ptr;
+		Turret::missile_objects_ptr_ = misPtr;
 		Turret::bulletTex_ = bulletTex;
 		Turret::size_ = size;
 		Turret::missileTex_ = missileTex;

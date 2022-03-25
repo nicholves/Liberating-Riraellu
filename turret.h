@@ -23,7 +23,7 @@ namespace game {
 		void Pursue(double delta_time) override;
 
 		//setup function
-		static void SetupBullets(std::vector<BulletObject*>* ptr, GLuint* bulletTex, GLuint* missileTex, int* size, GameObject* player);
+		static void SetupBullets(std::vector<BulletObject*>* ptr, std::vector<MissileObject*>* misPtr, GLuint* bulletTex, GLuint* missileTex, int* size, GameObject* player);
 
 	protected:
 		double last_bullet_fire_time_; //timer counting up since last bullet was fired
@@ -31,6 +31,8 @@ namespace game {
 		double last_missile_fire_time_; //timer counting up since last missile was fired
 
 		static std::vector<BulletObject*>* bullet_objects_ptr_; //a pointer to game's bullet_objects vector so turrets can create bullets
+
+		static std::vector<MissileObject*>* missile_objects_ptr_; //a pointer to game's missile_objects vector so turrets can create bullets
 		
 		static GLuint* bulletTex_; //the texture of the bullet
 
