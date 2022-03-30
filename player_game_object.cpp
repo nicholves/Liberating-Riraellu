@@ -10,6 +10,7 @@ namespace game {
 PlayerGameObject::PlayerGameObject(const glm::vec3 &position, GLuint texture, GLint num_elements, bool collidable, int tiles, double mass)
 	: GameObject (position, texture, num_elements, collidable, tiles) {
 	mass_ = mass;
+	missile_cooldown_ = 0;
 }
 
 // Update function for moving the player object around
@@ -32,7 +33,7 @@ void PlayerGameObject::Update(double delta_time) {
 
 	// Call the parent's update method to move the object in standard way, if desired
 	GameObject::Update(delta_time);
-
+	missile_cooldown_ += delta_time;
 }
 
 } // namespace game

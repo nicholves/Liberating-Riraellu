@@ -14,11 +14,18 @@ namespace game {
             // Update function for moving the player object around
             void Update(double delta_time) override;
 
+            
+            inline void SetMissileCooldown(double c) { missile_cooldown_ = c; }
+
             inline double getMass () { return mass_; }
+            inline double getMissileCooldown(void) { return missile_cooldown_; }
 
         private:
             // For collision response
             double mass_;
+
+            //for missile timing
+            double missile_cooldown_;
     }; // class PlayerGameObject
 
 } // namespace game

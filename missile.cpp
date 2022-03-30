@@ -12,7 +12,7 @@ namespace game {
 		float currotRadians = rotation_ * 3.14159 / 180;
 		target_ = target;
 		acceleration_ = glm::vec3(0.0f);
-		velocity_ = glm::vec3(0.0f);
+		velocity_ = glm::normalize(target->GetPosition() - position) * speed;
 	}
 
 

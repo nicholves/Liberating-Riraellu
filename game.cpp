@@ -5,6 +5,7 @@
 #include <typeinfo>
 #include <path_config.h>
 #include <iostream>
+#include <limits>
 
 #include "shader.h"
 #include "game.h"
@@ -106,7 +107,7 @@ void Game::Setup(void)
     //background->SetScale(10.0f);
     //background_objects_.push_back(background);
     //Islands
-    GameObject* island = new GameObject(glm::vec3(0.0f, 4.0f, 0.0f), tex_[12], size_, false, 1);
+    GameObject* island = new GameObject(glm::vec3(0.0f, 4.0f, 0.0f), tex_[14], size_, false, 1);
     //island->SetScale(10.0f);
     background_objects_.push_back(island);
     
@@ -320,7 +321,7 @@ void Game::SetAllTextures(void)
 void Game::Controls (double delta_time, double* bullet_cooldown)
 {
     // Get player game object
-    GameObject *player = game_objects_[0];
+    PlayerGameObject *player = (PlayerGameObject*)game_objects_[0];
     glm::vec3 curpos = player->GetPosition();
     glm::vec3 curvelocity = player->GetVelocity ();
     float currot = player->GetRotation();
@@ -366,6 +367,16 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
         }
         else {
             *bullet_cooldown -= delta_time;
+        }
+    }
+    if (glfwGetKey(window_, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && player->getMissileCooldown() >= 5) {
+        GameObject* target = FindClosest();
+        if (target != NULL) {
+            MissileObject* missile = new MissileObject(curpos + glm::vec3((-(0.25 * sin(currotRadians))), ((0.25 * cos(currotRadians))), 0),
+                tex_[13], size_, false, 1, currot, 10.0f, target);
+            missile->SetScale(0.5f);
+            missile_objects_.push_back(missile);
+            player->SetMissileCooldown(0);
         }
     }
 }
@@ -632,6 +643,28 @@ void Game::BuoyBounce (PlayerGameObject* player, BuoyObject* buoy) {
     buoy->SetVelocity (v2f);
 }
 
+GameObject* Game::FindClosest() {
+    PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
+    GameObject* closest = NULL;
+    float closestDist = std::numeric_limits<float>::max();
+
+    for (int i = 0; i < enemy_objects_.size(); ++i) {
+        EnemyGameObject* target = enemy_objects_[i];
+
+
+
+        if (glm::dot(player->GetVelocity(), target->GetPosition() - player->GetPosition()) > 0) { //checks to ensure enemy is in front of player
+            float distance = glm::length(player->GetPosition() - target->GetPosition()); //gets distance from player to enemy
+            if (distance < closestDist) { //if the distance is less than the current closes target, update the current closest target
+                closestDist = distance;
+                closest = target;
+            }
+        }
+    }
+
+
+    return closest;
+}
 // **************************************************************************
 
 } // namespace game

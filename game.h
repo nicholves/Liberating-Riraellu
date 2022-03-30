@@ -118,6 +118,9 @@ namespace game {
             // Collision handling between player and buoys
             void BuoyBounce (PlayerGameObject*, BuoyObject*);
 
+            //Detects the closest enemy in front of the player
+            GameObject* FindClosest(void);
+
     }; // class Game
 
 } // namespace game

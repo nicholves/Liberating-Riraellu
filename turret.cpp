@@ -77,7 +77,7 @@ namespace game {
 			last_bullet_fire_time_ = 0.0f;
 		}
 		if (last_missile_fire_time_ > 5.0f) {
-			MissileObject* missile = new MissileObject(position_ + glm::vec3((-(0.25 * sin((rotation_ + 90.0f) * 3.14159 / 180))), ((0.25 * cos((rotation_ + 90.0f) * 3.14159 / 180))), 0), *missileTex_, *size_, false, 1, rotation_ + 90.0f, 5.0f, player_);
+			MissileObject* missile = new MissileObject(position_ + glm::vec3((-(0.25 * sin((rotation_ + 90.0f) * 3.14159 / 180))), ((0.25 * cos((rotation_ + 90.0f) * 3.14159 / 180))), 0), *missileTex_, *size_, false, 1, rotation_ + 90.0f, 3.0f, player_);
 			missile->SetScale(0.5f);
 			missile->SetDuration(5.0f); //missiles last 5 seconds
 			missile_objects_ptr_->push_back(missile);

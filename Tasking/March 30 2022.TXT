@@ -1,0 +1,10 @@
+1. Particle Systems / Fix Collisions
+
+2. UI Work on Get things displayed
+
+3. Shield powerup and hp system for player/enemies, Repair Kit, Cloaking Device
+
+
+1. Austin
+2. Nick
+3. Carter
