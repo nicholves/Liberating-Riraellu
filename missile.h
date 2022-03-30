@@ -10,7 +10,7 @@ namespace game {
 	class MissileObject : public BulletObject {
 
 	public:
-		MissileObject(const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles, float direction, float speed, GameObject* target);
+		MissileObject(const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles, float direction, float speed, GameObject* target, std::string from);
 
 
 		// Update function for updating the position of the missile

@@ -11,6 +11,8 @@ PlayerGameObject::PlayerGameObject(const glm::vec3 &position, GLuint texture, GL
 	: GameObject (position, texture, num_elements, collidable, tiles) {
 	mass_ = mass;
 	missile_cooldown_ = 0;
+	num_shield = 1;
+	invincible_timer = 2.0f;
 }
 
 // Update function for moving the player object around
@@ -29,6 +31,13 @@ void PlayerGameObject::Update(double delta_time) {
 		velocity_.y = 5;
 	} else if (velocity_.y < -5) {
 		velocity_.y = -5;
+	}
+	if (invincible_timer > 2.0f) {
+		collidable_ = true;
+	}
+	else {
+		collidable_ = false;
+		invincible_timer += delta_time;
 	}
 
 	// Call the parent's update method to move the object in standard way, if desired

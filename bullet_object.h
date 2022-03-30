@@ -2,18 +2,19 @@
 #define BULLET_OBJECT_H_
 
 #include "game_object.h"
-
+#include <string>
 namespace game {
 
 	// Inherits from GameObject
 	class BulletObject : public GameObject {
 
 		public:
-			BulletObject (const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles, float direction, float speed);
+			BulletObject(const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles, float direction, float speed, std::string from);
 
 			// Getters
 			double getTimer ();
 			float getDuration() { return duration_; }
+			inline std::string GetFrom(void) { return from_; }
 			
 			//Setters
 			void SetDuration(float duration) { duration_ = duration; }
@@ -28,6 +29,8 @@ namespace game {
 			float speed_; //speed is the magnitude for the velocity of bullets
 
 			float duration_; //the duration that the bullet object lasts
+
+			std::string from_;
 	};
 
 }

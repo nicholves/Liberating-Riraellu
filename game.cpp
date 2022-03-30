@@ -172,6 +172,7 @@ void Game::Setup(void)
 
 void Game::MainLoop(void)
 {
+    PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
     double lastTime = glfwGetTime();
     double timeHold = 0; // A counter for displaying an explosion for a certain length
     double bulletCooldown = 0; // Keeps track of the cooldown between shots
@@ -179,6 +180,8 @@ void Game::MainLoop(void)
 
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
+
+        numShield = player->getNumShield();
 
         // Clear background
         glClearColor(viewport_background_color_g.r,
@@ -190,7 +193,7 @@ void Game::MainLoop(void)
         float cameraZoom = 0.25f;
         
         // Get player game object
-        GameObject* player = game_objects_[0];
+        //GameObject* player = game_objects_[0];
         glm::vec3 curpos = player->GetPosition();
 
         glm::mat4 view_matrix = glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom));
@@ -360,7 +363,7 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
         if (*bullet_cooldown <= 0) {
             BulletObject* bullet = new BulletObject
             (curpos + glm::vec3 ((-(0.25 * sin (currotRadians))), ((0.25 * cos (currotRadians))), 0),
-                tex_[7], size_, false, 1, currot, 30.0f);
+                tex_[7], size_, false, 1, currot, 30.0f, "player");
             bullet->SetScale (0.3);
             bullet_objects_.push_back (bullet);
             *bullet_cooldown = 0.20;
@@ -373,7 +376,7 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
         GameObject* target = FindClosest();
         if (target != NULL) {
             MissileObject* missile = new MissileObject(curpos + glm::vec3((-(0.25 * sin(currotRadians))), ((0.25 * cos(currotRadians))), 0),
-                tex_[13], size_, false, 1, currot, 10.0f, target);
+                tex_[13], size_, false, 1, currot, 10.0f, target, "player");
             missile->SetScale(0.5f);
             missile_objects_.push_back(missile);
             player->SetMissileCooldown(0);
@@ -579,36 +582,72 @@ bool Game::DetectCollision (PlayerGameObject* player, BuoyObject* buoy) {
 
 // I was going to move this into different functions, but it became 11:00pm really quickly
 bool Game::BulletCastCollision (BulletObject* bullet) {
-    for (int i = 0; i < enemy_objects_.size (); i++) {
-        if (enemy_objects_[i]->GetCollidable ()) {
+    //If the bullet fired is from the player, check the enemies to see who got hit
+    if (bullet->GetFrom() == "player") {
 
-            // Turning variables into neater versions for the formula
-            float x0 = bullet->GetPosition ().x;
-            float x1 = x0 + bullet->GetVelocity ().x;
-            float y0 = bullet->GetPosition ().y;
-            float y1 = y0 + bullet->GetVelocity ().y;
-            float h = enemy_objects_[i]->GetPosition ().x;
-            float k = enemy_objects_[i]->GetPosition ().y;
-            float a = pow((x1 - x0),2) + pow((y1-y0), 2);
+        //Checking for enemy collision with bullets
+        for (int i = 0; i < enemy_objects_.size(); i++) {
+            if (enemy_objects_[i]->GetCollidable()) {
+
+                // Turning variables into neater versions for the formula
+                float x0 = bullet->GetPosition().x;
+                float x1 = x0 + bullet->GetVelocity().x;
+                float y0 = bullet->GetPosition().y;
+                float y1 = y0 + bullet->GetVelocity().y;
+                float h = enemy_objects_[i]->GetPosition().x;
+                float k = enemy_objects_[i]->GetPosition().y;
+                float a = pow((x1 - x0), 2) + pow((y1 - y0), 2);
+                float b = 2 * (x1 - x0) * (x0 - h) + 2 * (y1 - y0) * (y0 - k);
+                float c = pow((x0 - h), 2) + pow((y0 - k), 2) - pow(0.7f, 2);
+                float t = (2 * c) / (-b + sqrt(pow(b, 2) - (4 * a * c)));
+                if (t > 0) {
+                    enemy_objects_.erase(enemy_objects_.begin() + i);
+                    return true;
+                }
+            }
+        }
+    }
+    //If the bullet fired is from an enemy, check to see if it hits the player
+    else if (bullet->GetFrom() == "enemy") {
+        PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
+        if (player->GetCollidable()) {
+            float x0 = bullet->GetPosition().x;
+            float x1 = x0 + bullet->GetVelocity().x;
+            float y0 = bullet->GetPosition().y;
+            float y1 = y0 + bullet->GetVelocity().y;
+            float h = player->GetPosition().x;
+            float k = player->GetPosition().y;
+            float a = pow((x1 - x0), 2) + pow((y1 - y0), 2);
             float b = 2 * (x1 - x0) * (x0 - h) + 2 * (y1 - y0) * (y0 - k);
-            float c = pow ((x0 - h), 2) + pow ((y0 - k), 2) - pow (0.7f, 2);
-            float t = (2 * c) / (-b + sqrt (pow (b, 2) - (4 * a * c)));
+            float c = pow((x0 - h), 2) + pow((y0 - k), 2) - pow(0.7f, 2);
+            float t = (2 * c) / (-b + sqrt(pow(b, 2) - (4 * a * c)));
+            //If player was hit by enemy bullet
             if (t > 0) {
-                enemy_objects_.erase (enemy_objects_.begin () + i);
+                //If the player still has shields
+                if (player->getNumShield() > 0) {
+                    game_objects_.erase(game_objects_.end() - 1); //Erase a shield
+                    player->minusShield(); //Update shield erase in player object
+                    player->resetIFrame(); //Make player invincible for short time
+
+                }
+                else {
+                    gameOver = true;
+                }
                 return true;
             }
         }
     }
-    return false;
 }
 
 // *********************** Collision Resolution *****************************
 
 void Game::DamagePlayer (int* num_shield, int enemy_hit) {
-    if (*num_shield > 0) {
+    PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
+    if (player->getNumShield() > 0) {
         game_objects_.erase (game_objects_.end () - 1);
         enemy_objects_.erase (enemy_objects_.begin () + enemy_hit);
-        *num_shield -= 1;
+        player->minusShield();
+        player->resetIFrame(); //Make player invincible for short time
     }
     else {
         gameOver = true;
@@ -616,9 +655,11 @@ void Game::DamagePlayer (int* num_shield, int enemy_hit) {
 }
 
 void Game::ApplyEffect (int* num_shield, int collectible_hit, CollectibleObject* collectible) {
+    PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
     if (collectible->getType() == 0) { // Check the collectible type
-        if (*num_shield < 4) { // Player can't have more than 4 shields
-            *num_shield += 1;
+        if (player->getNumShield() < 4) { // Player can't have more than 4 shields
+            player->addShield();
+            std::cout << player->getNumShield() << std::endl;
             Shield* shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], size_, false, 1, game_objects_.back()->GetRotation());
             shield->SetScale (0.2);
             shield->setParent (game_objects_[0]);

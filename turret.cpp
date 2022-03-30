@@ -70,14 +70,14 @@ namespace game {
 		rotation_ = (angle / 3.14159) * 180 + 180;
 
 		if (last_bullet_fire_time_ > 0.05) {
-			BulletObject* bullet = new BulletObject(position_ + glm::vec3((-(0.25 * sin((rotation_ + 90.0f) * 3.14159 / 180))), ((0.25 * cos((rotation_ + 90.0f) * 3.14159 / 180))), 0), *bulletTex_, *size_, true, 1, rotation_ + 90.0f, 5.0f);
+			BulletObject* bullet = new BulletObject(position_ + glm::vec3((-(0.25 * sin((rotation_ + 90.0f) * 3.14159 / 180))), ((0.25 * cos((rotation_ + 90.0f) * 3.14159 / 180))), 0), *bulletTex_, *size_, true, 1, rotation_ + 90.0f, 5.0f, "enemy");
 			bullet->SetScale(0.3);
 			bullet->SetDuration(10.0f); //bullets last 10 seconds
 			bullet_objects_ptr_->push_back(bullet);
 			last_bullet_fire_time_ = 0.0f;
 		}
 		if (last_missile_fire_time_ > 5.0f) {
-			MissileObject* missile = new MissileObject(position_ + glm::vec3((-(0.25 * sin((rotation_ + 90.0f) * 3.14159 / 180))), ((0.25 * cos((rotation_ + 90.0f) * 3.14159 / 180))), 0), *missileTex_, *size_, false, 1, rotation_ + 90.0f, 3.0f, player_);
+			MissileObject* missile = new MissileObject(position_ + glm::vec3((-(0.25 * sin((rotation_ + 90.0f) * 3.14159 / 180))), ((0.25 * cos((rotation_ + 90.0f) * 3.14159 / 180))), 0), *missileTex_, *size_, false, 1, rotation_ + 90.0f, 3.0f, player_, "enemy");
 			missile->SetScale(0.5f);
 			missile->SetDuration(5.0f); //missiles last 5 seconds
 			missile_objects_ptr_->push_back(missile);
