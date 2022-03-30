@@ -583,6 +583,7 @@ bool Game::DetectCollision (PlayerGameObject* player, BuoyObject* buoy) {
 // I was going to move this into different functions, but it became 11:00pm really quickly
 bool Game::BulletCastCollision (BulletObject* bullet) {
     //If the bullet fired is from the player, check the enemies to see who got hit
+    
     if (bullet->GetFrom() == "player") {
 
         //Checking for enemy collision with bullets
@@ -621,6 +622,7 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
             float b = 2 * (x1 - x0) * (x0 - h) + 2 * (y1 - y0) * (y0 - k);
             float c = pow((x0 - h), 2) + pow((y0 - k), 2) - pow(0.7f, 2);
             float t = (2 * c) / (-b + sqrt(pow(b, 2) - (4 * a * c)));
+            
             //If player was hit by enemy bullet
             if (t > 0) {
                 //If the player still has shields
@@ -637,6 +639,7 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
             }
         }
     }
+    return false;
 }
 
 // *********************** Collision Resolution *****************************

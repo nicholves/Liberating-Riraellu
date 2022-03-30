@@ -16,6 +16,7 @@ namespace game {
 			(-(speed_ * sin (currotRadians))),
 			((speed_ * cos (currotRadians))),
 			0);
+		from_ = from;
 	}
 
 	double BulletObject::getTimer () {
