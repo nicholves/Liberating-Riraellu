@@ -19,6 +19,9 @@ set(HDRS
     shield.h
     turret.h
     missile.h
+    ui_element.h
+    healthbar.h
+    number.h
 )
  
 set(SRCS
@@ -39,6 +42,9 @@ set(SRCS
     vertex_shader.glsl
     fragment_shader.glsl
     missile.cpp
+    ui_element.cpp
+    healthbar.cpp
+    number.cpp
 )
 
 # Add path name to configuration file

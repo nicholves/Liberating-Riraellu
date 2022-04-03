@@ -35,6 +35,8 @@ Game::Game(void)
 void Game::Init(void)
 {
 
+    score_ = 0;
+
     // Initialize the window management library (GLFW)
     if (!glfwInit()) {
         throw(std::runtime_error(std::string("Could not initialize the GLFW library")));
@@ -110,6 +112,35 @@ void Game::Setup(void)
     GameObject* island = new GameObject(glm::vec3(0.0f, 4.0f, 0.0f), tex_[14], size_, false, 1);
     //island->SetScale(10.0f);
     background_objects_.push_back(island);
+
+    Healthbar* health_foreground = new Healthbar(glm::vec3(0.95f, -0.05f, 0.0f), tex_[16], size_, 1);
+    health_foreground->SetScale(2.0f);
+    health_foreground->SetScaley(2.0f); 
+
+    //important note the healthbar is scaled between 0 and 2. 2 being maximum health (only should change scaley)
+
+    ui_objects_.push_back(health_foreground);
+
+
+    UI_Element* health_background = new UI_Element(glm::vec3(1.0f, 0.0f, 0.0f), tex_[15], size_, 1);
+    health_background->SetScale(2.0f);
+    ui_objects_.push_back(health_background);
+
+    UI_Element* missile_ready = new UI_Element(glm::vec3(-3.5f, 3.0f, 0.0f), tex_[13], size_, 1);
+    missile_ready->SetRotation(-135.0f);
+    missile_ready_ = missile_ready;
+    ui_objects_.push_back(missile_ready);
+
+    //the label for the score looks like -> score:
+    UI_Element* score = new UI_Element(glm::vec3(-3.5f, 3.5f, 0.0f), tex_[17], size_, 1);
+    score->SetScale(FONT_SIZE);
+    ui_objects_.push_back(score);
+
+    //proof of concept number making:
+    Number* score_value = new Number(glm::vec3(-2.0f, 3.5f, 0.0f), tex_[17], size_, 1, 4678923);
+    score_value->SetScale(FONT_SIZE);
+    ui_objects_.push_back(score_value);
+
     
     for (int x = -10; x < 10; x++) {
         for (int y = -10; y < 10; y++) {
@@ -145,7 +176,9 @@ void Game::Setup(void)
 
     // Set up enemy objects
     Turret* turret = new Turret(glm::vec3(-2.0f, 2.0f, 0.0f), tex_[12], size_, true, 1); //creates a single turret
+
     Turret::SetupBullets(&bullet_objects_, &missile_objects_, &tex_[7], &tex_[13], &size_, game_objects_[0]); //sets up bullet static variables
+    UI_Element::Setup(game_objects_[0]); // setup ui elements object
     enemy_objects_.push_back (turret);
     
     // Set up collectibles
@@ -199,6 +232,7 @@ void Game::MainLoop(void)
         glm::mat4 view_matrix = glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom));
         view_matrix = view_matrix * glm::translate(glm::mat4(0.5f), -curpos);
         shader_.SetUniformMat4("view_matrix", view_matrix);
+
 
         // Calculate delta time
         double currentTime = glfwGetTime();
@@ -314,10 +348,38 @@ void Game::SetAllTextures(void)
     
     //Tile map textures
     SetTexture(tex_[11], (resources_directory_g + std::string("/textures/tilemap/water.jpg")).c_str(), true);
+    SetTexture(tex_[14], (resources_directory_g + std::string("/textures/isle8.png")).c_str(), false);
+
+    //weaponry related textures
     SetTexture(tex_[12], (resources_directory_g + std::string("/textures/CIWS.png")).c_str(), true);
     SetTexture(tex_[13], (resources_directory_g + std::string("/textures/missile.png")).c_str(), true);
-    SetTexture(tex_[14], (resources_directory_g + std::string("/textures/isle8.png")).c_str(), false);
+
+    //ui related textures
+    SetTexture(tex_[15], (resources_directory_g + std::string("/textures/red_bar.png")).c_str(), false);
+    SetTexture(tex_[16], (resources_directory_g + std::string("/textures/green_bar.png")).c_str(), false);
+    SetTexture(tex_[17], (resources_directory_g + std::string("/textures/score.png")).c_str(), false);
+
+    //all the numbers from 0-9
+    SetTexture(tex_[18], (resources_directory_g + std::string("/textures/0.png")).c_str(), false);
+    SetTexture(tex_[19], (resources_directory_g + std::string("/textures/1.png")).c_str(), false);
+    SetTexture(tex_[20], (resources_directory_g + std::string("/textures/2.png")).c_str(), false);
+    SetTexture(tex_[21], (resources_directory_g + std::string("/textures/3.png")).c_str(), false);
+    SetTexture(tex_[22], (resources_directory_g + std::string("/textures/4.png")).c_str(), false);
+    SetTexture(tex_[23], (resources_directory_g + std::string("/textures/5.png")).c_str(), false);
+    SetTexture(tex_[24], (resources_directory_g + std::string("/textures/6.png")).c_str(), false);
+    SetTexture(tex_[25], (resources_directory_g + std::string("/textures/7.png")).c_str(), false);
+    SetTexture(tex_[26], (resources_directory_g + std::string("/textures/8.png")).c_str(), false);
+    SetTexture(tex_[27], (resources_directory_g + std::string("/textures/9.png")).c_str(), false);
     glBindTexture(GL_TEXTURE_2D, tex_[0]);
+
+
+    //setup number textures:
+    for (int i = 18; i < 28; ++i) {
+        text_arr_.push_back(tex_[i]);
+    }
+
+    //setup static variables
+    Number::SetupTextures(text_arr_, &size_);
 }
 
 
@@ -372,7 +434,7 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
             *bullet_cooldown -= delta_time;
         }
     }
-    if (glfwGetKey(window_, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && player->getMissileCooldown() >= 5) {
+    if (glfwGetKey(window_, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && player->getMissileCooldown() >= MISSILE_COOLDOWN) {
         GameObject* target = FindClosest();
         if (target != NULL) {
             MissileObject* missile = new MissileObject(curpos + glm::vec3((-(0.25 * sin(currotRadians))), ((0.25 * cos(currotRadians))), 0),
@@ -381,6 +443,20 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
             missile_objects_.push_back(missile);
             player->SetMissileCooldown(0);
         }
+    }
+
+    //temporary health demonstration until health system implemented
+    if (glfwGetKey(window_, GLFW_KEY_LEFT) == GLFW_PRESS) {
+        ui_objects_[0]->SetScaley(2.0f);
+    }
+    if (glfwGetKey(window_, GLFW_KEY_UP) == GLFW_PRESS) {
+        ui_objects_[0]->SetScaley(1.5f);
+    }
+    if (glfwGetKey(window_, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+        ui_objects_[0]->SetScaley(1.0f);
+    }
+    if (glfwGetKey(window_, GLFW_KEY_DOWN) == GLFW_PRESS) {
+        ui_objects_[0]->SetScaley(0.5f);
     }
 }
 
@@ -410,8 +486,10 @@ void Game::EnemyDetect (void) { // Used for enemy objects to detect the player
 void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown, int* num_shield)
 {
     if (!gameOver) {
-        Controls (delta_time, bullet_cooldown);
+        Controls(delta_time, bullet_cooldown);
     }
+
+    
 
     GameObject* current_game_object;
     EnemyGameObject* current_enemy_object;
@@ -421,6 +499,18 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     MissileObject* current_missile_object;
 
     EnemyDetect ();
+
+
+    // Update and render the ui elements
+    for (int i = 0; i < ui_objects_.size(); i++) {
+        ui_objects_[i]->Update(delta_time);
+        //don't render missile ready ui element when missile isn't ready
+        if (ui_objects_[i] == missile_ready_ && ((PlayerGameObject*)game_objects_[0])->getMissileCooldown() < MISSILE_COOLDOWN) {
+            continue;
+        }
+
+        ui_objects_[i]->Render(shader_);
+    }
 
     // Update and render the enemy objects
     for (int i = 0; i < enemy_objects_.size (); i++) {
@@ -502,11 +592,15 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         current_game_object->Render (shader_);
     }
 
+
+
     // Update and render the background
     for (int i = 0; i < background_objects_.size(); i++) {
         background_objects_[i]->Update(delta_time);
         background_objects_[i]->Render(shader_);
     }
+
+    
 
     IterateCollision(num_shield);
 
@@ -633,7 +727,7 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
 
                 }
                 else {
-                    gameOver = true;
+                    //gameOver = true; // TODO: flip back to true once gameOver working
                 }
                 return true;
             }
@@ -653,7 +747,7 @@ void Game::DamagePlayer (int* num_shield, int enemy_hit) {
         player->resetIFrame(); //Make player invincible for short time
     }
     else {
-        gameOver = true;
+        //gameOver = true; // TODO: flip back to true once gameOver working
     }
 }
 

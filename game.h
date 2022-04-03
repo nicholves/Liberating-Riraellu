@@ -18,6 +18,14 @@
 #include "collectible_object.h"
 #include "buoy_object.h"
 #include "turret.h"
+#include "ui_element.h"
+#include "healthbar.h"
+#include "number.h"
+
+#define FONT_SIZE 10.0f
+
+
+#define MISSILE_COOLDOWN 5.0f
 
 namespace game {
 
@@ -50,8 +58,11 @@ namespace game {
             int size_;
 
             // References to textures
-#define NUM_TEXTURES 15
+#define NUM_TEXTURES 28
             GLuint tex_[NUM_TEXTURES];
+
+
+            std::vector<GLuint> text_arr_;
 
             // List for background game objects
             // This is so we can create a tilemap without making the game_objects_ array overloaded with stuff
@@ -74,8 +85,17 @@ namespace game {
 
             std::vector<BuoyObject*> buoy_objects_;
 
+            //ui element objects
+            std::vector<UI_Element*> ui_objects_;
+
+            //player score
+            int score_;
+
             // Gameover boolean
             bool gameOver = false;
+
+            //a pointer to the missile ready ui element (this tells the user whether or not a missile is ready)
+            UI_Element* missile_ready_;
 
             // Callback for when the window is resized
             static void ResizeCallback(GLFWwindow* window, int width, int height);
@@ -120,6 +140,8 @@ namespace game {
 
             //Detects the closest enemy in front of the player
             GameObject* FindClosest(void);
+
+            
 
     }; // class Game
 
