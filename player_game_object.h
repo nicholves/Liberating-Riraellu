@@ -2,9 +2,11 @@
 #define PLAYER_GAME_OBJECT_H_
 
 #include "game_object.h"
-
+#define MAX_HEALTH 10
+#define MAX_SHIELD 20
+#define CLOAK_LENGTH 10
 namespace game {
-
+    
     // Inherits from GameObject
     class PlayerGameObject : public GameObject {
 
@@ -14,15 +16,20 @@ namespace game {
             // Update function for moving the player object around
             void Update(double delta_time) override;
 
-            inline void addShield() { num_shield++; }
-            inline void minusShield() { num_shield--; }
+            inline void addShield (int n) { num_shield += n; if (num_shield >= MAX_SHIELD) { num_shield = MAX_SHIELD; } }
+            inline void minusShield (int damage) { num_shield -= damage; if (num_shield < 0) { num_shield = 0; } }
             inline void resetIFrame() { invincible_timer = 0; }
+            void addHealth (int);
             
             inline void SetMissileCooldown(double c) { missile_cooldown_ = c; }
 
+            inline void cloak () { cloaked = true; cloak_timer = 0.0; }
+            inline void uncloak () { cloaked = false; }
+            inline bool getCloaked (void) { return cloaked; }
             inline double getMass () { return mass_; }
             inline double getMissileCooldown(void) { return missile_cooldown_; }
             inline int getNumShield(void) { return num_shield; }
+            inline int getHealth (void) { return health; }
 
         private:
             // For collision response
@@ -36,6 +43,14 @@ namespace game {
 
             //Lets player stay invincible for a short period of time
             float invincible_timer;
+
+            // Holds the player's health
+            int health;
+
+            // Cloak variables
+            float cloak_timer;
+            bool cloaked;
+
     }; // class PlayerGameObject
 
 } // namespace game

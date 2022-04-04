@@ -2,6 +2,7 @@
 #define BULLET_OBJECT_H_
 
 #include "game_object.h"
+#include "player_game_object.h"
 #include <string>
 namespace game {
 

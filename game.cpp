@@ -164,28 +164,33 @@ void Game::Setup(void)
     blades->setParent (game_objects_[0]);
 
     // Set up shields (applied to the player)
-    game_objects_.push_back (new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], size_, false, 1, 0));
-    game_objects_.push_back (new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], size_, false, 1, 90));
+    //game_objects_.push_back (new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], size_, false, 1, 0));
+    //game_objects_.push_back (new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], size_, false, 1, 90));
 
-    Shield* shield = (Shield*)(game_objects_[2]);
-    shield->SetScale (0.2f);
-    shield->setParent (game_objects_[0]);
-    shield = (Shield*)(game_objects_[3]);
-    shield->SetScale (0.2f);
-    shield->setParent (game_objects_[0]);
+    /*Shield* shield = (Shield*)(game_objects_[2]);
+    shield->SetScale (0.4);
+    shield->setParent (game_objects_[0]);*/
+    /*shield = (Shield*)(game_objects_[3]);
+    shield->SetScale (0.4);
+    shield->setParent (game_objects_[0]);*/
 
     // Set up enemy objects
-    Turret* turret = new Turret(glm::vec3(-2.0f, 2.0f, 0.0f), tex_[12], size_, true, 1); //creates a single turret
-
+    Turret* turret = new Turret(glm::vec3(-2.0f, 2.0f, 0.0f), tex_[12], size_, true, 1, 5); //creates a single turret
     Turret::SetupBullets(&bullet_objects_, &missile_objects_, &tex_[7], &tex_[13], &size_, game_objects_[0]); //sets up bullet static variables
     UI_Element::Setup(game_objects_[0]); // setup ui elements object
     enemy_objects_.push_back (turret);
     
-    // Set up collectibles
+    // Set up shield packs
     collectible_objects_.push_back (new CollectibleObject (glm::vec3 (3.0f, 3.0f, 0.0f), tex_[9], size_, true, 1, 0));
     collectible_objects_.push_back (new CollectibleObject (glm::vec3 (3.0f, -3.0f, 0.0f), tex_[9], size_, true, 1, 0));
     collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-3.0f, -3.0f, 0.0f), tex_[9], size_, true, 1, 0));
     collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-3.0f, 3.0f, 0.0f), tex_[9], size_, true, 1, 0));
+
+    // Set up health packs
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-5.0f, 5.0f, 0.0f), tex_[15], size_, true, 1, 1));
+
+    // Set up cloakers
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (5.0f, -5.0f, 0.0f), tex_[16], size_, true, 1, 2));
 
     for (int i = 0; i < collectible_objects_.size (); ++i) {
         collectible_objects_[i]->SetScale (0.5);
@@ -223,7 +228,7 @@ void Game::MainLoop(void)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Set view to zoom out, centered by default at 0,0
-        float cameraZoom = 0.25f;
+        float cameraZoom = 0.175f;
         
         // Get player game object
         //GameObject* player = game_objects_[0];
@@ -342,7 +347,7 @@ void Game::SetAllTextures(void)
     SetTexture(tex_[5], (resources_directory_g+std::string("/textures/blank.png")).c_str (), false);
     SetTexture(tex_[6], (resources_directory_g+std::string("/textures/blade.png")).c_str (), false);
     SetTexture(tex_[7], (resources_directory_g+std::string("/textures/bullet.png")).c_str (), false);
-    SetTexture(tex_[8], (resources_directory_g+std::string ("/textures/orb.png")).c_str (), false);
+    SetTexture(tex_[8], (resources_directory_g+std::string ("/textures/shield.png")).c_str (), false);
     SetTexture (tex_[9], (resources_directory_g + std::string ("/textures/shieldpack.png")).c_str (), false);
     SetTexture (tex_[10], (resources_directory_g + std::string ("/textures/buoy.png")).c_str (), false);
     
@@ -370,6 +375,12 @@ void Game::SetAllTextures(void)
     SetTexture(tex_[25], (resources_directory_g + std::string("/textures/7.png")).c_str(), false);
     SetTexture(tex_[26], (resources_directory_g + std::string("/textures/8.png")).c_str(), false);
     SetTexture(tex_[27], (resources_directory_g + std::string("/textures/9.png")).c_str(), false);
+    SetTexture(tex_[14], (resources_directory_g + std::string("/textures/isle8.png")).c_str(), false);
+
+    // Health pack texture
+    SetTexture (tex_[15], (resources_directory_g + std::string ("/textures/healthpack.png")).c_str (), false);
+    // Cloaker texture
+    SetTexture (tex_[16], (resources_directory_g + std::string ("/textures/cloaker.png")).c_str (), false);
     glBindTexture(GL_TEXTURE_2D, tex_[0]);
 
 
@@ -462,12 +473,12 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
 
 
 void Game::EnemyDetect (void) { // Used for enemy objects to detect the player
-    GameObject* player = game_objects_[0];
-    //float distance;    
+    PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
+    float distance;    
     
     for (int i = 0; i < enemy_objects_.size(); ++i) {
         float distance = glm::length (player->GetPosition () - enemy_objects_[i]->GetPosition ());
-        if (distance <= enemy_objects_[i]->getSightingRange()) {
+        if (distance <= enemy_objects_[i]->getSightingRange() && !player->getCloaked()) {
             if (enemy_objects_[i]->getState () == 0) { // If the object was patrolling, change state.
                 enemy_objects_[i]->setState (1);
                 
@@ -497,6 +508,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     CollectibleObject* current_collectible_object;
     BuoyObject* current_buoy_object;
     MissileObject* current_missile_object;
+    PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
 
     EnemyDetect ();
 
@@ -563,7 +575,12 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     for (int i = 0; i < missile_objects_.size(); i++) {
         current_missile_object = missile_objects_[i];
         if (!gameOver) {
-            current_missile_object->Update(delta_time);
+            if (current_missile_object->GetFrom() == "enemy" && player->getCloaked ()) {
+                current_missile_object->BulletObject::Update (delta_time);
+            }
+            else {
+                current_missile_object->Update (delta_time);
+            }
         }
         current_missile_object->Render(shader_);
     }
@@ -571,7 +588,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     // Update and render other game objects
     for (int i = (int)game_objects_.size () - 1; i >= 0; --i) {
 
-        if (i == 2) { // Helicopter blades get updated before their list order
+        if (i == 1) { // Helicopter blades get updated before their list order
             continue;
         }
 
@@ -581,7 +598,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
             current_game_object->Update (delta_time);
         }
 
-        if (i == 1) { // Exception to update the blades after the helicopter is updated, but it needs to be rendered first.
+        if (i == 0) { // Exception to update the blades after the helicopter is updated, but it needs to be rendered first.
             if (!gameOver) {
                 game_objects_[1]->Update (delta_time);
             }
@@ -600,26 +617,25 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         background_objects_[i]->Render(shader_);
     }
 
-    
-
-    IterateCollision(num_shield);
+    IterateCollision();
 
 }
 
 // Does collision testing between all the objects in the game (except bullets for now)
-void Game::IterateCollision (int* num_shield) {
+void Game::IterateCollision () {
     PlayerGameObject* player = (PlayerGameObject*)(game_objects_[0]);
     bool playerHit = false;
     for (int i = 0; i < enemy_objects_.size (); ++i) {
         if (DetectCollision (player, enemy_objects_[i])) {
-            DamagePlayer (num_shield, i);
+            DamagePlayer (5);
+            enemy_objects_.erase (enemy_objects_.begin () + i);
             break;
         }
     }
 
     for (int i = 0; i < collectible_objects_.size (); ++i) {
         if (DetectCollision (player, collectible_objects_[i])) {
-            ApplyEffect (num_shield, i, collectible_objects_[i]);
+            ApplyEffect (i, collectible_objects_[i]);
         }
     }
 
@@ -696,7 +712,13 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
                 float c = (float)(pow((x0 - h), 2) + pow((y0 - k), 2) - pow(0.7f, 2));
                 float t = (2 * c) / (-b + (float)sqrt(pow(b, 2) - (4 * a * c)));
                 if (t > 0) {
-                    enemy_objects_.erase(enemy_objects_.begin() + i);
+                    if (enemy_objects_[i]->getHealth () > 1) {
+                        enemy_objects_[i]->setHealth (enemy_objects_[i]->getHealth () - 1);
+                    }
+                    else {
+                        enemy_objects_.erase (enemy_objects_.begin () + i);
+                    }
+                    
                     return true;
                 }
             }
@@ -719,16 +741,7 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
             
             //If player was hit by enemy bullet
             if (t > 0) {
-                //If the player still has shields
-                if (player->getNumShield() > 0) {
-                    game_objects_.erase(game_objects_.end() - 1); //Erase a shield
-                    player->minusShield(); //Update shield erase in player object
-                    player->resetIFrame(); //Make player invincible for short time
-
-                }
-                else {
-                    //gameOver = true; // TODO: flip back to true once gameOver working
-                }
+                DamagePlayer (1);
                 return true;
             }
         }
@@ -738,32 +751,61 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
 
 // *********************** Collision Resolution *****************************
 
-void Game::DamagePlayer (int* num_shield, int enemy_hit) {
+void Game::DamagePlayer (int damage) {
     PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
     if (player->getNumShield() > 0) {
-        game_objects_.erase (game_objects_.end () - 1);
-        enemy_objects_.erase (enemy_objects_.begin () + enemy_hit);
-        player->minusShield();
+        float shieldOrbsBefore = ceil(player->getNumShield () / float((MAX_SHIELD) / 4)); // Current number of orbs is proportional to shielding
+        //std::cout << "Shields before: " << player->getNumShield () / ((MAX_SHIELD) / 4) << std::endl;
+        player->minusShield(damage);
         player->resetIFrame(); //Make player invincible for short time
+        float shieldOrbsAfter = ceil(player->getNumShield () / float((MAX_SHIELD) /4));
+        //std::cout << "Shields now: " << player->getNumShield() << std::endl;
+        //std::cout << "Before: " << shieldOrbsBefore << " After: " << shieldOrbsAfter << std::endl;
+        if (shieldOrbsBefore > shieldOrbsAfter) {
+            game_objects_.erase (game_objects_.end () - 1);
+        }
+ 
+    }
+    else if (player->getHealth() > 0){
+        player->addHealth (-damage);
+        player->resetIFrame (); //Make player invincible for short time
     }
     else {
         //gameOver = true; // TODO: flip back to true once gameOver working
     }
 }
 
-void Game::ApplyEffect (int* num_shield, int collectible_hit, CollectibleObject* collectible) {
+void Game::ApplyEffect (int collectible_hit, CollectibleObject* collectible) {
     PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
     if (collectible->getType() == 0) { // Check the collectible type
-        if (player->getNumShield() < 4) { // Player can't have more than 4 shields
-            player->addShield();
-            std::cout << player->getNumShield() << std::endl;
-            Shield* shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], size_, false, 1, game_objects_.back()->GetRotation());
-            shield->SetScale (0.2f);
-            shield->setParent (game_objects_[0]);
-            game_objects_.push_back (shield);
+        if (player->getNumShield() < MAX_SHIELD) { // Player can't have more than MAX_SHIELD shielding
+            if (player->getNumShield () < (MAX_SHIELD / 4) * 3) {
+                Shield* shield;
+                if (player->getNumShield () == 0) {
+                    shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], size_, false, 1, 0);
+                }
+                else {
+                    Shield* backshield = (Shield*)(game_objects_.back ());
+                    shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], size_, false, 1, backshield->getOrbit ());
+                }
+                shield->SetScale (0.4);
+                shield->setParent (game_objects_[0]);
+                game_objects_.push_back (shield);
+            }
+            player->addShield(MAX_SHIELD/4);
             collectible_objects_.erase (collectible_objects_.begin () + collectible_hit);
         }
-    }    
+    }
+    else if (collectible->getType () == 1) {
+        if (player->getHealth () < MAX_HEALTH) {
+            player->addHealth (3);
+            collectible_objects_.erase (collectible_objects_.begin () + collectible_hit);
+        }
+    }
+    else if (collectible->getType () == 2) {
+        player->cloak ();
+        collectible_objects_.erase (collectible_objects_.begin () + collectible_hit);
+    }
 }
 
 void Game::BuoyBounce (PlayerGameObject* player, BuoyObject* buoy) {
@@ -788,8 +830,6 @@ GameObject* Game::FindClosest() {
 
     for (int i = 0; i < enemy_objects_.size(); ++i) {
         EnemyGameObject* target = enemy_objects_[i];
-
-
 
         if (glm::dot(player->GetVelocity(), target->GetPosition() - player->GetPosition()) > 0) { //checks to ensure enemy is in front of player
             float distance = glm::length(player->GetPosition() - target->GetPosition()); //gets distance from player to enemy

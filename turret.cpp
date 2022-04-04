@@ -7,7 +7,7 @@ namespace game {
 	//initializing static variables to default values
 	std::vector<BulletObject*>* Turret::bullet_objects_ptr_ = NULL;
 	std::vector<MissileObject*>* Turret::missile_objects_ptr_ = NULL; 
-	GameObject* Turret::player_ = NULL;
+	PlayerGameObject* Turret::player_ = NULL;
 	GLuint* Turret::bulletTex_ = 0;
 	int* Turret::size_ = NULL;
 	GLuint* Turret::missileTex_ = 0;
@@ -17,8 +17,8 @@ namespace game {
 		It overrides EnemyGameObject's update method, so that the object can be updated according to its states
 	*/
 
-	Turret::Turret(const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles)
-		: EnemyGameObject(position, texture, num_elements, collidable, tiles) {
+	Turret::Turret(const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles, int health)
+		: EnemyGameObject(position, texture, num_elements, collidable, tiles, health) {
 		state = 0; patrol_point = glm::vec3(position_.x - patrol_radius, position_.y, position_.z);
 		//setting up required fields
 		last_bullet_fire_time_ = 0;
@@ -92,7 +92,7 @@ namespace game {
 		Turret::bulletTex_ = bulletTex;
 		Turret::size_ = size;
 		Turret::missileTex_ = missileTex;
-		Turret::player_ = player;
+		Turret::player_ = (PlayerGameObject*)(player);
 	}
 	
 }
