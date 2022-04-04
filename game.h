@@ -22,7 +22,7 @@
 #include "healthbar.h"
 #include "number.h"
 
-#define FONT_SIZE 10.0f
+#define FONT_SIZE 20.0f
 
 
 #define MISSILE_COOLDOWN 5.0f
@@ -58,7 +58,7 @@ namespace game {
             int size_;
 
             // References to textures
-#define NUM_TEXTURES 28
+#define NUM_TEXTURES 30
             GLuint tex_[NUM_TEXTURES];
 
 
@@ -87,6 +87,9 @@ namespace game {
 
             //ui element objects
             std::vector<UI_Element*> ui_objects_;
+
+            //healthbar
+            UI_Element* healthbar_;
 
             //player score
             int score_;

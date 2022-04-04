@@ -12,7 +12,7 @@ namespace game {
 	void Healthbar::Update(double delta_time) {
 		position_ = player_->GetPosition() + offset_;
 
-		float correction = (0.15f * scale_y_) - 0.3f; 
+		float correction = (0.15f * scale_y_) - 0.30f; 
 		/* 
 			y = 0.15x - 0.3 = the position modification I want based on scale for the healthbar, this account for scal_y_ squeezing in both directions
 			I want healthbar to only shrink in one way. So we decrease the position of the bar to account for this and give the ilusion it only shrinks in one direction

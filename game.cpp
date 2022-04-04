@@ -109,35 +109,37 @@ void Game::Setup(void)
     //background->SetScale(10.0f);
     //background_objects_.push_back(background);
     //Islands
-    GameObject* island = new GameObject(glm::vec3(0.0f, 4.0f, 0.0f), tex_[14], size_, false, 1);
+    //GameObject* island = new GameObject(glm::vec3(0.0f, 4.0f, 0.0f), tex_[14], size_, false, 1);
     //island->SetScale(10.0f);
-    background_objects_.push_back(island);
+    //background_objects_.push_back(island);
 
-    Healthbar* health_foreground = new Healthbar(glm::vec3(0.95f, -0.05f, 0.0f), tex_[16], size_, 1);
-    health_foreground->SetScale(2.0f);
-    health_foreground->SetScaley(2.0f); 
+    Healthbar* health_foreground = new Healthbar(glm::vec3(1.43f, -0.15f, 0.0f), tex_[16], size_, 1);
+    healthbar_ = health_foreground;
+    health_foreground->SetScale(2.5f);
+    health_foreground->SetScaley(2.5f); 
 
-    //important note the healthbar is scaled between 0 and 2. 2 being maximum health (only should change scaley)
+    //important note the healthbar is scaled between 0 and 2.5. 2.5 being maximum health (only should change scaley)
 
     ui_objects_.push_back(health_foreground);
 
 
-    UI_Element* health_background = new UI_Element(glm::vec3(1.0f, 0.0f, 0.0f), tex_[15], size_, 1);
-    health_background->SetScale(2.0f);
+    UI_Element* health_background = new UI_Element(glm::vec3(1.5f, 0.0f, 0.0f), tex_[15], size_, 1);
+    health_background->SetScale(2.5f);
     ui_objects_.push_back(health_background);
 
-    UI_Element* missile_ready = new UI_Element(glm::vec3(-3.5f, 3.0f, 0.0f), tex_[13], size_, 1);
+    UI_Element* missile_ready = new UI_Element(glm::vec3(-5.0f, 4.5f, 0.0f), tex_[14], size_, 1);
     missile_ready->SetRotation(-135.0f);
+    missile_ready->SetScale(1.5f);
     missile_ready_ = missile_ready;
     ui_objects_.push_back(missile_ready);
 
     //the label for the score looks like -> score:
-    UI_Element* score = new UI_Element(glm::vec3(-3.5f, 3.5f, 0.0f), tex_[17], size_, 1);
+    UI_Element* score = new UI_Element(glm::vec3(-4.5f, 5.0f, 0.0f), tex_[17], size_, 1);
     score->SetScale(FONT_SIZE);
     ui_objects_.push_back(score);
 
     //proof of concept number making:
-    Number* score_value = new Number(glm::vec3(-2.0f, 3.5f, 0.0f), tex_[17], size_, 1, 100);
+    Number* score_value = new Number(glm::vec3(-2.0f, 5.0f, 0.0f), tex_[17], size_, 1, 100);
     score_value->SetScale(FONT_SIZE);
     ui_objects_.push_back(score_value);
 
@@ -175,8 +177,8 @@ void Game::Setup(void)
     shield->setParent (game_objects_[0]);*/
 
     // Set up enemy objects
-    Turret* turret = new Turret(glm::vec3(-2.0f, 2.0f, 0.0f), tex_[12], size_, true, 1, 5); //creates a single turret
-    Turret::SetupBullets(&bullet_objects_, &missile_objects_, &tex_[7], &tex_[13], &size_, game_objects_[0]); //sets up bullet static variables
+    Turret* turret = new Turret(glm::vec3(-2.0f, 2.0f, 0.0f), tex_[13], size_, true, 1, 5); //creates a single turret
+    Turret::SetupBullets(&bullet_objects_, &missile_objects_, &tex_[7], &tex_[14], &size_, game_objects_[0]); //sets up bullet static variables
     UI_Element::Setup(game_objects_[0]); // setup ui elements object
     enemy_objects_.push_back (turret);
     
@@ -187,10 +189,10 @@ void Game::Setup(void)
     collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-3.0f, 3.0f, 0.0f), tex_[9], size_, true, 1, 0));
 
     // Set up health packs
-    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-5.0f, 5.0f, 0.0f), tex_[15], size_, true, 1, 1));
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-5.0f, 5.0f, 0.0f), tex_[28], size_, true, 1, 1));
 
     // Set up cloakers
-    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (5.0f, -5.0f, 0.0f), tex_[16], size_, true, 1, 2));
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (5.0f, -5.0f, 0.0f), tex_[29], size_, true, 1, 2));
 
     for (int i = 0; i < collectible_objects_.size (); ++i) {
         collectible_objects_[i]->SetScale (0.5);
@@ -353,11 +355,11 @@ void Game::SetAllTextures(void)
     
     //Tile map textures
     SetTexture(tex_[11], (resources_directory_g + std::string("/textures/tilemap/water.jpg")).c_str(), true);
-    SetTexture(tex_[14], (resources_directory_g + std::string("/textures/isle8.png")).c_str(), false);
+    SetTexture(tex_[12], (resources_directory_g + std::string("/textures/isle8.png")).c_str(), false);
 
     //weaponry related textures
-    SetTexture(tex_[12], (resources_directory_g + std::string("/textures/CIWS.png")).c_str(), true);
-    SetTexture(tex_[13], (resources_directory_g + std::string("/textures/missile.png")).c_str(), true);
+    SetTexture(tex_[13], (resources_directory_g + std::string("/textures/CIWS.png")).c_str(), true);
+    SetTexture(tex_[14], (resources_directory_g + std::string("/textures/missile.png")).c_str(), true);
 
     //ui related textures
     SetTexture(tex_[15], (resources_directory_g + std::string("/textures/red_bar.png")).c_str(), false);
@@ -375,12 +377,12 @@ void Game::SetAllTextures(void)
     SetTexture(tex_[25], (resources_directory_g + std::string("/textures/7.png")).c_str(), false);
     SetTexture(tex_[26], (resources_directory_g + std::string("/textures/8.png")).c_str(), false);
     SetTexture(tex_[27], (resources_directory_g + std::string("/textures/9.png")).c_str(), false);
-    SetTexture(tex_[14], (resources_directory_g + std::string("/textures/isle8.png")).c_str(), false);
+    //SetTexture(tex_[14], (resources_directory_g + std::string("/textures/isle8.png")).c_str(), false);
 
     // Health pack texture
-    SetTexture (tex_[15], (resources_directory_g + std::string ("/textures/healthpack.png")).c_str (), false);
+    SetTexture (tex_[28], (resources_directory_g + std::string ("/textures/healthpack.png")).c_str (), false);
     // Cloaker texture
-    SetTexture (tex_[16], (resources_directory_g + std::string ("/textures/cloaker.png")).c_str (), false);
+    SetTexture (tex_[29], (resources_directory_g + std::string ("/textures/cloaker.png")).c_str (), false);
     glBindTexture(GL_TEXTURE_2D, tex_[0]);
 
 
@@ -449,25 +451,27 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
         GameObject* target = FindClosest();
         if (target != NULL) {
             MissileObject* missile = new MissileObject(curpos + glm::vec3((-(0.25 * sin(currotRadians))), ((0.25 * cos(currotRadians))), 0),
-                tex_[13], size_, false, 1, currot, 10.0f, target, "player");
+                tex_[14], size_, false, 1, currot, 10.0f, target, "player");
             missile->SetScale(0.5f);
             missile_objects_.push_back(missile);
             player->SetMissileCooldown(0);
+            player->addHealth(-1);
         }
     }
 
     //temporary health demonstration until health system implemented
+    //don't work rn
     if (glfwGetKey(window_, GLFW_KEY_LEFT) == GLFW_PRESS) {
-        ui_objects_[0]->SetScaley(2.0f);
+        ui_objects_[0]->SetScaley(2.5f);
     }
     if (glfwGetKey(window_, GLFW_KEY_UP) == GLFW_PRESS) {
-        ui_objects_[0]->SetScaley(1.5f);
+        ui_objects_[0]->SetScaley(2.0f);
     }
     if (glfwGetKey(window_, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-        ui_objects_[0]->SetScaley(1.0f);
+        ui_objects_[0]->SetScaley(1.5f);
     }
     if (glfwGetKey(window_, GLFW_KEY_DOWN) == GLFW_PRESS) {
-        ui_objects_[0]->SetScaley(0.5f);
+        ui_objects_[0]->SetScaley(1.0f);
     }
 }
 
@@ -516,6 +520,14 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     // Update and render the ui elements
     for (int i = 0; i < ui_objects_.size(); i++) {
         ui_objects_[i]->Update(delta_time);
+
+
+        int health = player->getHealth();
+
+
+        float health_percent = health * (2.5f / 10);
+
+        healthbar_->SetScaley(health_percent);
         //don't render missile ready ui element when missile isn't ready
         if (ui_objects_[i] == missile_ready_ && ((PlayerGameObject*)game_objects_[0])->getMissileCooldown() < MISSILE_COOLDOWN) {
             continue;
