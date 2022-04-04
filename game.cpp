@@ -137,7 +137,7 @@ void Game::Setup(void)
     ui_objects_.push_back(score);
 
     //proof of concept number making:
-    Number* score_value = new Number(glm::vec3(-2.0f, 3.5f, 0.0f), tex_[17], size_, 1, 4678923);
+    Number* score_value = new Number(glm::vec3(-2.0f, 3.5f, 0.0f), tex_[17], size_, 1, 100);
     score_value->SetScale(FONT_SIZE);
     ui_objects_.push_back(score_value);
 
@@ -168,10 +168,10 @@ void Game::Setup(void)
     game_objects_.push_back (new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], size_, false, 1, 90));
 
     Shield* shield = (Shield*)(game_objects_[2]);
-    shield->SetScale (0.2);
+    shield->SetScale (0.2f);
     shield->setParent (game_objects_[0]);
     shield = (Shield*)(game_objects_[3]);
-    shield->SetScale (0.2);
+    shield->SetScale (0.2f);
     shield->setParent (game_objects_[0]);
 
     // Set up enemy objects
@@ -390,7 +390,7 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
     glm::vec3 curpos = player->GetPosition();
     glm::vec3 curvelocity = player->GetVelocity ();
     float currot = player->GetRotation();
-    float currotRadians = currot * 3.14159 / 180;
+    float currotRadians = currot * 3.14159f / 180.0f;
 
     // Check for player input and make changes accordingly
     if (glfwGetKey (window_, GLFW_KEY_W) == GLFW_PRESS) { // When moving forward, apply velocity in the bearing direction
@@ -413,10 +413,10 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
             0));
     }
     if (glfwGetKey (window_, GLFW_KEY_D) == GLFW_PRESS) {
-        player->SetRotation (currot - 2.0);
+        player->SetRotation (currot - 2.0f);
     }
     if (glfwGetKey (window_, GLFW_KEY_A) == GLFW_PRESS) {
-        player->SetRotation (currot + 2.0);
+        player->SetRotation (currot + 2.0f);
     }
     if (glfwGetKey(window_, GLFW_KEY_Q) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window_, true);
@@ -426,7 +426,7 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
             BulletObject* bullet = new BulletObject
             (curpos + glm::vec3 ((-(0.25 * sin (currotRadians))), ((0.25 * cos (currotRadians))), 0),
                 tex_[7], size_, false, 1, currot, 30.0f, "player");
-            bullet->SetScale (0.3);
+            bullet->SetScale (0.3f);
             bullet_objects_.push_back (bullet);
             *bullet_cooldown = 0.20;
         }
@@ -463,7 +463,7 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
 
 void Game::EnemyDetect (void) { // Used for enemy objects to detect the player
     GameObject* player = game_objects_[0];
-    float distance;    
+    //float distance;    
     
     for (int i = 0; i < enemy_objects_.size(); ++i) {
         float distance = glm::length (player->GetPosition () - enemy_objects_[i]->GetPosition ());
@@ -569,7 +569,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     }
 
     // Update and render other game objects
-    for (int i = game_objects_.size () - 1; i >= 0; --i) {
+    for (int i = (int)game_objects_.size () - 1; i >= 0; --i) {
 
         if (i == 2) { // Helicopter blades get updated before their list order
             continue;
@@ -691,10 +691,10 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
                 float y1 = y0 + bullet->GetVelocity().y;
                 float h = enemy_objects_[i]->GetPosition().x;
                 float k = enemy_objects_[i]->GetPosition().y;
-                float a = pow((x1 - x0), 2) + pow((y1 - y0), 2);
+                float a = (float)(pow((x1 - x0), 2) + (float)pow((y1 - y0), 2));
                 float b = 2 * (x1 - x0) * (x0 - h) + 2 * (y1 - y0) * (y0 - k);
-                float c = pow((x0 - h), 2) + pow((y0 - k), 2) - pow(0.7f, 2);
-                float t = (2 * c) / (-b + sqrt(pow(b, 2) - (4 * a * c)));
+                float c = (float)(pow((x0 - h), 2) + pow((y0 - k), 2) - pow(0.7f, 2));
+                float t = (2 * c) / (-b + (float)sqrt(pow(b, 2) - (4 * a * c)));
                 if (t > 0) {
                     enemy_objects_.erase(enemy_objects_.begin() + i);
                     return true;
@@ -712,10 +712,10 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
             float y1 = y0 + bullet->GetVelocity().y;
             float h = player->GetPosition().x;
             float k = player->GetPosition().y;
-            float a = pow((x1 - x0), 2) + pow((y1 - y0), 2);
+            float a = (float)(pow((x1 - x0), 2) + pow((y1 - y0), 2));
             float b = 2 * (x1 - x0) * (x0 - h) + 2 * (y1 - y0) * (y0 - k);
-            float c = pow((x0 - h), 2) + pow((y0 - k), 2) - pow(0.7f, 2);
-            float t = (2 * c) / (-b + sqrt(pow(b, 2) - (4 * a * c)));
+            float c = (float)(pow((x0 - h), 2) + pow((y0 - k), 2) - pow(0.7f, 2));
+            float t = (float)((2 * c) / (-b + sqrt(pow(b, 2) - (4 * a * c))));
             
             //If player was hit by enemy bullet
             if (t > 0) {
@@ -758,7 +758,7 @@ void Game::ApplyEffect (int* num_shield, int collectible_hit, CollectibleObject*
             player->addShield();
             std::cout << player->getNumShield() << std::endl;
             Shield* shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], size_, false, 1, game_objects_.back()->GetRotation());
-            shield->SetScale (0.2);
+            shield->SetScale (0.2f);
             shield->setParent (game_objects_[0]);
             game_objects_.push_back (shield);
             collectible_objects_.erase (collectible_objects_.begin () + collectible_hit);
@@ -768,8 +768,8 @@ void Game::ApplyEffect (int* num_shield, int collectible_hit, CollectibleObject*
 
 void Game::BuoyBounce (PlayerGameObject* player, BuoyObject* buoy) {
     // Turning variables into neater versions for the formula
-    float m1 = player->getMass ();
-    float m2 = buoy->getMass ();
+    float m1 = (float)player->getMass ();
+    float m2 = (float)buoy->getMass ();
     glm::vec3 c1 = player->GetPosition ();
     glm::vec3 c2 = buoy->GetPosition ();
     glm::vec3 n = glm::normalize(c1 - c2);

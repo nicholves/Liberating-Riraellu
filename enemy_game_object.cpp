@@ -45,9 +45,9 @@ namespace game {
 
 	// Object orbits around its patrol point
 	void EnemyGameObject::Patrol (double delta_time) {
-		position_.x = patrol_radius * cos (internal_timer) + patrol_point.x;
-		position_.y = patrol_radius * sin (internal_timer) + patrol_point.y;
-		rotation_ = (internal_timer * 57.3);
+		position_.x = patrol_radius * (float)cos (internal_timer) + patrol_point.x;
+		position_.y = patrol_radius * (float)sin (internal_timer) + patrol_point.y;
+		rotation_ = (float)(internal_timer * 57.3f);
 	}
 
 	// Object pursues a given point that is updated on game tick
@@ -55,20 +55,20 @@ namespace game {
 		float angle = atan ((abs (target.y - position_.y)) / (abs (target.x - position_.x)));
 		if (target.x < position_.x) {
 			if (target.y < position_.y) {
-				angle += 3.14159;
+				angle += 3.14159f;
 			}
 			else {
-				angle = 3.14159 - angle;
+				angle = 3.14159f - angle;
 			}
 		}
 		else {
 			if (target.y < position_.y) {
-				angle = 2*(3.14159) - angle;
+				angle = 2.0f*(3.14159f) - angle;
 			}
 		}
 
-		float speed = 2;
-		rotation_ = (angle / 3.14159) * 180 - 90;
+		float speed = 2.0f;
+		rotation_ = (angle / 3.14159f) * 180.0f - 90.0f;
 
 		velocity_ = (glm::vec3 (
 			((speed * cos(angle)) - (speed * sin (angle))),

@@ -37,7 +37,7 @@ void PlayerGameObject::Update(double delta_time) {
 	}
 	else {
 		collidable_ = false;
-		invincible_timer += delta_time;
+		invincible_timer += (float)delta_time;
 	}
 
 	// Call the parent's update method to move the object in standard way, if desired

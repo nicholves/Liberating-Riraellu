@@ -28,9 +28,11 @@ namespace game {
 		ClearChildren();
 
 
-		int num_digits = std::to_string(value_).length(); // gets the number of digits of the integer
+		int num_digits = (int) std::to_string(value_).length(); // gets the number of digits of the integer
 
-		SetTexture(text_arr_[value_ / pow(10, num_digits - 1) ]); // the first number has the texture of the first digit subscript of the array
+		int first_dig = (int)(value_ / pow(10, num_digits - 1)); // get the most significant digit of the number
+
+		SetTexture(text_arr_[first_dig]); // the first number has the texture of the first digit subscript of the array
 
 
 		/*

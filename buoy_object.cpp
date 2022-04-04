@@ -14,24 +14,24 @@ namespace game {
 		GameObject::Update (delta_time);
 		double friction = 0.001;
 		if (velocity_.x > 0) {
-			velocity_.x -= (friction * mass_);
+			velocity_.x -= (float)(friction * mass_);
 		}
 		if (velocity_.y > 0) {
-			velocity_.y -= (friction * mass_);
+			velocity_.y -= (float)(friction * mass_);
 		}
 		if (velocity_.x < 0) {
-			velocity_.x += (friction * mass_);
+			velocity_.x += (float)(friction * mass_);
 		}
 		if (velocity_.y < 0) {
-			velocity_.y += (friction * mass_);
+			velocity_.y += (float)(friction * mass_);
 		}
 
 		// The above code only slows, not stops the buoy
 		if (velocity_.x > -0.1 && velocity_.x < 0.1) {
-			velocity_.x = 0;
+			velocity_.x = 0.0f;
 		}
-		if (velocity_.y > -0.1 && velocity_.y < 0.1) {
-			velocity_.y = 0;
+		if (velocity_.y > -0.1f && velocity_.y < 0.1f) {
+			velocity_.y = 0.0f;
 		}
 	}
 

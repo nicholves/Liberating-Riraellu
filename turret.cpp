@@ -47,7 +47,7 @@ namespace game {
 
 	// turret spins in place
 	void Turret::Patrol(double delta_time) {
-		rotation_ = (internal_timer * 57.3);
+		rotation_ = (float)(internal_timer * 57.3);
 	}
 
 	// Object rotates to face towards target and fires on a given interval
@@ -55,23 +55,23 @@ namespace game {
 		float angle = atan((abs(target.y - position_.y)) / (abs(target.x - position_.x)));
 		if (target.x < position_.x) {
 			if (target.y < position_.y) {
-				angle += 3.14159;
+				angle += 3.14159f;
 			}
 			else {
-				angle = 3.14159 - angle;
+				angle = 3.14159f - angle;
 			}
 		}
 		else {
 			if (target.y < position_.y) {
-				angle = 2 * (3.14159) - angle;
+				angle = 2.0f * (3.14159f) - angle;
 			}
 		}
 
-		rotation_ = (angle / 3.14159) * 180 + 180;
+		rotation_ = (angle / 3.14159f) * 180.0f + 180.0f;
 
 		if (last_bullet_fire_time_ > 0.05) {
 			BulletObject* bullet = new BulletObject(position_ + glm::vec3((-(0.25 * sin((rotation_ + 90.0f) * 3.14159 / 180))), ((0.25 * cos((rotation_ + 90.0f) * 3.14159 / 180))), 0), *bulletTex_, *size_, true, 1, rotation_ + 90.0f, 5.0f, "enemy");
-			bullet->SetScale(0.3);
+			bullet->SetScale(0.3f);
 			bullet->SetDuration(10.0f); //bullets last 10 seconds
 			bullet_objects_ptr_->push_back(bullet);
 			last_bullet_fire_time_ = 0.0f;
