@@ -50,7 +50,7 @@ namespace game {
             int size_;
 
             // References to textures
-#define NUM_TEXTURES 15
+#define NUM_TEXTURES 17
             GLuint tex_[NUM_TEXTURES];
 
             // List for background game objects
@@ -96,7 +96,7 @@ namespace game {
             void Update(double delta_time, double* time_hold, double* bullet_cooldown, int* num_shield);
 
             // Iterate over every object for the purposes of collision
-            void IterateCollision (int*);
+            void IterateCollision ();
 
             // Set of functions including all possible collision scenarios
             bool DetectCollision (PlayerGameObject*, EnemyGameObject*);
@@ -110,10 +110,10 @@ namespace game {
             bool BulletCastCollision (BulletObject*);
 
             // Applies damage to the player. If the player's # of shields is -1, then we'll apply game over
-            void DamagePlayer (int*, int);
+            void DamagePlayer (int);
 
             // Applies the effect of the collectible
-            void ApplyEffect (int*, int, CollectibleObject*);
+            void ApplyEffect (int, CollectibleObject*);
 
             // Collision handling between player and buoys
             void BuoyBounce (PlayerGameObject*, BuoyObject*);

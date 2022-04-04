@@ -22,12 +22,11 @@ namespace game {
 		GameObject::Update(delta_time);
 		velocity_ += acceleration_ * (float)delta_time;
 
-		//set acceleration towards target (smooth turns)
-		acceleration_ = ( 8.0f * glm::normalize(target_->GetPosition() - position_) ) - velocity_;
+		acceleration_ = (8.0f * glm::normalize (target_->GetPosition () - position_)) - velocity_;
 
 		//set rotation of missile in direction of target
 		glm::vec3 subtraction = target_->GetPosition() - position_;
 		rotation_ = (atan2(subtraction.y, subtraction.x) * 180/3.14159) + 180.0f;
 	}
-
+	
 }

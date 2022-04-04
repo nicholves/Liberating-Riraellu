@@ -16,7 +16,9 @@ namespace game {
 			/***************************************************
 			* Type determines the effect from collecting it.
 			* Legend:
-			* 1 = Shield
+			* 0 = Shield
+			* 1 = Health
+			* 2 = Cloaking Device
 			***************************************************/
 
 			int type_;

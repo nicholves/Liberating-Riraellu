@@ -8,9 +8,10 @@ namespace game {
 		It overrides GameObject's update method, so that the object can be updated according to its states
 	*/
 
-	EnemyGameObject::EnemyGameObject(const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles)
+	EnemyGameObject::EnemyGameObject(const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles, int health)
 		: GameObject(position, texture, num_elements, collidable, tiles) {
 		state = 0; patrol_point = glm::vec3(position_.x - patrol_radius, position_.y, position_.z); sighting_range_ = 3.5;
+		health_ = health;
 	}
 
 	void EnemyGameObject::Update (double delta_time) {
