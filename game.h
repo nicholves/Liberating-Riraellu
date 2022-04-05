@@ -18,6 +18,14 @@
 #include "collectible_object.h"
 #include "buoy_object.h"
 #include "turret.h"
+#include "ui_element.h"
+#include "healthbar.h"
+#include "number.h"
+
+#define FONT_SIZE 20.0f
+
+
+#define MISSILE_COOLDOWN 5.0f
 
 namespace game {
 
@@ -52,8 +60,11 @@ namespace game {
             int size_;
 
             // References to textures
-#define NUM_TEXTURES 16
+#define NUM_TEXTURES 31
             GLuint tex_[NUM_TEXTURES];
+
+
+            std::vector<GLuint> text_arr_;
 
             // List for background game objects
             // This is so we can create a tilemap without making the game_objects_ array overloaded with stuff
@@ -76,6 +87,15 @@ namespace game {
 
             std::vector<BuoyObject*> buoy_objects_;
 
+            //ui element objects
+            std::vector<UI_Element*> ui_objects_;
+
+            //healthbar
+            UI_Element* healthbar_;
+
+            //player score
+            int score_;
+
             std::vector<GameObject*> particle_objects_;
 
             // Keep track of time for particles
@@ -83,6 +103,9 @@ namespace game {
 
             // Gameover boolean
             bool gameOver = false;
+
+            //a pointer to the missile ready ui element (this tells the user whether or not a missile is ready)
+            UI_Element* missile_ready_;
 
             // Callback for when the window is resized
             static void ResizeCallback(GLFWwindow* window, int width, int height);
@@ -103,7 +126,7 @@ namespace game {
             void Update(double delta_time, double* time_hold, double* bullet_cooldown, int* num_shield);
 
             // Iterate over every object for the purposes of collision
-            void IterateCollision (int*);
+            void IterateCollision ();
 
             // Set of functions including all possible collision scenarios
             bool DetectCollision (PlayerGameObject*, EnemyGameObject*);
@@ -117,10 +140,10 @@ namespace game {
             bool BulletCastCollision (BulletObject*);
 
             // Applies damage to the player. If the player's # of shields is -1, then we'll apply game over
-            void DamagePlayer (int*, int);
+            void DamagePlayer (int);
 
             // Applies the effect of the collectible
-            void ApplyEffect (int*, int, CollectibleObject*);
+            void ApplyEffect (int, CollectibleObject*);
 
             // Collision handling between player and buoys
             void BuoyBounce (PlayerGameObject*, BuoyObject*);

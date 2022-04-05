@@ -36,6 +36,8 @@ Game::Game(void)
 void Game::Init(void)
 {
 
+    score_ = 0;
+
     // Initialize the window management library (GLFW)
     if (!glfwInit()) {
         throw(std::runtime_error(std::string("Could not initialize the GLFW library")));
@@ -118,7 +120,38 @@ void Game::Setup(void)
     //Islands
     GameObject* island = new GameObject(glm::vec3(0.0f, 4.0f, 0.0f), tex_[14], false, 1);
     //island->SetScale(10.0f);
-    background_objects_.push_back(island);
+    //background_objects_.push_back(island);
+
+    Healthbar* health_foreground = new Healthbar(glm::vec3(1.43f, -0.15f, 0.0f), tex_[16], 1);
+    healthbar_ = health_foreground;
+    health_foreground->SetScale(2.5f);
+    health_foreground->SetScaley(2.5f); 
+
+    //important note the healthbar is scaled between 0 and 2.5. 2.5 being maximum health (only should change scaley)
+
+    ui_objects_.push_back(health_foreground);
+
+
+    UI_Element* health_background = new UI_Element(glm::vec3(1.5f, 0.0f, 0.0f), tex_[15], 1);
+    health_background->SetScale(2.5f);
+    ui_objects_.push_back(health_background);
+
+    UI_Element* missile_ready = new UI_Element(glm::vec3(-5.0f, 4.5f, 0.0f), tex_[14], 1);
+    missile_ready->SetRotation(-135.0f);
+    missile_ready->SetScale(1.5f);
+    missile_ready_ = missile_ready;
+    ui_objects_.push_back(missile_ready);
+
+    //the label for the score looks like -> score:
+    UI_Element* score = new UI_Element(glm::vec3(-4.5f, 5.0f, 0.0f), tex_[17], 1);
+    score->SetScale(FONT_SIZE);
+    ui_objects_.push_back(score);
+
+    //proof of concept number making:
+    Number* score_value = new Number(glm::vec3(-2.0f, 5.0f, 0.0f), tex_[17], 1, 100);
+    score_value->SetScale(FONT_SIZE);
+    ui_objects_.push_back(score_value);
+
     
     for (int x = -10; x < 10; x++) {
         for (int y = -10; y < 10; y++) {
@@ -142,19 +175,20 @@ void Game::Setup(void)
     blades->setParent (game_objects_[0]);
 
     // Set up shields (applied to the player)
-    game_objects_.push_back (new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8],  false, 1, 0));
-    game_objects_.push_back (new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8],  false, 1, 90));
+    //game_objects_.push_back (new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], false, 1, 0));
+    //game_objects_.push_back (new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], false, 1, 90));
 
-    Shield* shield = (Shield*)(game_objects_[2]);
-    shield->SetScale (0.2);
-    shield->setParent (game_objects_[0]);
-    shield = (Shield*)(game_objects_[3]);
-    shield->SetScale (0.2);
-    shield->setParent (game_objects_[0]);
+    /*Shield* shield = (Shield*)(game_objects_[2]);
+    shield->SetScale (0.4);
+    shield->setParent (game_objects_[0]);*/
+    /*shield = (Shield*)(game_objects_[3]);
+    shield->SetScale (0.4);
+    shield->setParent (game_objects_[0]);*/
 
     // Set up enemy objects
-    Turret* turret = new Turret(glm::vec3(-2.0f, 2.0f, 0.0f), tex_[12],  true, 1); //creates a single turret
-    Turret::SetupBullets(&bullet_objects_, &missile_objects_, &particle_objects_, &tex_[7], &tex_[13], &tex_[15], game_objects_[0]); //sets up bullet static variables
+    Turret* turret = new Turret(glm::vec3(-2.0f, 2.0f, 0.0f), tex_[13], true, 1, 5); //creates a single turret
+    Turret::SetupBullets(&bullet_objects_, &missile_objects_, &tex_[7], &tex_[14], game_objects_[0]); //sets up bullet static variables
+    UI_Element::Setup(game_objects_[0]); // setup ui elements object
     enemy_objects_.push_back (turret);
     
     // Set up collectibles
@@ -162,6 +196,12 @@ void Game::Setup(void)
     collectible_objects_.push_back (new CollectibleObject (glm::vec3 (3.0f, -3.0f, 0.0f), tex_[9],  true, 1, 0));
     collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-3.0f, -3.0f, 0.0f), tex_[9],  true, 1, 0));
     collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-3.0f, 3.0f, 0.0f), tex_[9],  true, 1, 0));
+
+    // Set up health packs
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-5.0f, 5.0f, 0.0f), tex_[28], true, 1, 1));
+
+    // Set up cloakers
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (5.0f, -5.0f, 0.0f), tex_[29], true, 1, 2));
 
     for (int i = 0; i < collectible_objects_.size (); ++i) {
         collectible_objects_[i]->SetScale (0.5);
@@ -178,7 +218,7 @@ void Game::Setup(void)
 
     // Setup particle system
     /*
-    GameObject* particles = new ParticleSystem(glm::vec3(0.0f, -0.5f, 0.0f), tex_[15], game_objects_[0]);
+    GameObject* particles = new ParticleSystem(glm::vec3(0.0f, -0.5f, 0.0f), tex_[30], game_objects_[0]);
     particles->SetScale(0.2);
     particle_objects_.push_back(particles);
     */
@@ -216,6 +256,7 @@ void Game::MainLoop(void)
         view_matrix = view_matrix * glm::translate(glm::mat4(0.5f), -curpos);
         shader_.SetUniformMat4("view_matrix", view_matrix);
         particle_shader_.SetUniformMat4("view_matrix", view_matrix);
+
 
         // Calculate delta time
         double currentTime = glfwGetTime();
@@ -286,17 +327,51 @@ void Game::SetAllTextures(void)
     SetTexture(tex_[5], (resources_directory_g+std::string("/textures/blank.png")).c_str (), false);
     SetTexture(tex_[6], (resources_directory_g+std::string("/textures/blade.png")).c_str (), false);
     SetTexture(tex_[7], (resources_directory_g+std::string("/textures/bullet.png")).c_str (), false);
-    SetTexture(tex_[8], (resources_directory_g+std::string ("/textures/orb.png")).c_str (), false);
+    SetTexture(tex_[8], (resources_directory_g+std::string ("/textures/shield.png")).c_str (), false);
     SetTexture (tex_[9], (resources_directory_g + std::string ("/textures/shieldpack.png")).c_str (), false);
     SetTexture (tex_[10], (resources_directory_g + std::string ("/textures/buoy.png")).c_str (), false);
     
     //Tile map textures
     SetTexture(tex_[11], (resources_directory_g + std::string("/textures/tilemap/water.jpg")).c_str(), true);
-    SetTexture(tex_[12], (resources_directory_g + std::string("/textures/CIWS.png")).c_str(), true);
-    SetTexture(tex_[13], (resources_directory_g + std::string("/textures/missile.png")).c_str(), true);
-    SetTexture(tex_[14], (resources_directory_g + std::string("/textures/isle8.png")).c_str(), false);
-    SetTexture(tex_[15], (resources_directory_g + std::string("/textures/particleOrb.png")).c_str(), false);
+    SetTexture(tex_[12], (resources_directory_g + std::string("/textures/isle8.png")).c_str(), false);
+
+    //weaponry related textures
+    SetTexture(tex_[13], (resources_directory_g + std::string("/textures/CIWS.png")).c_str(), true);
+    SetTexture(tex_[14], (resources_directory_g + std::string("/textures/missile.png")).c_str(), true);
+
+    //ui related textures
+    SetTexture(tex_[15], (resources_directory_g + std::string("/textures/red_bar.png")).c_str(), false);
+    SetTexture(tex_[16], (resources_directory_g + std::string("/textures/green_bar.png")).c_str(), false);
+    SetTexture(tex_[17], (resources_directory_g + std::string("/textures/score.png")).c_str(), false);
+
+    //all the numbers from 0-9
+    SetTexture(tex_[18], (resources_directory_g + std::string("/textures/0.png")).c_str(), false);
+    SetTexture(tex_[19], (resources_directory_g + std::string("/textures/1.png")).c_str(), false);
+    SetTexture(tex_[20], (resources_directory_g + std::string("/textures/2.png")).c_str(), false);
+    SetTexture(tex_[21], (resources_directory_g + std::string("/textures/3.png")).c_str(), false);
+    SetTexture(tex_[22], (resources_directory_g + std::string("/textures/4.png")).c_str(), false);
+    SetTexture(tex_[23], (resources_directory_g + std::string("/textures/5.png")).c_str(), false);
+    SetTexture(tex_[24], (resources_directory_g + std::string("/textures/6.png")).c_str(), false);
+    SetTexture(tex_[25], (resources_directory_g + std::string("/textures/7.png")).c_str(), false);
+    SetTexture(tex_[26], (resources_directory_g + std::string("/textures/8.png")).c_str(), false);
+    SetTexture(tex_[27], (resources_directory_g + std::string("/textures/9.png")).c_str(), false);
+    //SetTexture(tex_[14], (resources_directory_g + std::string("/textures/isle8.png")).c_str(), false);
+
+    // Health pack texture
+    SetTexture (tex_[28], (resources_directory_g + std::string ("/textures/healthpack.png")).c_str (), false);
+    // Cloaker texture
+    SetTexture (tex_[29], (resources_directory_g + std::string ("/textures/cloaker.png")).c_str (), false);
+    SetTexture(tex_[30], (resources_directory_g + std::string("/textures/particleOrb.png")).c_str(), false);
     glBindTexture(GL_TEXTURE_2D, tex_[0]);
+
+
+    //setup number textures:
+    for (int i = 18; i < 28; ++i) {
+        text_arr_.push_back(tex_[i]);
+    }
+
+    //setup static variables
+    Number::SetupTextures(text_arr_, &size_);
 }
 
 
@@ -307,7 +382,7 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
     glm::vec3 curpos = player->GetPosition();
     glm::vec3 curvelocity = player->GetVelocity ();
     float currot = player->GetRotation();
-    float currotRadians = currot * 3.14159 / 180;
+    float currotRadians = currot * 3.14159f / 180.0f;
 
     // Check for player input and make changes accordingly
     if (glfwGetKey (window_, GLFW_KEY_W) == GLFW_PRESS) { // When moving forward, apply velocity in the bearing direction
@@ -330,10 +405,10 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
             0));
     }
     if (glfwGetKey (window_, GLFW_KEY_D) == GLFW_PRESS) {
-        player->SetRotation (currot - 2.0);
+        player->SetRotation (currot - 2.0f);
     }
     if (glfwGetKey (window_, GLFW_KEY_A) == GLFW_PRESS) {
-        player->SetRotation (currot + 2.0);
+        player->SetRotation (currot + 2.0f);
     }
     if (glfwGetKey(window_, GLFW_KEY_Q) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window_, true);
@@ -343,7 +418,7 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
             BulletObject* bullet = new BulletObject
             (curpos + glm::vec3 ((-(0.25 * sin (currotRadians))), ((0.25 * cos (currotRadians))), 0),
                 tex_[7],  false, 1, currot, 30.0f, "player");
-            bullet->SetScale (0.3);
+            bullet->SetScale (0.3f);
             bullet_objects_.push_back (bullet);
             *bullet_cooldown = 0.20;
         }
@@ -351,11 +426,11 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
             *bullet_cooldown -= delta_time;
         }
     }
-    if (glfwGetKey(window_, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && player->getMissileCooldown() >= 5) {
+    if (glfwGetKey(window_, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && player->getMissileCooldown() >= MISSILE_COOLDOWN) {
         GameObject* target = FindClosest();
         if (target != NULL) {
             MissileObject* missile = new MissileObject(curpos + glm::vec3((-(0.25 * sin(currotRadians))), ((0.25 * cos(currotRadians))), 0),
-                tex_[13],  true, 1, currot, 10.0f, target, "player");
+                tex_[14], false, 1, currot, 10.0f, target, "player");
             missile->SetScale(0.5f);
             missile->SetDuration(2.0f);
             missile_objects_.push_back(missile);
@@ -364,18 +439,34 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
             GameObject* particles = new ParticleSystem(glm::vec3(0.0f, -0.5f, 0.0f), tex_[15], missile_objects_[missile_objects_.size() - 1]);
             particles->SetScale(0.2);
             particle_objects_.push_back(particles);
+            player->addHealth(-1);
         }
+    }
+
+    //temporary health demonstration until health system implemented
+    //don't work rn
+    if (glfwGetKey(window_, GLFW_KEY_LEFT) == GLFW_PRESS) {
+        ui_objects_[0]->SetScaley(2.5f);
+    }
+    if (glfwGetKey(window_, GLFW_KEY_UP) == GLFW_PRESS) {
+        ui_objects_[0]->SetScaley(2.0f);
+    }
+    if (glfwGetKey(window_, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+        ui_objects_[0]->SetScaley(1.5f);
+    }
+    if (glfwGetKey(window_, GLFW_KEY_DOWN) == GLFW_PRESS) {
+        ui_objects_[0]->SetScaley(1.0f);
     }
 }
 
 
 void Game::EnemyDetect (void) { // Used for enemy objects to detect the player
-    GameObject* player = game_objects_[0];
+    PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
     float distance;    
     
     for (int i = 0; i < enemy_objects_.size(); ++i) {
         float distance = glm::length (player->GetPosition () - enemy_objects_[i]->GetPosition ());
-        if (distance <= enemy_objects_[i]->getSightingRange()) {
+        if (distance <= enemy_objects_[i]->getSightingRange() && !player->getCloaked()) {
             if (enemy_objects_[i]->getState () == 0) { // If the object was patrolling, change state.
                 enemy_objects_[i]->setState (1);
                 
@@ -394,7 +485,7 @@ void Game::EnemyDetect (void) { // Used for enemy objects to detect the player
 void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown, int* num_shield)
 {
     if (!gameOver) {
-        Controls (delta_time, bullet_cooldown);
+        Controls(delta_time, bullet_cooldown);
     }
     current_time_ += delta_time;
 
@@ -404,8 +495,29 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     CollectibleObject* current_collectible_object;
     BuoyObject* current_buoy_object;
     MissileObject* current_missile_object;
+    PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
 
     EnemyDetect ();
+
+
+    // Update and render the ui elements
+    for (int i = 0; i < ui_objects_.size(); i++) {
+        ui_objects_[i]->Update(delta_time);
+
+
+        int health = player->getHealth();
+
+
+        float health_percent = health * (2.5f / 10);
+
+        healthbar_->SetScaley(health_percent);
+        //don't render missile ready ui element when missile isn't ready
+        if (ui_objects_[i] == missile_ready_ && ((PlayerGameObject*)game_objects_[0])->getMissileCooldown() < MISSILE_COOLDOWN) {
+            continue;
+        }
+
+        ui_objects_[i]->Render(shader_);
+    }
 
     // Update and render the enemy objects
     for (int i = 0; i < enemy_objects_.size (); i++) {
@@ -460,7 +572,12 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         bool hitTarget = false;        
         float duration = current_missile_object->getDuration();
         if (!gameOver) {
-            current_missile_object->Update(delta_time);
+            if (current_missile_object->GetFrom() == "enemy" && player->getCloaked ()) {
+                current_missile_object->BulletObject::Update (delta_time);
+            }
+            else {
+                current_missile_object->Update (delta_time);
+            }
         }
         
         hitTarget = BulletCastCollision(current_missile_object);
@@ -481,9 +598,9 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     }
 
     // Update and render other game objects
-    for (int i = game_objects_.size () - 1; i >= 0; --i) {
+    for (int i = (int)game_objects_.size () - 1; i >= 0; --i) {
 
-        if (i == 2) { // Helicopter blades get updated before their list order
+        if (i == 1) { // Helicopter blades get updated before their list order
             continue;
         }
 
@@ -493,7 +610,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
             current_game_object->Update (delta_time);
         }
 
-        if (i == 1) { // Exception to update the blades after the helicopter is updated, but it needs to be rendered first.
+        if (i == 0) { // Exception to update the blades after the helicopter is updated, but it needs to be rendered first.
             if (!gameOver) {
                 game_objects_[1]->Update (delta_time);
             }
@@ -523,24 +640,25 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         background_objects_[i]->Render(shader_);
     }
 
-    IterateCollision(num_shield);
+    IterateCollision();
 
 }
 
 // Does collision testing between all the objects in the game (except bullets for now)
-void Game::IterateCollision (int* num_shield) {
+void Game::IterateCollision () {
     PlayerGameObject* player = (PlayerGameObject*)(game_objects_[0]);
     bool playerHit = false;
     for (int i = 0; i < enemy_objects_.size (); ++i) {
-        if (DetectCollision (player, enemy_objects_[i]) && player->GetCollidable()) {
-            DamagePlayer (num_shield, i);
+        if (DetectCollision (player, enemy_objects_[i])) {
+            DamagePlayer (5);
+            enemy_objects_.erase (enemy_objects_.begin () + i);
             break;
         }
     }
 
     for (int i = 0; i < collectible_objects_.size (); ++i) {
         if (DetectCollision (player, collectible_objects_[i])) {
-            ApplyEffect (num_shield, i, collectible_objects_[i]);
+            ApplyEffect (i, collectible_objects_[i]);
         }
     }
 
@@ -637,38 +755,67 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
 
 // *********************** Collision Resolution *****************************
 
-void Game::DamagePlayer (int* num_shield, int enemy_hit) {
+void Game::DamagePlayer (int damage) {
     PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
     if (player->getNumShield() > 0) {
-        game_objects_.erase (game_objects_.end () - 1);
-        enemy_objects_.erase (enemy_objects_.begin () + enemy_hit);
-        player->minusShield();
+        float shieldOrbsBefore = ceil(player->getNumShield () / float((MAX_SHIELD) / 4)); // Current number of orbs is proportional to shielding
+        //std::cout << "Shields before: " << player->getNumShield () / ((MAX_SHIELD) / 4) << std::endl;
+        player->minusShield(damage);
         player->resetIFrame(); //Make player invincible for short time
+        float shieldOrbsAfter = ceil(player->getNumShield () / float((MAX_SHIELD) /4));
+        //std::cout << "Shields now: " << player->getNumShield() << std::endl;
+        //std::cout << "Before: " << shieldOrbsBefore << " After: " << shieldOrbsAfter << std::endl;
+        if (shieldOrbsBefore > shieldOrbsAfter) {
+            game_objects_.erase (game_objects_.end () - 1);
+        }
+ 
+    }
+    else if (player->getHealth() > 0){
+        player->addHealth (-damage);
+        player->resetIFrame (); //Make player invincible for short time
     }
     else {
-        gameOver = true;
+        //gameOver = true; // TODO: flip back to true once gameOver working
     }
 }
 
-void Game::ApplyEffect (int* num_shield, int collectible_hit, CollectibleObject* collectible) {
+void Game::ApplyEffect (int collectible_hit, CollectibleObject* collectible) {
     PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
     if (collectible->getType() == 0) { // Check the collectible type
-        if (player->getNumShield() < 4) { // Player can't have more than 4 shields
-            player->addShield();
-            std::cout << player->getNumShield() << std::endl;
-            Shield* shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8],  false, 1, game_objects_.back()->GetRotation());
-            shield->SetScale (0.2);
-            shield->setParent (game_objects_[0]);
-            game_objects_.push_back (shield);
+        if (player->getNumShield() < MAX_SHIELD) { // Player can't have more than MAX_SHIELD shielding
+            if (player->getNumShield () < (MAX_SHIELD / 4) * 3) {
+                Shield* shield;
+                if (player->getNumShield () == 0) {
+                    shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], false, 1, 0);
+                }
+                else {
+                    Shield* backshield = (Shield*)(game_objects_.back ());
+                    shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], false, 1, backshield->getOrbit ());
+                }
+                shield->SetScale (0.4);
+                shield->setParent (game_objects_[0]);
+                game_objects_.push_back (shield);
+            }
+            player->addShield(MAX_SHIELD/4);
             collectible_objects_.erase (collectible_objects_.begin () + collectible_hit);
         }
-    }    
+    }
+    else if (collectible->getType () == 1) {
+        if (player->getHealth () < MAX_HEALTH) {
+            player->addHealth (3);
+            collectible_objects_.erase (collectible_objects_.begin () + collectible_hit);
+        }
+    }
+    else if (collectible->getType () == 2) {
+        player->cloak ();
+        collectible_objects_.erase (collectible_objects_.begin () + collectible_hit);
+    }
 }
 
 void Game::BuoyBounce (PlayerGameObject* player, BuoyObject* buoy) {
     // Turning variables into neater versions for the formula
-    float m1 = player->getMass ();
-    float m2 = buoy->getMass ();
+    float m1 = (float)player->getMass ();
+    float m2 = (float)buoy->getMass ();
     glm::vec3 c1 = player->GetPosition ();
     glm::vec3 c2 = buoy->GetPosition ();
     glm::vec3 n = glm::normalize(c1 - c2);
@@ -687,8 +834,6 @@ GameObject* Game::FindClosest() {
 
     for (int i = 0; i < enemy_objects_.size(); ++i) {
         EnemyGameObject* target = enemy_objects_[i];
-
-
 
         if (glm::dot(player->GetVelocity(), target->GetPosition() - player->GetPosition()) > 0) { //checks to ensure enemy is in front of player
             float distance = glm::length(player->GetPosition() - target->GetPosition()); //gets distance from player to enemy

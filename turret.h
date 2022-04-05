@@ -4,6 +4,7 @@
 #include "enemy_game_object.h"
 #include "bullet_object.h"
 #include "missile.h"
+#include "player_game_object.h"
 #include <vector>
 #include "particle_system.h"
 #include "game_object.h"
@@ -14,7 +15,7 @@ namespace game {
 	class Turret : public EnemyGameObject {
 
 	public:
-		Turret(const glm::vec3& position, GLuint texture, bool collidable, int tiles);
+		Turret(const glm::vec3& position, GLuint texture, bool collidable, int tiles, int health);
 
 		// Update function for moving the enemy object and swapping its state
 		void Update(double delta_time) override;
@@ -43,8 +44,6 @@ namespace game {
 		static GLuint* missileTex_; //the texture of the missile
 
 		static GLuint* particleTex_; //the texture of the particle
-
-		static GameObject* player_; //a pointer to the player object for firing purposes
 
 	}; // Class EnemyGameObject
 

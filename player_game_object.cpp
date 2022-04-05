@@ -1,6 +1,7 @@
 #include "player_game_object.h"
 
 namespace game {
+	
 
 /*
 	PlayerGameObject inherits from GameObject
@@ -11,8 +12,18 @@ PlayerGameObject::PlayerGameObject(const glm::vec3 &position, GLuint texture, bo
 	: GameObject (position, texture, collidable, tiles) {
 	mass_ = mass;
 	missile_cooldown_ = 0;
-	num_shield = 1;
+	num_shield = 0;
 	invincible_timer = 2.0f;
+	health = MAX_HEALTH;
+	cloaked = false;
+	cloak_timer = 0.0;
+}
+
+void PlayerGameObject::addHealth (int n) {
+	health += n;
+	if (health >= MAX_HEALTH ) {
+		health = MAX_HEALTH;
+	}
 }
 
 // Update function for moving the player object around
@@ -37,12 +48,16 @@ void PlayerGameObject::Update(double delta_time) {
 	}
 	else {
 		collidable_ = false;
-		invincible_timer += delta_time;
+		invincible_timer += (float)delta_time;
 	}
 
 	// Call the parent's update method to move the object in standard way, if desired
 	GameObject::Update(delta_time);
 	missile_cooldown_ += delta_time;
+	cloak_timer += delta_time;
+	if (cloak_timer >= CLOAK_LENGTH) {
+		uncloak ();
+	}
 }
 
 } // namespace game

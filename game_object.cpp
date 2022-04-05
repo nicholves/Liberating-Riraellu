@@ -9,7 +9,7 @@ GameObject::GameObject(const glm::vec3 &position, GLuint texture, bool collidabl
 
     // Initialize all attributes
     position_ = position;
-    scale_ = 1.0;
+    scale_x_ = scale_y_ = scale_ = 1.0;
     rotation_ = 0.0;
     velocity_ = glm::vec3(0.0f, 0.0f, 0.0f); // Starts out stationary
     texture_ = texture;
@@ -22,7 +22,7 @@ void GameObject::Update(double delta_time) {
     // Update object position with Euler integration
     position_ += velocity_ * ((float) delta_time);
 
-    transformation_matrix_ = glm::translate (glm::mat4 (1.0f), position_)* glm::scale (glm::mat4 (1.0f), glm::vec3 (scale_, scale_, 1.0))* glm::rotate (glm::mat4 (1.0f), rotation_, glm::vec3 (0.0f, 0.0f, 1.0f));
+    transformation_matrix_ = glm::translate (glm::mat4 (1.0f), position_)* glm::scale (glm::mat4 (1.0f), glm::vec3 (scale_x_, scale_y_, 1.0))* glm::rotate (glm::mat4 (1.0f), rotation_, glm::vec3 (0.0f, 0.0f, 1.0f));
 
 }
 

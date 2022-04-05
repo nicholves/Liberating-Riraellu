@@ -8,7 +8,7 @@ namespace game {
 	std::vector<BulletObject*>* Turret::bullet_objects_ptr_ = NULL;
 	std::vector<MissileObject*>* Turret::missile_objects_ptr_ = NULL; 
 	std::vector<GameObject*>* Turret::particle_objects_ptr_ = NULL;
-	GameObject* Turret::player_ = NULL;
+	PlayerGameObject* Turret::player_ = NULL;
 	GLuint* Turret::bulletTex_ = 0;
 	GLuint* Turret::missileTex_ = 0;
 	GLuint* Turret::particleTex_ = 0;
@@ -18,8 +18,8 @@ namespace game {
 		It overrides EnemyGameObject's update method, so that the object can be updated according to its states
 	*/
 
-	Turret::Turret(const glm::vec3& position, GLuint texture, bool collidable, int tiles)
-		: EnemyGameObject(position, texture, collidable, tiles) {
+	Turret::Turret(const glm::vec3& position, GLuint texture, bool collidable, int tiles, int health)
+		: EnemyGameObject(position, texture, collidable, tiles, health) {
 		state = 0; patrol_point = glm::vec3(position_.x - patrol_radius, position_.y, position_.z);
 		//setting up required fields
 		last_bullet_fire_time_ = 0;
@@ -48,7 +48,7 @@ namespace game {
 
 	// turret spins in place
 	void Turret::Patrol(double delta_time) {
-		rotation_ = (internal_timer * 57.3);
+		rotation_ = (float)(internal_timer * 57.3);
 	}
 
 	// Object rotates to face towards target and fires on a given interval
@@ -56,23 +56,23 @@ namespace game {
 		float angle = atan((abs(target.y - position_.y)) / (abs(target.x - position_.x)));
 		if (target.x < position_.x) {
 			if (target.y < position_.y) {
-				angle += 3.14159;
+				angle += 3.14159f;
 			}
 			else {
-				angle = 3.14159 - angle;
+				angle = 3.14159f - angle;
 			}
 		}
 		else {
 			if (target.y < position_.y) {
-				angle = 2 * (3.14159) - angle;
+				angle = 2.0f * (3.14159f) - angle;
 			}
 		}
 
-		rotation_ = (angle / 3.14159) * 180 + 180;
+		rotation_ = (angle / 3.14159f) * 180.0f + 180.0f;
 
 		if (last_bullet_fire_time_ > 0.05) {
 			BulletObject* bullet = new BulletObject(position_ + glm::vec3((-(0.25 * sin((rotation_ + 90.0f) * 3.14159 / 180))), ((0.25 * cos((rotation_ + 90.0f) * 3.14159 / 180))), 0), *bulletTex_, true, 1, rotation_ + 90.0f, 5.0f, "enemy");
-			bullet->SetScale(0.3);
+			bullet->SetScale(0.3f);
 			bullet->SetDuration(10.0f); //bullets last 10 seconds
 			bullet_objects_ptr_->push_back(bullet);
 			last_bullet_fire_time_ = 0.0f;
@@ -103,7 +103,7 @@ namespace game {
 		Turret::bulletTex_ = bulletTex;
 		Turret::missileTex_ = missileTex;
 		Turret::particleTex_ = particleTex;
-		Turret::player_ = player;
+		Turret::player_ = (PlayerGameObject*)(player);
 	}
 	
 }

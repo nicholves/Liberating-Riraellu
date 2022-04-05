@@ -12,12 +12,16 @@ namespace game {
 		// Update function for orbiting the shield orbs
 		void Update (double delta_time) override;
 
+		// Get function for the orbit location
+		inline float getOrbit (void) { return orbit; }
+
 		// Setters
 		void setParent (GameObject* p);
 
 	protected:	
 		GameObject* parent_;
 		glm::mat4 parent_matrix;
+		float orbit;
 	};
 }
 

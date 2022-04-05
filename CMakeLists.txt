@@ -19,6 +19,9 @@ set(HDRS
     shield.h
     turret.h
     missile.h
+    ui_element.h
+    healthbar.h
+    number.h
     particle_system.h
 )
  
@@ -40,6 +43,9 @@ set(SRCS
     vertex_shader.glsl
     fragment_shader.glsl
     missile.cpp
+    ui_element.cpp
+    healthbar.cpp
+    number.cpp
     particle_vertex_shader.glsl
     particle_fragment_shader.glsl
     particle_system.cpp
