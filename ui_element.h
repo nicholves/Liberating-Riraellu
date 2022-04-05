@@ -11,7 +11,7 @@ namespace game {
     class UI_Element : public GameObject {
 
     public:
-        UI_Element(const glm::vec3& position, GLuint texture, GLint num_elements, int tiles);
+        UI_Element(const glm::vec3& position, GLuint texture, int tiles);
 
         inline void SetPosition(const glm::vec3& position) override;
 

@@ -3,8 +3,8 @@
 
 namespace game {
 
-	Healthbar::Healthbar(const glm::vec3& position, GLuint texture, GLint num_elements, int tiles)
-		: UI_Element(position, texture, num_elements, tiles) {
+	Healthbar::Healthbar(const glm::vec3& position, GLuint texture, int tiles)
+		: UI_Element(position, texture, tiles) {
 		offset_ = position; //the offset defaults to the position
 	}
 

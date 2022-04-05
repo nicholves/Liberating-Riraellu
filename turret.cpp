@@ -96,13 +96,13 @@ namespace game {
 	}
 	
 	//static function to setup all of the turret's static variables
-	void Turret::SetupBullets(std::vector<BulletObject*>* ptr, std::vector<MissileObject*>* misPtr, std::vector<GameObject*>* particlePtr, GLuint* bulletTex, GLuint* missileTex, GLuint* particleTex, GameObject* player) {
+	void Turret::SetupBullets(std::vector<BulletObject*>* ptr, std::vector<MissileObject*>* misPtr, GLuint* bulletTex, GLuint* missileTex, GameObject* player) {
 		Turret::bullet_objects_ptr_ = ptr;
 		Turret::missile_objects_ptr_ = misPtr;
-		Turret::particle_objects_ptr_ = particlePtr;
+		//Turret::particle_objects_ptr_ = particlePtr;
 		Turret::bulletTex_ = bulletTex;
 		Turret::missileTex_ = missileTex;
-		Turret::particleTex_ = particleTex;
+		//Turret::particleTex_ = particleTex;
 		Turret::player_ = (PlayerGameObject*)(player);
 	}
 	

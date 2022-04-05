@@ -9,7 +9,7 @@ namespace game {
     class Healthbar : public UI_Element {
 
     public:
-        Healthbar(const glm::vec3& position, GLuint texture, GLint num_elements, int tiles);
+        Healthbar(const glm::vec3& position, GLuint texture, int tiles);
 
         void Update(double delta_time) override;
 

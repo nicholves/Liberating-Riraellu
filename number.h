@@ -11,7 +11,7 @@ namespace game {
     class Number : public UI_Element {
 
     public:
-        Number(const glm::vec3& position, GLuint texture, GLint num_elements, int tiles, int value);
+        Number(const glm::vec3& position, GLuint texture, int tiles, int value);
 
 
         void Update(double delta_time) override;

@@ -8,7 +8,7 @@ namespace game {
 	int* Number::size_ = NULL;
 	
 
-	Number::Number(const glm::vec3& position, GLuint texture, GLint num_elements, int tiles, int value) : UI_Element(position, texture, num_elements, tiles) {
+	Number::Number(const glm::vec3& position, GLuint texture, int tiles, int value) : UI_Element(position, texture, tiles) {
 		offset_ = position; //the offset defaults to the position
 		value_ = value; //the value of the number
 	}
@@ -50,7 +50,7 @@ namespace game {
 
 
 			float x_posit = position_.x + ((num_digits - i - 1) * 0.3f); // gets the xposition of letters
-			UI_Element* new_child = new UI_Element(glm::vec3(x_posit, position_.y, position_.z), text_arr_[digit_val], *size_, 1);
+			UI_Element* new_child = new UI_Element(glm::vec3(x_posit, position_.y, position_.z), text_arr_[digit_val], 1);
 
 
 			new_child->SetScale(scale_);

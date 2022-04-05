@@ -739,7 +739,7 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
             if (distance < 0.2f) {
                 if (player->getNumShield() > 0) {
                     game_objects_.erase(game_objects_.end() - 1); //Erase a shield
-                    player->minusShield(); //Update shield erase in player object
+                    player->minusShield(1); //Update shield erase in player object
                     player->resetIFrame(); //Make player invincible for short time
 
                 }

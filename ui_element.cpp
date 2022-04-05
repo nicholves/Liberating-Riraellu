@@ -9,8 +9,8 @@ namespace game {
 
 	GameObject* UI_Element::player_ = NULL;
 
-	UI_Element::UI_Element(const glm::vec3& position, GLuint texture, GLint num_elements, int tiles)
-		: GameObject(position, texture, num_elements, false, tiles) {
+	UI_Element::UI_Element(const glm::vec3& position, GLuint texture, int tiles)
+		: GameObject(position, texture, false, tiles) {
 		offset_ = position; //the offset defaults to the position
 		absolute_ = false; //by default ui_elements are relative to the player
 	}
