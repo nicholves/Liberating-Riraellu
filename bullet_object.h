@@ -9,7 +9,7 @@ namespace game {
 	class BulletObject : public GameObject {
 
 		public:
-			BulletObject(const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles, float direction, float speed, std::string from);
+			BulletObject(const glm::vec3& position, GLuint texture, bool collidable, int tiles, float direction, float speed, std::string from);
 
 			// Getters
 			double getTimer ();

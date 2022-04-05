@@ -43,14 +43,16 @@ namespace game {
             // Main window: pointer to the GLFW window structure
             GLFWwindow *window_;
 
-            // Shader for rendering the scene
+            // Sprite Shader for rendering the scene
             Shader shader_;
+
+            Shader particle_shader_;
 
             // Size of geometry to be rendered
             int size_;
 
             // References to textures
-#define NUM_TEXTURES 15
+#define NUM_TEXTURES 16
             GLuint tex_[NUM_TEXTURES];
 
             // List for background game objects
@@ -73,6 +75,11 @@ namespace game {
             std::vector<CollectibleObject*> collectible_objects_;
 
             std::vector<BuoyObject*> buoy_objects_;
+
+            std::vector<GameObject*> particle_objects_;
+
+            // Keep track of time for particles
+            double current_time_;
 
             // Gameover boolean
             bool gameOver = false;

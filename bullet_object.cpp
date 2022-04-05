@@ -6,8 +6,8 @@ namespace game {
 		BulletObject inherits from GameObject. It uses the default Update function from its parent, after adjusting its timer.
 	*/
 
-	BulletObject::BulletObject(const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles, float direction, float speed, std::string from)
-		: GameObject (position, texture, num_elements, collidable, tiles) {
+	BulletObject::BulletObject(const glm::vec3& position, GLuint texture, bool collidable, int tiles, float direction, float speed, std::string from)
+		: GameObject (position, texture, collidable, tiles) {
 		rotation_ = direction;
 		duration_ = 0.2f;
 		float currotRadians = rotation_ * 3.14159 / 180;

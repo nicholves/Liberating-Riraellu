@@ -7,7 +7,7 @@ namespace game {
 	class BuoyObject : public GameObject {
 		
 		public:
-			BuoyObject (const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles, double mass);
+			BuoyObject (const glm::vec3& position, GLuint texture, bool collidable, int tiles, double mass);
 
 			inline double getMass () { return mass_; }
 			inline void setMass (double mass) { mass_ = mass; }

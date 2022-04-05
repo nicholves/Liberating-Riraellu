@@ -7,8 +7,8 @@ namespace game {
 	There is no specific functionality from PlayerGameObject which would benefit HelicopterBlades
 	*/
 
-	HelicopterBlades::HelicopterBlades (const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles)
-		: GameObject (position, texture, num_elements, collidable, tiles) {
+	HelicopterBlades::HelicopterBlades (const glm::vec3& position, GLuint texture, bool collidable, int tiles)
+		: GameObject (position, texture, collidable, tiles) {
 	}
 
 	// Detemines which object the blades will attach to

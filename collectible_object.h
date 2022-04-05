@@ -8,7 +8,7 @@ namespace game {
 	class CollectibleObject : public GameObject {
 
 		public:
-			CollectibleObject (const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles, int type_);
+			CollectibleObject (const glm::vec3& position, GLuint texture, bool collidable, int tiles, int type_);
 			inline int getType () { return type_; }
 
 		private:

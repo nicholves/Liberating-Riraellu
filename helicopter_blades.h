@@ -9,7 +9,7 @@ namespace game {
 	class HelicopterBlades : public GameObject {
 
 		public:
-			HelicopterBlades (const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles);
+			HelicopterBlades (const glm::vec3& position, GLuint texture, bool collidable, int tiles);
 
 			// Update function for moving the helicopter blades around
 			void Update (double delta_time) override;

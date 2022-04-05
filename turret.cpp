@@ -7,18 +7,19 @@ namespace game {
 	//initializing static variables to default values
 	std::vector<BulletObject*>* Turret::bullet_objects_ptr_ = NULL;
 	std::vector<MissileObject*>* Turret::missile_objects_ptr_ = NULL; 
+	std::vector<GameObject*>* Turret::particle_objects_ptr_ = NULL;
 	GameObject* Turret::player_ = NULL;
 	GLuint* Turret::bulletTex_ = 0;
-	int* Turret::size_ = NULL;
 	GLuint* Turret::missileTex_ = 0;
+	GLuint* Turret::particleTex_ = 0;
 	
 	/*
 		Turret inherits from EnemyGameObject
 		It overrides EnemyGameObject's update method, so that the object can be updated according to its states
 	*/
 
-	Turret::Turret(const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles)
-		: EnemyGameObject(position, texture, num_elements, collidable, tiles) {
+	Turret::Turret(const glm::vec3& position, GLuint texture, bool collidable, int tiles)
+		: EnemyGameObject(position, texture, collidable, tiles) {
 		state = 0; patrol_point = glm::vec3(position_.x - patrol_radius, position_.y, position_.z);
 		//setting up required fields
 		last_bullet_fire_time_ = 0;
@@ -70,28 +71,38 @@ namespace game {
 		rotation_ = (angle / 3.14159) * 180 + 180;
 
 		if (last_bullet_fire_time_ > 0.05) {
-			BulletObject* bullet = new BulletObject(position_ + glm::vec3((-(0.25 * sin((rotation_ + 90.0f) * 3.14159 / 180))), ((0.25 * cos((rotation_ + 90.0f) * 3.14159 / 180))), 0), *bulletTex_, *size_, true, 1, rotation_ + 90.0f, 5.0f, "enemy");
+			BulletObject* bullet = new BulletObject(position_ + glm::vec3((-(0.25 * sin((rotation_ + 90.0f) * 3.14159 / 180))), ((0.25 * cos((rotation_ + 90.0f) * 3.14159 / 180))), 0), *bulletTex_, true, 1, rotation_ + 90.0f, 5.0f, "enemy");
 			bullet->SetScale(0.3);
 			bullet->SetDuration(10.0f); //bullets last 10 seconds
 			bullet_objects_ptr_->push_back(bullet);
 			last_bullet_fire_time_ = 0.0f;
 		}
 		if (last_missile_fire_time_ > 5.0f) {
-			MissileObject* missile = new MissileObject(position_ + glm::vec3((-(0.25 * sin((rotation_ + 90.0f) * 3.14159 / 180))), ((0.25 * cos((rotation_ + 90.0f) * 3.14159 / 180))), 0), *missileTex_, *size_, false, 1, rotation_ + 90.0f, 3.0f, player_, "enemy");
+			MissileObject* missile = new MissileObject(position_ + glm::vec3((-(0.25 * sin((rotation_ + 90.0f) * 3.14159 / 180))), ((0.25 * cos((rotation_ + 90.0f) * 3.14159 / 180))), 0), *missileTex_, false, 1, rotation_ + 90.0f, 3.0f, player_, "enemy");
 			missile->SetScale(0.5f);
 			missile->SetDuration(5.0f); //missiles last 5 seconds
 			missile_objects_ptr_->push_back(missile);
 			last_missile_fire_time_ = 0.0f;
+
+			/*
+			//Attach particle system to missile
+			int size = missile_objects_ptr_->size() - 1;
+			dynamic_cast<GameObject*>(missile_objects_ptr_[size]);
+			GameObject* particles = new ParticleSystem(glm::vec3(0.0f, -0.5f, 0.0f), *particleTex_, missile_objects_ptr_[size]);
+			particles->SetScale(0.2);
+			particle_objects_ptr_->push_back(particles);
+			*/
 		}
 	}
 	
 	//static function to setup all of the turret's static variables
-	void Turret::SetupBullets(std::vector<BulletObject*>* ptr, std::vector<MissileObject*>* misPtr, GLuint* bulletTex, GLuint* missileTex, int* size, GameObject* player) {
+	void Turret::SetupBullets(std::vector<BulletObject*>* ptr, std::vector<MissileObject*>* misPtr, std::vector<GameObject*>* particlePtr, GLuint* bulletTex, GLuint* missileTex, GLuint* particleTex, GameObject* player) {
 		Turret::bullet_objects_ptr_ = ptr;
 		Turret::missile_objects_ptr_ = misPtr;
+		Turret::particle_objects_ptr_ = particlePtr;
 		Turret::bulletTex_ = bulletTex;
-		Turret::size_ = size;
 		Turret::missileTex_ = missileTex;
+		Turret::particleTex_ = particleTex;
 		Turret::player_ = player;
 	}
 	

@@ -6,6 +6,7 @@
 #include <path_config.h>
 #include <iostream>
 #include <limits>
+#include "particle_system.h"
 
 #include "shader.h"
 #include "game.h"
@@ -17,7 +18,7 @@ namespace game {
 // They are written here as global variables, but ideally they should be loaded from a configuration file
 
 // Globals that define the OpenGL window and viewport
-const char *window_title_g = "Game Demo";
+const char *window_title_g = "Liberating Riraellu";
 const unsigned int window_width_g = 800;
 const unsigned int window_height_g = 600;
 const glm::vec3 viewport_background_color_g(1.0, 0.0, 0.0);
@@ -65,12 +66,18 @@ void Game::Init(void)
     // Set event callbacks
     glfwSetFramebufferSizeCallback(window_, ResizeCallback);
 
+    // Initialize particle shader
+    particle_shader_.Init((resources_directory_g + std::string("/particle_vertex_shader.glsl")).c_str(), (resources_directory_g + std::string("/particle_fragment_shader.glsl")).c_str());
+    particle_shader_.CreateParticles();
+
+
     // Set up square geometry
-    size_ = CreateSprite();
 
     // Initialize shader
     shader_.Init((resources_directory_g+std::string("/vertex_shader.glsl")).c_str(), (resources_directory_g+std::string("/fragment_shader.glsl")).c_str());
+    shader_.CreateSprite();
     shader_.Enable();
+    shader_.SetSpriteAttributes();
 
     // Set up z-buffer for rendering
     glEnable(GL_DEPTH_TEST);
@@ -82,6 +89,8 @@ void Game::Init(void)
 
     // Enable vector normalizing
     glEnable (GL_NORMALIZE);
+
+    current_time_ = 0.0;
 }
 
 
@@ -100,20 +109,20 @@ void Game::Setup(void)
     SetAllTextures();
 
     // Setup background
-    //GameObject* background = new GameObject (glm::vec3 (0.0f, 0.0f, 0.0f), tex_[3], size_, false, 10);
+    //GameObject* background = new GameObject (glm::vec3 (0.0f, 0.0f, 0.0f), tex_[3],  false, 10);
     //background->SetScale (50.0);
     //game_objects_.push_back (background);
-    //GameObject* background = new GameObject(glm::vec3((float)0, (float)0, 0.0f), tex_[11], size_, false, 1);
+    //GameObject* background = new GameObject(glm::vec3((float)0, (float)0, 0.0f), tex_[11],  false, 1);
     //background->SetScale(10.0f);
     //background_objects_.push_back(background);
     //Islands
-    GameObject* island = new GameObject(glm::vec3(0.0f, 4.0f, 0.0f), tex_[14], size_, false, 1);
+    GameObject* island = new GameObject(glm::vec3(0.0f, 4.0f, 0.0f), tex_[14], false, 1);
     //island->SetScale(10.0f);
     background_objects_.push_back(island);
     
     for (int x = -10; x < 10; x++) {
         for (int y = -10; y < 10; y++) {
-            GameObject* background = new GameObject(glm::vec3((float)x * 10, (float)y * 10, 0.0f), tex_[11], size_, false, 1);
+            GameObject* background = new GameObject(glm::vec3((float)x * 10, (float)y * 10, 0.0f), tex_[11],  false, 1);
             background->SetScale(10.0f);
             background_objects_.push_back(background);
         }
@@ -124,17 +133,17 @@ void Game::Setup(void)
 
     // Setup the player object (position, texture, vertex count)
     // Note that, in this specific implementation, the player object should always be the first object in the game object vector (but not this one :) )
-    game_objects_.push_back(new PlayerGameObject(glm::vec3(0.0f, 0.0f, 0.0f), tex_[0], size_, true, 1, 10));
+    game_objects_.push_back(new PlayerGameObject(glm::vec3(0.0f, 0.0f, 0.0f), tex_[0],  true, 1, 10));
 
     // Setup blades object
-    game_objects_.push_back (new HelicopterBlades (glm::vec3 (0.0f, 0.13f, 0.0f), tex_[6], size_, false, 1));
+    game_objects_.push_back (new HelicopterBlades (glm::vec3 (0.0f, 0.13f, 0.0f), tex_[6],  false, 1));
 
     HelicopterBlades* blades = (HelicopterBlades*)(game_objects_[1]);
     blades->setParent (game_objects_[0]);
 
     // Set up shields (applied to the player)
-    game_objects_.push_back (new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], size_, false, 1, 0));
-    game_objects_.push_back (new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], size_, false, 1, 90));
+    game_objects_.push_back (new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8],  false, 1, 0));
+    game_objects_.push_back (new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8],  false, 1, 90));
 
     Shield* shield = (Shield*)(game_objects_[2]);
     shield->SetScale (0.2);
@@ -144,28 +153,35 @@ void Game::Setup(void)
     shield->setParent (game_objects_[0]);
 
     // Set up enemy objects
-    Turret* turret = new Turret(glm::vec3(-2.0f, 2.0f, 0.0f), tex_[12], size_, true, 1); //creates a single turret
-    Turret::SetupBullets(&bullet_objects_, &missile_objects_, &tex_[7], &tex_[13], &size_, game_objects_[0]); //sets up bullet static variables
+    Turret* turret = new Turret(glm::vec3(-2.0f, 2.0f, 0.0f), tex_[12],  true, 1); //creates a single turret
+    Turret::SetupBullets(&bullet_objects_, &missile_objects_, &particle_objects_, &tex_[7], &tex_[13], &tex_[15], game_objects_[0]); //sets up bullet static variables
     enemy_objects_.push_back (turret);
     
     // Set up collectibles
-    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (3.0f, 3.0f, 0.0f), tex_[9], size_, true, 1, 0));
-    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (3.0f, -3.0f, 0.0f), tex_[9], size_, true, 1, 0));
-    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-3.0f, -3.0f, 0.0f), tex_[9], size_, true, 1, 0));
-    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-3.0f, 3.0f, 0.0f), tex_[9], size_, true, 1, 0));
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (3.0f, 3.0f, 0.0f), tex_[9],  true, 1, 0));
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (3.0f, -3.0f, 0.0f), tex_[9],  true, 1, 0));
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-3.0f, -3.0f, 0.0f), tex_[9],  true, 1, 0));
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-3.0f, 3.0f, 0.0f), tex_[9],  true, 1, 0));
 
     for (int i = 0; i < collectible_objects_.size (); ++i) {
         collectible_objects_[i]->SetScale (0.5);
     }
 
     // Set up buoys
-    buoy_objects_.push_back (new BuoyObject (glm::vec3 (-6.0f, 6.0f, 0.0f), tex_[10], size_, true, 1, 5));
-    buoy_objects_.push_back (new BuoyObject (glm::vec3 (-6.0f, -6.0f, 0.0f), tex_[10], size_, true, 1, 20));
-    buoy_objects_.push_back (new BuoyObject (glm::vec3 (6.0f, -6.0f, 0.0f), tex_[10], size_, true, 1, 5));
-    buoy_objects_.push_back (new BuoyObject (glm::vec3 (6.0f, 6.0f, 0.0f), tex_[10], size_, true, 1, 20));
+    buoy_objects_.push_back (new BuoyObject (glm::vec3 (-6.0f, 6.0f, 0.0f), tex_[10],  true, 1, 5));
+    buoy_objects_.push_back (new BuoyObject (glm::vec3 (-6.0f, -6.0f, 0.0f), tex_[10],  true, 1, 20));
+    buoy_objects_.push_back (new BuoyObject (glm::vec3 (6.0f, -6.0f, 0.0f), tex_[10],  true, 1, 5));
+    buoy_objects_.push_back (new BuoyObject (glm::vec3 (6.0f, 6.0f, 0.0f), tex_[10],  true, 1, 20));
 
     buoy_objects_[1]->SetScale (2);
     buoy_objects_[3]->SetScale (2);
+
+    // Setup particle system
+    /*
+    GameObject* particles = new ParticleSystem(glm::vec3(0.0f, -0.5f, 0.0f), tex_[15], game_objects_[0]);
+    particles->SetScale(0.2);
+    particle_objects_.push_back(particles);
+    */
 
 }
 
@@ -190,7 +206,7 @@ void Game::MainLoop(void)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Set view to zoom out, centered by default at 0,0
-        float cameraZoom = 0.25f;
+        float cameraZoom = 0.175f;
         
         // Get player game object
         //GameObject* player = game_objects_[0];
@@ -199,6 +215,7 @@ void Game::MainLoop(void)
         glm::mat4 view_matrix = glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom));
         view_matrix = view_matrix * glm::translate(glm::mat4(0.5f), -curpos);
         shader_.SetUniformMat4("view_matrix", view_matrix);
+        particle_shader_.SetUniformMat4("view_matrix", view_matrix);
 
         // Calculate delta time
         double currentTime = glfwGetTime();
@@ -227,45 +244,6 @@ void Game::ResizeCallback(GLFWwindow* window, int width, int height)
 
 // Create the geometry for a sprite (a squared composed of two triangles)
 // Return the number of array elements that form the square
-int Game::CreateSprite(void)
-{
-    // The face of the square is defined by four vertices and two triangles
-
-    // Number of attributes for vertices and faces
-    // const int vertex_att = 7;  // 7 attributes per vertex: 2D (or 3D) position (2), RGB color (3), 2D texture coordinates (2)
-    // const int face_att = 3; // Vertex indices (3)
-
-    GLfloat vertex[]  = {
-        // Four vertices of a square
-        // Position      Color                Texture coordinates
-        -0.5f,  0.5f,    1.0f, 0.0f, 0.0f,    0.0f, 0.0f, // Top-left
-         0.5f,  0.5f,    0.0f, 1.0f, 0.0f,    1.0f, 0.0f, // Top-right
-         0.5f, -0.5f,    0.0f, 0.0f, 1.0f,    1.0f, 1.0f, // Bottom-right
-        -0.5f, -0.5f,    1.0f, 1.0f, 1.0f,    0.0f, 1.0f  // Bottom-left
-    };
-
-    // Two triangles referencing the vertices
-    GLuint face[] = {
-        0, 1, 2, // t1
-        2, 3, 0  //t2
-    };
-
-    // OpenGL buffers
-    GLuint vbo, ebo;
-
-    // Create buffer for vertices
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, GL_STATIC_DRAW);
-
-    // Create buffer for faces (index buffer)
-    glGenBuffers(1, &ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(face), face, GL_STATIC_DRAW);
-
-    // Return number of elements in array buffer (6 in this case)
-    return sizeof(face) / sizeof(GLuint);
-}
 
 
 void Game::SetTexture(GLuint w, const char *fname, bool tiling)
@@ -317,6 +295,7 @@ void Game::SetAllTextures(void)
     SetTexture(tex_[12], (resources_directory_g + std::string("/textures/CIWS.png")).c_str(), true);
     SetTexture(tex_[13], (resources_directory_g + std::string("/textures/missile.png")).c_str(), true);
     SetTexture(tex_[14], (resources_directory_g + std::string("/textures/isle8.png")).c_str(), false);
+    SetTexture(tex_[15], (resources_directory_g + std::string("/textures/particleOrb.png")).c_str(), false);
     glBindTexture(GL_TEXTURE_2D, tex_[0]);
 }
 
@@ -363,7 +342,7 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
         if (*bullet_cooldown <= 0) {
             BulletObject* bullet = new BulletObject
             (curpos + glm::vec3 ((-(0.25 * sin (currotRadians))), ((0.25 * cos (currotRadians))), 0),
-                tex_[7], size_, false, 1, currot, 30.0f, "player");
+                tex_[7],  false, 1, currot, 30.0f, "player");
             bullet->SetScale (0.3);
             bullet_objects_.push_back (bullet);
             *bullet_cooldown = 0.20;
@@ -376,10 +355,15 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
         GameObject* target = FindClosest();
         if (target != NULL) {
             MissileObject* missile = new MissileObject(curpos + glm::vec3((-(0.25 * sin(currotRadians))), ((0.25 * cos(currotRadians))), 0),
-                tex_[13], size_, false, 1, currot, 10.0f, target, "player");
+                tex_[13],  true, 1, currot, 10.0f, target, "player");
             missile->SetScale(0.5f);
+            missile->SetDuration(2.0f);
             missile_objects_.push_back(missile);
             player->SetMissileCooldown(0);
+            //Attach particle system to missile
+            GameObject* particles = new ParticleSystem(glm::vec3(0.0f, -0.5f, 0.0f), tex_[15], missile_objects_[missile_objects_.size() - 1]);
+            particles->SetScale(0.2);
+            particle_objects_.push_back(particles);
         }
     }
 }
@@ -412,6 +396,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     if (!gameOver) {
         Controls (delta_time, bullet_cooldown);
     }
+    current_time_ += delta_time;
 
     GameObject* current_game_object;
     EnemyGameObject* current_enemy_object;
@@ -472,10 +457,27 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     // Update and render missiles
     for (int i = 0; i < missile_objects_.size(); i++) {
         current_missile_object = missile_objects_[i];
+        bool hitTarget = false;        
+        float duration = current_missile_object->getDuration();
         if (!gameOver) {
             current_missile_object->Update(delta_time);
         }
-        current_missile_object->Render(shader_);
+        
+        hitTarget = BulletCastCollision(current_missile_object);
+        double missileTime = current_missile_object->getTimer();
+        if (missileTime > duration || hitTarget) {
+            //GET RID OF IF STATEMENT WHEN PARTICLES ARE WORKING PROPERLY
+            //This is here because the enemy missiles currently don't instantiate any particle system.
+            //So in order to avoid "vector out of subscript range", check if the missile is from the player
+            if (current_missile_object->GetFrom() == "player") {
+                particle_objects_.erase(particle_objects_.begin() + i);
+            }
+            missile_objects_.erase(missile_objects_.begin() + i);
+            --i;
+        }
+        else {
+            current_missile_object->Render(shader_);
+        }
     }
 
     // Update and render other game objects
@@ -501,6 +503,19 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         // Render game object
         current_game_object->Render (shader_);
     }
+    //This isn't properly rendering the particles yet...
+    for (int i = 0; i < particle_objects_.size(); i++) {
+        ParticleSystem* current_particle_object = dynamic_cast<ParticleSystem*>(particle_objects_[i]);
+        current_particle_object->Update(delta_time);
+
+        if (current_particle_object != nullptr) {
+            current_particle_object->Render(particle_shader_, current_time_);
+            std::cout << "Rendering Particles" << std::endl;
+        }
+        else {
+            current_particle_object->Render(shader_, current_time_);
+        }
+    }
 
     // Update and render the background
     for (int i = 0; i < background_objects_.size(); i++) {
@@ -517,7 +532,7 @@ void Game::IterateCollision (int* num_shield) {
     PlayerGameObject* player = (PlayerGameObject*)(game_objects_[0]);
     bool playerHit = false;
     for (int i = 0; i < enemy_objects_.size (); ++i) {
-        if (DetectCollision (player, enemy_objects_[i])) {
+        if (DetectCollision (player, enemy_objects_[i]) && player->GetCollidable()) {
             DamagePlayer (num_shield, i);
             break;
         }
@@ -589,21 +604,11 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
         //Checking for enemy collision with bullets
         for (int i = 0; i < enemy_objects_.size(); i++) {
             if (enemy_objects_[i]->GetCollidable()) {
-
-                // Turning variables into neater versions for the formula
-                float x0 = bullet->GetPosition().x;
-                float x1 = x0 + bullet->GetVelocity().x;
-                float y0 = bullet->GetPosition().y;
-                float y1 = y0 + bullet->GetVelocity().y;
-                float h = enemy_objects_[i]->GetPosition().x;
-                float k = enemy_objects_[i]->GetPosition().y;
-                float a = pow((x1 - x0), 2) + pow((y1 - y0), 2);
-                float b = 2 * (x1 - x0) * (x0 - h) + 2 * (y1 - y0) * (y0 - k);
-                float c = pow((x0 - h), 2) + pow((y0 - k), 2) - pow(0.7f, 2);
-                float t = (2 * c) / (-b + sqrt(pow(b, 2) - (4 * a * c)));
-                if (t > 0) {
-                    enemy_objects_.erase(enemy_objects_.begin() + i);
-                    return true;
+                float distance = glm::length(enemy_objects_[i]->GetPosition() - bullet->GetPosition());
+                //Increased hitbox of turret boi because bullets were missing too often.
+                if (distance < 0.35f) {
+                    enemy_objects_.erase(enemy_objects_.begin() + i); 
+                    return true;                
                 }
             }
         }
@@ -612,20 +617,8 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
     else if (bullet->GetFrom() == "enemy") {
         PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
         if (player->GetCollidable()) {
-            float x0 = bullet->GetPosition().x;
-            float x1 = x0 + bullet->GetVelocity().x;
-            float y0 = bullet->GetPosition().y;
-            float y1 = y0 + bullet->GetVelocity().y;
-            float h = player->GetPosition().x;
-            float k = player->GetPosition().y;
-            float a = pow((x1 - x0), 2) + pow((y1 - y0), 2);
-            float b = 2 * (x1 - x0) * (x0 - h) + 2 * (y1 - y0) * (y0 - k);
-            float c = pow((x0 - h), 2) + pow((y0 - k), 2) - pow(0.7f, 2);
-            float t = (2 * c) / (-b + sqrt(pow(b, 2) - (4 * a * c)));
-            
-            //If player was hit by enemy bullet
-            if (t > 0) {
-                //If the player still has shields
+            float distance = glm::length(player->GetPosition() - bullet->GetPosition());
+            if (distance < 0.2f) {
                 if (player->getNumShield() > 0) {
                     game_objects_.erase(game_objects_.end() - 1); //Erase a shield
                     player->minusShield(); //Update shield erase in player object
@@ -663,7 +656,7 @@ void Game::ApplyEffect (int* num_shield, int collectible_hit, CollectibleObject*
         if (player->getNumShield() < 4) { // Player can't have more than 4 shields
             player->addShield();
             std::cout << player->getNumShield() << std::endl;
-            Shield* shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], size_, false, 1, game_objects_.back()->GetRotation());
+            Shield* shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8],  false, 1, game_objects_.back()->GetRotation());
             shield->SetScale (0.2);
             shield->setParent (game_objects_[0]);
             game_objects_.push_back (shield);

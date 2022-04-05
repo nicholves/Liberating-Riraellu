@@ -2,8 +2,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace game {
-	Shield::Shield (const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles, double additional_rotation)
-		: GameObject (position, texture, num_elements, collidable, tiles) {
+	Shield::Shield (const glm::vec3& position, GLuint texture, bool collidable, int tiles, double additional_rotation)
+		: GameObject (position, texture, collidable, tiles) {
 		rotation_ = additional_rotation + 90;
 	}
 

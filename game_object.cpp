@@ -4,7 +4,7 @@
 
 namespace game {
 
-GameObject::GameObject(const glm::vec3 &position, GLuint texture, GLint num_elements, bool collidable, int tiles) 
+GameObject::GameObject(const glm::vec3 &position, GLuint texture, bool collidable, int tiles) 
 {
 
     // Initialize all attributes
@@ -12,7 +12,6 @@ GameObject::GameObject(const glm::vec3 &position, GLuint texture, GLint num_elem
     scale_ = 1.0;
     rotation_ = 0.0;
     velocity_ = glm::vec3(0.0f, 0.0f, 0.0f); // Starts out stationary
-    num_elements_ = num_elements;
     texture_ = texture;
     collidable_ = collidable;
     tiles_ = tiles;
@@ -33,6 +32,9 @@ void GameObject::Render(Shader &shader) {
     // Bind the entity's texture
     glBindTexture(GL_TEXTURE_2D, texture_);
 
+    shader.Enable();
+    shader.SetSpriteAttributes();
+
     glm::mat4 transformation_matrix = GetTransfMatrix ();
     // TODO: Add other types of transformations
 
@@ -43,7 +45,7 @@ void GameObject::Render(Shader &shader) {
     shader.SetUniform1i ("num_tiles", tiles_);
 
     // Draw the entity
-    glDrawElements(GL_TRIANGLES, num_elements_, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, shader.GetSpriteSize(), GL_UNSIGNED_INT, 0);
 }
 
 } // namespace game

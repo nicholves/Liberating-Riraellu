@@ -7,7 +7,7 @@ namespace game {
 	class Shield : public GameObject {
 		
 	public:
-		Shield (const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles, double);
+		Shield (const glm::vec3& position, GLuint texture, bool collidable, int tiles, double);
 
 		// Update function for orbiting the shield orbs
 		void Update (double delta_time) override;

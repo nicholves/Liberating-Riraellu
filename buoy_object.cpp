@@ -2,8 +2,8 @@
 
 namespace game {
 
-	BuoyObject::BuoyObject (const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles, double mass)
-		: GameObject (position, texture, num_elements, collidable, tiles) {
+	BuoyObject::BuoyObject (const glm::vec3& position, GLuint texture, bool collidable, int tiles, double mass)
+		: GameObject (position, texture, collidable, tiles) {
 		mass_ = mass;
 	}
 

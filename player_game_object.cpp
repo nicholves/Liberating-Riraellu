@@ -7,8 +7,8 @@ namespace game {
 	It overrides GameObject's update method, so that you can check for input to change the velocity of the player
 */
 
-PlayerGameObject::PlayerGameObject(const glm::vec3 &position, GLuint texture, GLint num_elements, bool collidable, int tiles, double mass)
-	: GameObject (position, texture, num_elements, collidable, tiles) {
+PlayerGameObject::PlayerGameObject(const glm::vec3 &position, GLuint texture, bool collidable, int tiles, double mass)
+	: GameObject (position, texture, collidable, tiles) {
 	mass_ = mass;
 	missile_cooldown_ = 0;
 	num_shield = 1;

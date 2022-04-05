@@ -5,6 +5,8 @@
 #include "bullet_object.h"
 #include "missile.h"
 #include <vector>
+#include "particle_system.h"
+#include "game_object.h"
 
 namespace game {
 
@@ -12,7 +14,7 @@ namespace game {
 	class Turret : public EnemyGameObject {
 
 	public:
-		Turret(const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles);
+		Turret(const glm::vec3& position, GLuint texture, bool collidable, int tiles);
 
 		// Update function for moving the enemy object and swapping its state
 		void Update(double delta_time) override;
@@ -23,7 +25,7 @@ namespace game {
 		void Pursue(double delta_time) override;
 
 		//setup function
-		static void SetupBullets(std::vector<BulletObject*>* ptr, std::vector<MissileObject*>* misPtr, GLuint* bulletTex, GLuint* missileTex, int* size, GameObject* player);
+		static void SetupBullets(std::vector<BulletObject*>* ptr, std::vector<MissileObject*>* misPtr, std::vector<GameObject*>* particlePtr, GLuint* bulletTex, GLuint* missileTex, GLuint* particleTex, GameObject* player);
 
 	protected:
 		double last_bullet_fire_time_; //timer counting up since last bullet was fired
@@ -33,12 +35,14 @@ namespace game {
 		static std::vector<BulletObject*>* bullet_objects_ptr_; //a pointer to game's bullet_objects vector so turrets can create bullets
 
 		static std::vector<MissileObject*>* missile_objects_ptr_; //a pointer to game's missile_objects vector so turrets can create bullets
+
+		static std::vector<GameObject*>* particle_objects_ptr_; //a pointer to the particle system array in game
 		
 		static GLuint* bulletTex_; //the texture of the bullet
 
 		static GLuint* missileTex_; //the texture of the missile
 
-		static int* size_; //the texture size given by game
+		static GLuint* particleTex_; //the texture of the particle
 
 		static GameObject* player_; //a pointer to the player object for firing purposes
 

@@ -6,8 +6,8 @@ namespace game {
 		BulletObject inherits from GameObject.
 	*/
 
-	MissileObject::MissileObject(const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles, float direction, float speed, GameObject* target, std::string from)
-		: BulletObject(position, texture, num_elements, collidable, tiles, direction, speed, from) {
+	MissileObject::MissileObject(const glm::vec3& position, GLuint texture, bool collidable, int tiles, float direction, float speed, GameObject* target, std::string from)
+		: BulletObject(position, texture, collidable, tiles, direction, speed, from) {
 		rotation_ = direction;
 		float currotRadians = rotation_ * 3.14159 / 180;
 		target_ = target;

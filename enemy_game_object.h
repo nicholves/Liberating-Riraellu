@@ -9,7 +9,7 @@ namespace game {
 	class EnemyGameObject : public GameObject {
 
 		public:
-			EnemyGameObject(const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles);
+			EnemyGameObject(const glm::vec3& position, GLuint texture, bool collidable, int tiles);
 
 			// Update function for moving the enemy object and swapping its state
 			virtual void Update (double delta_time) override;

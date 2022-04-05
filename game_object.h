@@ -17,7 +17,7 @@ namespace game {
 
         public:
             // Constructor
-            GameObject (const glm::vec3& position, GLuint texture, GLint num_elements, bool collidable, int tiles);
+            GameObject (const glm::vec3& position, GLuint texture, bool collidable, int tiles);
 
             // Update the GameObject's state. Can be overriden for children
             virtual void Update(double delta_time);
