@@ -154,16 +154,9 @@ void Game::Setup(void)
     ui_objects_.push_back(score_value);
 
     
-    for (int x = -10; x < 10; x++) {
-        for (int y = -10; y < 10; y++) {
-            GameObject* background = new GameObject(glm::vec3((float)x * 10, (float)y * 10, 0.0f), tex_[11],  false, 1);
-            background->SetScale(10.0f);
-            background_objects_.push_back(background);
-        }
-    }
-
-    
-
+    GameObject* background = new GameObject (glm::vec3 (0.0f, 0.0f, 0.0f), tex_[11], false, 1);
+    background->SetScale (100.0);
+    background_objects_.push_back (background);
 
     // Setup the player object (position, texture, vertex count)
     // Note that, in this specific implementation, the player object should always be the first object in the game object vector (but not this one :) )
@@ -213,7 +206,7 @@ void Game::Setup(void)
     collectible_objects_.push_back (new CollectibleObject (glm::vec3 (5.0f, -5.0f, 0.0f), tex_[29], true, 1, 2));
 
     for (int i = 0; i < collectible_objects_.size (); ++i) {
-        collectible_objects_[i]->SetScale (0.5);
+        collectible_objects_[i]->SetScale (0.7);
     }
 
 
@@ -223,6 +216,8 @@ void Game::Setup(void)
     particles->SetScale(0.2);
     particle_objects_.push_back(particles);
     */
+
+    
 
 }
 
@@ -339,7 +334,7 @@ void Game::SetAllTextures(void)
     SetTexture (tex_[10], (resources_directory_g + std::string ("/textures/buoy.png")).c_str (), false);
     
     //Tile map textures
-    SetTexture(tex_[11], (resources_directory_g + std::string("/textures/tilemap/water.jpg")).c_str(), true);
+    SetTexture(tex_[11], (resources_directory_g + std::string("/textures/tilemap/background.png")).c_str(), true);
     SetTexture(tex_[12], (resources_directory_g + std::string("/textures/isle8.png")).c_str(), false);
 
     //weaponry related textures
@@ -862,7 +857,7 @@ void Game::ApplyEffect (int collectible_hit, CollectibleObject* collectible) {
     PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
     if (collectible->getType() == 0) { // Check the collectible type
         if (player->getNumShield() < MAX_SHIELD) { // Player can't have more than MAX_SHIELD shielding
-            if (player->getNumShield () < (MAX_SHIELD / 4) * 3) {
+            if (player->getNumShield () < (MAX_SHIELD / 4) * 3 + 1) {
                 Shield* shield;
                 if (player->getNumShield () == 0) {
                     shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], false, 1, 0);
