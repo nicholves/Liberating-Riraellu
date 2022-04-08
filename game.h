@@ -56,11 +56,13 @@ namespace game {
 
             Shader particle_shader_;
 
+            Shader player_shader_;
+
             // Size of geometry to be rendered
             int size_;
 
             // References to textures
-#define NUM_TEXTURES 31
+#define NUM_TEXTURES 32
             GLuint tex_[NUM_TEXTURES];
 
 
@@ -110,8 +112,6 @@ namespace game {
             // Callback for when the window is resized
             static void ResizeCallback(GLFWwindow* window, int width, int height);
 
-            // Create a square for drawing textures
-            int CreateSprite(void);
 
             // Set a specific texture
             void SetTexture(GLuint w, const char *fname, bool tiling);

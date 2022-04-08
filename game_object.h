@@ -22,7 +22,7 @@ namespace game {
             // Update the GameObject's state. Can be overriden for children
             virtual void Update(double delta_time);
 
-            virtual void Render(Shader &shader);
+            virtual void Render(Shader &shader, glm::mat4 view_matrix);
 
             // Getters
             inline glm::vec3& GetPosition(void) { return position_; }

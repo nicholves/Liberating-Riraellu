@@ -72,11 +72,11 @@ namespace game {
 		children_.clear();
 	}
 
-	void Number::Render(Shader& shader) {
-		GameObject::Render(shader);
+	void Number::Render(Shader& shader, glm::mat4 view_matrix) {
+		GameObject::Render(shader, view_matrix);
 		//renders both the number and all it's children
 		for (int i = 0; i < children_.size(); ++i) {
-			children_[i]->Render(shader);
+			children_[i]->Render(shader, view_matrix);
 		}
 	}
 }

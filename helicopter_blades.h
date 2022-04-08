@@ -2,6 +2,7 @@
 #define HELICOPTER_BLADES_H_
 
 #include "game_object.h"
+#include "player_game_object.h"
 
 namespace game {
 

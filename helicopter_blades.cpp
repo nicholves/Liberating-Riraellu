@@ -21,6 +21,19 @@ namespace game {
 		GameObject::Update (delta_time);
 		rotation_ += 16;
 		transformation_matrix_ = parent_->GetTransfMatrix () * transformation_matrix_;
+		float invincible_timer = ((PlayerGameObject*)(parent_))->getInvincibilityTimer();
+		if (invincible_timer > 1.5f) {
+			SetTexture(7);
+		}
+		else if (invincible_timer > 1.0f) {
+			SetTexture(32);
+		}
+		else if (invincible_timer > 0.5f) {
+			SetTexture(7);
+		}
+		else {
+			SetTexture(32);
+		}
 		
 	}
 

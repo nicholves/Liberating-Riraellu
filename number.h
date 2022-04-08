@@ -18,7 +18,7 @@ namespace game {
 
         static void SetupTextures(std::vector<GLuint> , int*); //sets up static variables
 
-        void Render(Shader& shader) override;
+        void Render(Shader& shader, glm::mat4 view_matrix) override;
 
     protected:
 

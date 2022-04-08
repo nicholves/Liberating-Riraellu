@@ -5,7 +5,7 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
-#define NUM_PARTICLES 4000
+#define NUM_PARTICLES 2000
 
 namespace game {
 

@@ -49,6 +49,8 @@ set(SRCS
     particle_vertex_shader.glsl
     particle_fragment_shader.glsl
     particle_system.cpp
+    player_fragment_shader.glsl
+    player_vertex_shader.glsl
 )
 
 # Add path name to configuration file
