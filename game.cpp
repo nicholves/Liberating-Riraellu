@@ -681,7 +681,6 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
 
         if (current_particle_object != nullptr) {
             current_particle_object->Render(particle_shader_, view_matrix, current_time_);
-            std::cout << "Rendering Particles" << std::endl;
         }
         else {
             current_particle_object->Render(shader_, view_matrix, current_time_);
@@ -697,10 +696,12 @@ void Game::IterateCollision () {
     PlayerGameObject* player = (PlayerGameObject*)(game_objects_[0]);
     bool playerHit = false;
     for (int i = 0; i < enemy_objects_.size (); ++i) {
+        if (!enemy_objects_[i]->GetCollidable()) { continue; }
         if (DetectCollision (player, enemy_objects_[i])) {
             if (player->GetCollidable()) {
                 DamagePlayer (5);
             }
+            delete enemy_objects_[i];
             enemy_objects_.erase (enemy_objects_.begin () + i);
             break;
         }
@@ -795,16 +796,13 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
 
         //Checking for enemy collision with bullets
         for (int i = 0; i < enemy_objects_.size(); i++) {
-            if (enemy_objects_[i]->GetCollidable()) {
                 float distance = glm::length(enemy_objects_[i]->GetPosition() - bullet->GetPosition());
                 //Increased hitbox of turret boi because bullets were missing too often.
                 if (distance < 0.35f) {
                     delete enemy_objects_[i];
                     enemy_objects_.erase(enemy_objects_.begin() + i); 
-                    std::cout << "hit" << std::endl;
                     return true;                
                 }
-            }
         }
     }
     //If the bullet fired is from an enemy, check to see if it hits the player

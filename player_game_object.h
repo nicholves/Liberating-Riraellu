@@ -6,9 +6,9 @@
 #define MAX_SHIELD 20
 #define CLOAK_LENGTH 10
 #define INVINCIBLE_TIME 2
-#define MAX_SPEED 5.0f
+#define MAX_SPEED 3.0f
 #define MIN_SPEED 1.0f
-#define STANDARD_SPEED 3.0f
+#define STANDARD_SPEED 2.0f
 namespace game {
     
     // Inherits from GameObject
