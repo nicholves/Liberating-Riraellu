@@ -5,6 +5,10 @@
 #define MAX_HEALTH 10
 #define MAX_SHIELD 20
 #define CLOAK_LENGTH 10
+#define INVINCIBLE_TIME 2
+#define MAX_SPEED 5.0f
+#define MIN_SPEED 1.0f
+#define STANDARD_SPEED 3.0f
 namespace game {
     
     // Inherits from GameObject
@@ -30,6 +34,7 @@ namespace game {
             inline double getMissileCooldown(void) { return missile_cooldown_; }
             inline int getNumShield(void) { return num_shield; }
             inline int getHealth (void) { return health; }
+            inline bool IsInvincible() { return (invincible_timer < 2); }
 
         private:
             // For collision response

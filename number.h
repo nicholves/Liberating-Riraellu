@@ -18,6 +18,8 @@ namespace game {
 
         static void SetupTextures(std::vector<GLuint> , int*); //sets up static variables
 
+        inline void SetNumber(int num) { value_ = num; }
+
         void Render(Shader& shader) override;
 
     protected:
