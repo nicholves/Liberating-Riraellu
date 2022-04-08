@@ -8,6 +8,7 @@
 #include <vector>
 #include "particle_system.h"
 #include "game_object.h"
+#include "base.h"
 
 namespace game {
 
@@ -15,7 +16,8 @@ namespace game {
 	class Turret : public EnemyGameObject {
 
 	public:
-		Turret(const glm::vec3& position, GLuint texture, bool collidable, int tiles, int health);
+		Turret(const glm::vec3& position, GLuint texture, bool collidable, int tiles, int health, Base* parent);
+		~Turret();
 
 		// Update function for moving the enemy object and swapping its state
 		void Update(double delta_time) override;
@@ -29,6 +31,9 @@ namespace game {
 		static void SetupBullets(std::vector<BulletObject*>* ptr, std::vector<MissileObject*>* misPtr, std::vector<GameObject*>* particlePtr, GLuint* bulletTex, GLuint* missileTex, GLuint* particleTex, GameObject* player);
 
 	protected:
+
+		Base* parent_;
+
 		double last_bullet_fire_time_; //timer counting up since last bullet was fired
 
 		double last_missile_fire_time_; //timer counting up since last missile was fired

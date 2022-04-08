@@ -23,6 +23,8 @@ set(HDRS
     healthbar.h
     number.h
     particle_system.h
+    base.h
+    drone.h
 )
  
 set(SRCS
@@ -49,6 +51,8 @@ set(SRCS
     particle_vertex_shader.glsl
     particle_fragment_shader.glsl
     particle_system.cpp
+    base.cpp
+    drone.cpp
     player_fragment_shader.glsl
     player_vertex_shader.glsl
 )

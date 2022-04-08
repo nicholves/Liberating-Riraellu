@@ -33,17 +33,17 @@ void PlayerGameObject::Update(double delta_time) {
 
 	// The player's velocity is limited, but not in a smart way.
 	// The player will go faster diagonally, but still limited.
-	if (velocity_.x > 5) {
-		velocity_.x = 5;
+	if (velocity_.x > MAX_SPEED) {
+		velocity_.x = MAX_SPEED;
 	}
-	else if (velocity_.x < -5) {
-		velocity_.x = -5;
+	else if (velocity_.x < -MAX_SPEED) {
+		velocity_.x = -MAX_SPEED;
 	}
 
-	if (velocity_.y > 5) {
-		velocity_.y = 5;
-	} else if (velocity_.y < -5) {
-		velocity_.y = -5;
+	if (velocity_.y > MAX_SPEED) {
+		velocity_.y = MAX_SPEED;
+	} else if (velocity_.y < -MAX_SPEED) {
+		velocity_.y = -MAX_SPEED;
 	}
 	if (invincible_timer > 2.0f) {
 		collidable_ = true;
@@ -54,13 +54,13 @@ void PlayerGameObject::Update(double delta_time) {
 			SetTexture(1);
 		}
 		else if (invincible_timer > 1.0f) {
-			SetTexture(32);
+			SetTexture(37);
 		}
 		else if (invincible_timer > 0.5f) {
 			SetTexture(1);
 		}
 		else {
-			SetTexture(32);
+			SetTexture(37);
 		}
 		
 		std::cout << "Player is invincible. Collidable in: " << 2.0f - invincible_timer << std::endl;

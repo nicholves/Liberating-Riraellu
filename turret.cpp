@@ -18,13 +18,18 @@ namespace game {
 		It overrides EnemyGameObject's update method, so that the object can be updated according to its states
 	*/
 
-	Turret::Turret(const glm::vec3& position, GLuint texture, bool collidable, int tiles, int health)
+	Turret::Turret(const glm::vec3& position, GLuint texture, bool collidable, int tiles, int health, Base* parent)
 		: EnemyGameObject(position, texture, collidable, tiles, health) {
 		state = 0; patrol_point = glm::vec3(position_.x - patrol_radius, position_.y, position_.z);
 		//setting up required fields
 		last_bullet_fire_time_ = 0;
 		last_missile_fire_time_ = 0;
 		sighting_range_ = 2.5;
+		parent_ = parent;
+	}
+
+	Turret::~Turret() {
+		parent_->removeTurret();
 	}
 
 	void Turret::Update(double delta_time) {

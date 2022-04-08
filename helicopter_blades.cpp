@@ -26,13 +26,13 @@ namespace game {
 			SetTexture(7);
 		}
 		else if (invincible_timer > 1.0f) {
-			SetTexture(32);
+			SetTexture(37);
 		}
 		else if (invincible_timer > 0.5f) {
 			SetTexture(7);
 		}
 		else {
-			SetTexture(32);
+			SetTexture(37);
 		}
 		
 	}

@@ -21,6 +21,8 @@
 #include "ui_element.h"
 #include "healthbar.h"
 #include "number.h"
+#include "base.h"
+#include "drone.h"
 
 #define FONT_SIZE 20.0f
 
@@ -47,6 +49,9 @@ namespace game {
             // Run the game (keep the game active)
             void MainLoop(void); 
 
+            //Pause to allow player to do something
+            void ChooseLoop(void);
+
         private:
             // Main window: pointer to the GLFW window structure
             GLFWwindow *window_;
@@ -62,9 +67,8 @@ namespace game {
             int size_;
 
             // References to textures
-#define NUM_TEXTURES 32
+#define NUM_TEXTURES 37
             GLuint tex_[NUM_TEXTURES];
-
 
             std::vector<GLuint> text_arr_;
 
@@ -89,6 +93,8 @@ namespace game {
 
             std::vector<BuoyObject*> buoy_objects_;
 
+            std::vector<Base*> bases_;
+
             //ui element objects
             std::vector<UI_Element*> ui_objects_;
 
@@ -97,6 +103,11 @@ namespace game {
 
             //player score
             int score_;
+            Number* score_ptr_;
+
+            bool paused_; //the game is paused
+            bool selection_made_; //a choice has been made on the pause menu
+            int choice_;
 
             std::vector<GameObject*> particle_objects_;
 
@@ -132,6 +143,7 @@ namespace game {
             bool DetectCollision (PlayerGameObject*, EnemyGameObject*);
             bool DetectCollision (PlayerGameObject*, CollectibleObject*);
             bool DetectCollision (PlayerGameObject*, BuoyObject*);
+            bool Game::DetectCollision(PlayerGameObject* player, Base* base);
 
             // Similar to IterateCollision but makes use of object functions for EnemyGameObject and is hard coded
             void EnemyDetect (void);
@@ -150,6 +162,9 @@ namespace game {
 
             //Detects the closest enemy in front of the player
             GameObject* FindClosest(void);
+
+            //only renders objects without updating
+            void Render(std::vector<UI_Element*> extras);
 
     }; // class Game
 
