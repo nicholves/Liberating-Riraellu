@@ -15,10 +15,12 @@ namespace game {
 			// Getters
 			double getTimer ();
 			float getDuration() { return duration_; }
+			virtual int GetDamage() { return damage_; }
 			inline std::string GetFrom(void) { return from_; }
 			
 			//Setters
 			void SetDuration(float duration) { duration_ = duration; }
+			static void SetDamageBullet(int dmg);
 
 			// Update function for updating the position of the bullet
 			void Update (double delta_time) override;
@@ -32,6 +34,8 @@ namespace game {
 			float duration_; //the duration that the bullet object lasts
 
 			std::string from_;
+
+			static int damage_;
 	};
 
 }

@@ -6,6 +6,8 @@ namespace game {
 		BulletObject inherits from GameObject. It uses the default Update function from its parent, after adjusting its timer.
 	*/
 
+	int BulletObject::damage_ = 0;
+
 	BulletObject::BulletObject(const glm::vec3& position, GLuint texture, bool collidable, int tiles, float direction, float speed, std::string from)
 		: GameObject (position, texture, collidable, tiles) {
 		rotation_ = direction;
@@ -28,4 +30,10 @@ namespace game {
 		GameObject::Update (delta_time);
 	}
 
+
+
+	//static function to setup all of the turret's static variables
+	void BulletObject::SetDamageBullet(int dmg) {
+		BulletObject::damage_ = dmg;
+	}
 }

@@ -15,6 +15,9 @@ namespace game {
 	public:
 		MissileObject(const glm::vec3& position, GLuint texture, bool collidable, int tiles, float direction, float speed, GameObject* target, std::string from);
 
+		static void SetDamageMissile(int dmg);
+
+		int GetDamage() override;
 
 		// Update function for updating the position of the missile
 		void Update(double delta_time) override;
@@ -26,6 +29,8 @@ namespace game {
 		static std::vector<GameObject*>* particle_objects_ptr_; //a pointer to the particle system array in game
 
 		static GLuint* particleTex_; //the texture of the particle
+
+		static int damage_;
 	};
 
 }

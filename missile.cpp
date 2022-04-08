@@ -6,6 +6,8 @@ namespace game {
 		BulletObject inherits from GameObject.
 	*/
 
+	int MissileObject::damage_ = 0;
+
 	MissileObject::MissileObject(const glm::vec3& position, GLuint texture, bool collidable, int tiles, float direction, float speed, GameObject* target, std::string from)
 		: BulletObject(position, texture, collidable, tiles, direction, speed, from) {
 		rotation_ = direction;
@@ -28,5 +30,13 @@ namespace game {
 		glm::vec3 subtraction = target_->GetPosition() - position_;
 		rotation_ = (atan2(subtraction.y, subtraction.x) * 180.0f / 3.14159f) + 180.0f;
 	}
-	
+
+	void MissileObject::SetDamageMissile(int dmg) {
+		MissileObject::damage_ = dmg;
+	}
+
+
+	int MissileObject::GetDamage() {
+		return damage_;
+	}
 }

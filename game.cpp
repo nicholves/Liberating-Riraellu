@@ -196,6 +196,10 @@ void Game::Setup(void)
     // Set up enemy objects
     Turret* turret = new Turret(glm::vec3(-2.0f, 2.0f, 0.0f), tex_[13], true, 1, 5, bases_[0]); //creates a single turret
     Turret::SetupBullets(&bullet_objects_, &missile_objects_, &particle_objects_, &tex_[7], &tex_[14], &tex_[30], game_objects_[0]); //sets up bullet static variables
+    BulletObject::SetDamageBullet(1);
+    MissileObject::SetDamageMissile(4);
+
+
     // Set up collectibles
     collectible_objects_.push_back (new CollectibleObject (glm::vec3 (3.0f, 3.0f, 0.0f), tex_[9],  true, 1, 0));
     collectible_objects_.push_back (new CollectibleObject (glm::vec3 (3.0f, -3.0f, 0.0f), tex_[9],  true, 1, 0));
@@ -817,7 +821,8 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
 
                 }
                 else if(!player->IsInvincible()) {
-                    DamagePlayer(-1);
+                    int damage = bullet->GetDamage();
+                    DamagePlayer(damage);
                 }
                 return true;
             }
@@ -851,6 +856,9 @@ void Game::DamagePlayer (int damage) {
     else {
         //gameOver = true; // TODO: flip back to true once gameOver working
     }
+
+    float scale = player->getHealth() / 4;
+    healthbar_->SetScaley(scale);
 }
 
 void Game::ApplyEffect (int collectible_hit, CollectibleObject* collectible) {
@@ -1155,10 +1163,10 @@ void Game::Render(std::vector<UI_Element*> extras) {
             //GET RID OF IF STATEMENT WHEN PARTICLES ARE WORKING PROPERLY
             //This is here because the enemy missiles currently don't instantiate any particle system.
             //So in order to avoid "vector out of subscript range", check if the missile is from the player
-            if (current_missile_object->GetFrom() == "player") {
-                delete particle_objects_[i];
-                particle_objects_.erase(particle_objects_.begin() + i);
-            }
+            
+            delete particle_objects_[i];
+            particle_objects_.erase(particle_objects_.begin() + i);
+
             delete missile_objects_[i];
             missile_objects_.erase(missile_objects_.begin() + i);
             --i;

@@ -24,7 +24,7 @@ namespace game {
 		//setting up required fields
 		last_bullet_fire_time_ = 0;
 		last_missile_fire_time_ = 0;
-		sighting_range_ = 2.5;
+		sighting_range_ = 4.5;
 		parent_ = parent;
 	}
 
