@@ -13,7 +13,7 @@ namespace game {
 
             void Update(double delta_time) override;
 
-            void Render(Shader &shader, double current_time);
+            void Render(Shader &shader, glm::mat4 view_matrix, double current_time);
 
         private:
             GameObject *parent_;

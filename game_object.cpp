@@ -27,7 +27,7 @@ void GameObject::Update(double delta_time) {
 }
 
 
-void GameObject::Render(Shader &shader) {
+void GameObject::Render(Shader &shader, glm::mat4 view_matrix) {
 
     // Bind the entity's texture
     glBindTexture(GL_TEXTURE_2D, texture_);
@@ -43,6 +43,8 @@ void GameObject::Render(Shader &shader) {
 
     // Set the number of tiles
     shader.SetUniform1i ("num_tiles", tiles_);
+
+    shader.SetUniformMat4("view_matrix", view_matrix);
 
     // Draw the entity
     glDrawElements(GL_TRIANGLES, shader.GetSpriteSize(), GL_UNSIGNED_INT, 0);

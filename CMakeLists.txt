@@ -53,6 +53,8 @@ set(SRCS
     particle_system.cpp
     base.cpp
     drone.cpp
+    player_fragment_shader.glsl
+    player_vertex_shader.glsl
 )
 
 # Add path name to configuration file

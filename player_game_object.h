@@ -19,10 +19,11 @@ namespace game {
 
             // Update function for moving the player object around
             void Update(double delta_time) override;
+            void Render(Shader &shader, glm::mat4 view_matrix) override;
 
             inline void addShield (int n) { num_shield += n; if (num_shield >= MAX_SHIELD) { num_shield = MAX_SHIELD; } }
             inline void minusShield (int damage) { num_shield -= damage; if (num_shield < 0) { num_shield = 0; } }
-            inline void resetIFrame() { invincible_timer = 0; }
+            inline void resetIFrame() { invincible_timer = 0.0f; }
             void addHealth (int);
             
             inline void SetMissileCooldown(double c) { missile_cooldown_ = c; }
@@ -34,8 +35,10 @@ namespace game {
             inline double getMissileCooldown(void) { return missile_cooldown_; }
             inline int getNumShield(void) { return num_shield; }
             inline int getHealth (void) { return health; }
+            inline float getInvincibilityTimer(void) { return invincible_timer; }
             inline bool IsInvincible() { return (invincible_timer < 2); }
 
+            //Texture
         private:
             // For collision response
             double mass_;
@@ -54,8 +57,7 @@ namespace game {
 
             // Cloak variables
             float cloak_timer;
-            bool cloaked;
-
+            bool cloaked;        
     }; // class PlayerGameObject
 
 } // namespace game

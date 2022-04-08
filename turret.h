@@ -28,7 +28,7 @@ namespace game {
 		void Pursue(double delta_time) override;
 
 		//setup function
-		static void SetupBullets(std::vector<BulletObject*>* ptr, std::vector<MissileObject*>* misPtr, GLuint* bulletTex, GLuint* missileTex, GameObject* player);
+		static void SetupBullets(std::vector<BulletObject*>* ptr, std::vector<MissileObject*>* misPtr, std::vector<GameObject*>* particlePtr, GLuint* bulletTex, GLuint* missileTex, GLuint* particleTex, GameObject* player);
 
 	protected:
 

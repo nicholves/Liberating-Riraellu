@@ -89,25 +89,27 @@ namespace game {
 			missile_objects_ptr_->push_back(missile);
 			last_missile_fire_time_ = 0.0f;
 
-			/*
+			
 			//Attach particle system to missile
 			int size = missile_objects_ptr_->size() - 1;
-			dynamic_cast<GameObject*>(missile_objects_ptr_[size]);
-			GameObject* particles = new ParticleSystem(glm::vec3(0.0f, -0.5f, 0.0f), *particleTex_, missile_objects_ptr_[size]);
+			//MissileObject* endMissile = &(missile_objects_ptr_[size]);
+			//GameObject* particles = new ParticleSystem(glm::vec3(0.0f, -0.5f, 0.0f), *particleTex_, missile_objects_ptr_[size]);
+			GameObject* particles = new ParticleSystem(glm::vec3(0.3f, 0.0f, 0.0f), *particleTex_, missile);
 			particles->SetScale(0.2);
+			particles->SetRotation(90);
 			particle_objects_ptr_->push_back(particles);
-			*/
+			
 		}
 	}
 	
 	//static function to setup all of the turret's static variables
-	void Turret::SetupBullets(std::vector<BulletObject*>* ptr, std::vector<MissileObject*>* misPtr, GLuint* bulletTex, GLuint* missileTex, GameObject* player) {
+	void Turret::SetupBullets(std::vector<BulletObject*>* ptr, std::vector<MissileObject*>* misPtr, std::vector<GameObject*>* particlePtr, GLuint* bulletTex, GLuint* missileTex, GLuint* particleTex, GameObject* player) {
 		Turret::bullet_objects_ptr_ = ptr;
 		Turret::missile_objects_ptr_ = misPtr;
-		//Turret::particle_objects_ptr_ = particlePtr;
+		Turret::particle_objects_ptr_ = particlePtr;
 		Turret::bulletTex_ = bulletTex;
 		Turret::missileTex_ = missileTex;
-		//Turret::particleTex_ = particleTex;
+		Turret::particleTex_ = particleTex;
 		Turret::player_ = (PlayerGameObject*)(player);
 	}
 	

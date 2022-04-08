@@ -6,7 +6,7 @@
 namespace game {
 
 ParticleSystem::ParticleSystem(const glm::vec3 &position, GLuint texture, GameObject *parent)
-	: GameObject(position, texture, false, 100){
+	: GameObject(position, texture, false, 1){
 
     parent_ = parent;
 }
@@ -19,7 +19,7 @@ void ParticleSystem::Update(double delta_time) {
 }
 
 
-void ParticleSystem::Render(Shader &shader, double current_time){
+void ParticleSystem::Render(Shader &shader, glm::mat4 view_matrix, double current_time){
 
     // Bind the particle texture
     glBindTexture(GL_TEXTURE_2D, texture_);
@@ -51,6 +51,8 @@ void ParticleSystem::Render(Shader &shader, double current_time){
 
     // Set the time in the shader
     shader.SetUniform1f("time", current_time);
+
+    shader.SetUniformMat4("view_matrix", view_matrix);
 
     // Draw the entity
     glDrawElements(GL_TRIANGLES, shader.GetParticleSize(), GL_UNSIGNED_INT, 0);

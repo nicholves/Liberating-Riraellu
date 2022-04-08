@@ -78,8 +78,11 @@ void Game::Init(void)
     // Initialize shader
     shader_.Init((resources_directory_g+std::string("/vertex_shader.glsl")).c_str(), (resources_directory_g+std::string("/fragment_shader.glsl")).c_str());
     shader_.CreateSprite();
-    shader_.Enable();
-    shader_.SetSpriteAttributes();
+    //shader_.Enable();
+    //shader_.SetSpriteAttributes();
+
+    player_shader_.Init((resources_directory_g + std::string("/player_vertex_shader.glsl")).c_str(), (resources_directory_g + std::string("/player_fragment_shader.glsl")).c_str());
+    player_shader_.CreateSprite();
 
     // Set up z-buffer for rendering
     glEnable(GL_DEPTH_TEST);
@@ -159,7 +162,7 @@ void Game::Setup(void)
     background_objects_.push_back (background);
 
     // Setup the player object (position, texture, vertex count)
-    // Note that, in this specific implementation, the player object should always be the first object in the game object vector (but not this one :) )
+    // Note that, in this specific implementation, the player object should always be the first object in the game object vector)
     game_objects_.push_back(new PlayerGameObject(glm::vec3(0.0f, 0.0f, 0.0f), tex_[0],  true, 1, 10));
 
     //// Setup blades object
@@ -179,9 +182,6 @@ void Game::Setup(void)
     shield->SetScale (0.4);
     shield->setParent (game_objects_[0]);*/
 
-    // Set up enemy objects
-    //Turret* turret = new Turret(glm::vec3(-2.0f, 2.0f, 0.0f), tex_[13], true, 1, 5); //turrets can no longer be individual
-    Turret::SetupBullets(&bullet_objects_, &missile_objects_, &tex_[7], &tex_[14], game_objects_[0]); //sets up bullet static variables
     UI_Element::Setup(game_objects_[0]); // setup ui elements object
     //enemy_objects_.push_back (turret);
 
@@ -193,6 +193,9 @@ void Game::Setup(void)
     Base* base = new Base(glm::vec3(-16.0f, 12.0f, 0.0f), tex_[31], false, 1, 1, 10.0f);
     bases_.push_back(base);
     
+    // Set up enemy objects
+    Turret* turret = new Turret(glm::vec3(-2.0f, 2.0f, 0.0f), tex_[13], true, 1, 5, bases_[0]); //creates a single turret
+    Turret::SetupBullets(&bullet_objects_, &missile_objects_, &particle_objects_, &tex_[7], &tex_[14], &tex_[30], game_objects_[0]); //sets up bullet static variables
     // Set up collectibles
     collectible_objects_.push_back (new CollectibleObject (glm::vec3 (3.0f, 3.0f, 0.0f), tex_[9],  true, 1, 0));
     collectible_objects_.push_back (new CollectibleObject (glm::vec3 (3.0f, -3.0f, 0.0f), tex_[9],  true, 1, 0));
@@ -252,12 +255,14 @@ void Game::MainLoop(void)
         
         // Get player game object
         //GameObject* player = game_objects_[0];
-        glm::vec3 curpos = player->GetPosition();
+        //glm::vec3 curpos = player->GetPosition();
 
-        glm::mat4 view_matrix = glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom));
-        view_matrix = view_matrix * glm::translate(glm::mat4(0.5f), -curpos);
-        shader_.SetUniformMat4("view_matrix", view_matrix);
-        particle_shader_.SetUniformMat4("view_matrix", view_matrix);
+        //glm::mat4 view_matrix = glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom));
+        //view_matrix = view_matrix * glm::translate(glm::mat4(0.5f), -curpos);
+        //shader_.SetUniformMat4("view_matrix", view_matrix);
+        //particle_shader_.SetUniformMat4("view_matrix", view_matrix);
+        
+        
 
 
         // Calculate delta time
@@ -366,6 +371,7 @@ void Game::SetAllTextures(void)
     SetTexture(tex_[30], (resources_directory_g + std::string("/textures/particleOrb.png")).c_str(), false);
     glBindTexture(GL_TEXTURE_2D, tex_[0]);
 
+    SetTexture(tex_[36], (resources_directory_g + std::string("/textures/blank.png")).c_str(), false);
     SetTexture(tex_[31], (resources_directory_g + std::string("/textures/base.png")).c_str(), false);
 
     //big squre
@@ -455,8 +461,10 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
             missile_objects_.push_back(missile);
             player->SetMissileCooldown(0);
             //Attach particle system to missile
-            GameObject* particles = new ParticleSystem(glm::vec3(0.0f, -0.5f, 0.0f), tex_[15], missile_objects_[missile_objects_.size() - 1]);
+            ParticleSystem* particles = new ParticleSystem(glm::vec3(0.3f, 0.0f, 0.0f), tex_[30], missile_objects_[missile_objects_.size() - 1]);
             particles->SetScale(0.2);
+            particles->SetRotation(90);
+            
             particle_objects_.push_back(particles);
             player->addHealth(-1);
         }
@@ -532,6 +540,12 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
 
     EnemyDetect ();
 
+    //View_matrix initialization goes here
+    float cameraZoom = 0.175f;    
+    glm::vec3 curpos = player->GetPosition();
+
+    glm::mat4 view_matrix = glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom));
+    view_matrix = view_matrix * glm::translate(glm::mat4(0.5f), -curpos);
 
     // Update and render the ui elements
     int health = player->getHealth();
@@ -542,7 +556,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     healthbar_->SetScaley(health_percent);
 
     player->Update(delta_time);
-    player->Render(shader_);
+    player->Render(shader_, view_matrix);
 
     for (int i = 0; i < ui_objects_.size(); i++) {
         ui_objects_[i]->Update(delta_time);
@@ -552,7 +566,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
             continue;
         }
 
-        ui_objects_[i]->Render(shader_);
+        ui_objects_[i]->Render(shader_, view_matrix);
     }
 
     // Update and render the enemy objects
@@ -561,7 +575,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         if (!gameOver) {
             current_enemy_object->Update (delta_time);
         }
-        current_enemy_object->Render (shader_);
+        current_enemy_object->Render (shader_, view_matrix);
     }
 
     // Update and render the bullet objects
@@ -580,7 +594,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
             --i;
         }
         else {
-            current_bullet_object->Render (shader_);
+            current_bullet_object->Render (shader_, view_matrix);
         }
 
     }
@@ -591,7 +605,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         if (!gameOver) {
             current_collectible_object->Update (delta_time);
         }
-        current_collectible_object->Render (shader_);
+        current_collectible_object->Render (shader_, view_matrix);
     }
 
 
@@ -601,7 +615,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         if (!gameOver) {
             current_base->Update(delta_time);
         }
-        current_base->Render(shader_);
+        current_base->Render(shader_, view_matrix);
     }
 
     // Update and render buoys
@@ -610,7 +624,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         if (!gameOver) {
             current_buoy_object->Update (delta_time);
         }
-        current_buoy_object->Render (shader_);
+        current_buoy_object->Render (shader_, view_matrix);
     }
 
     // Update and render missiles
@@ -629,20 +643,13 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         
         hitTarget = BulletCastCollision(current_missile_object);
         double missileTime = current_missile_object->getTimer();
-        if (missileTime > duration || hitTarget) {
-            //GET RID OF IF STATEMENT WHEN PARTICLES ARE WORKING PROPERLY
-            //This is here because the enemy missiles currently don't instantiate any particle system.
-            //So in order to avoid "vector out of subscript range", check if the missile is from the player
-            if (current_missile_object->GetFrom() == "player") {
-                delete particle_objects_[i];
-                particle_objects_.erase(particle_objects_.begin() + i);
-            }
-            delete particle_objects_[i];
-            missile_objects_.erase(missile_objects_.begin() + i);
+        if (missileTime > duration || hitTarget) {          
+            particle_objects_.erase(particle_objects_.begin() + i);            
+            missile_objects_.erase(missile_objects_.begin() + i); //If the missile time has exceeded its duration, or if it hit something, get rid of it and it's particles
             --i;
         }
         else {
-            current_missile_object->Render(shader_);
+            current_missile_object->Render(shader_, view_matrix);
         }
     }
 
@@ -657,8 +664,15 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
 
        
 
-        // Render game object
-        current_game_object->Render (shader_);
+            // Render game object
+            current_game_object->Render (shader_, view_matrix);
+    }
+
+
+    // Update and render the background
+    for (int i = 0; i < background_objects_.size(); i++) {
+        background_objects_[i]->Update(delta_time);
+        background_objects_[i]->Render(shader_, view_matrix);
     }
     //This isn't properly rendering the particles yet...
     for (int i = 0; i < particle_objects_.size(); i++) {
@@ -666,18 +680,12 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         current_particle_object->Update(delta_time);
 
         if (current_particle_object != nullptr) {
-            current_particle_object->Render(particle_shader_, current_time_);
+            current_particle_object->Render(particle_shader_, view_matrix, current_time_);
             std::cout << "Rendering Particles" << std::endl;
         }
         else {
-            current_particle_object->Render(shader_, current_time_);
+            current_particle_object->Render(shader_, view_matrix, current_time_);
         }
-    }
-
-    // Update and render the background
-    for (int i = 0; i < background_objects_.size(); i++) {
-        background_objects_[i]->Update(delta_time);
-        background_objects_[i]->Render(shader_);
     }
 
     IterateCollision();
@@ -690,8 +698,9 @@ void Game::IterateCollision () {
     bool playerHit = false;
     for (int i = 0; i < enemy_objects_.size (); ++i) {
         if (DetectCollision (player, enemy_objects_[i])) {
-            DamagePlayer (5);
-            delete enemy_objects_[i];
+            if (player->GetCollidable()) {
+                DamagePlayer (5);
+            }
             enemy_objects_.erase (enemy_objects_.begin () + i);
             break;
         }
@@ -808,7 +817,6 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
                     delete game_objects_.at(enemy_objects_.size() - 1);
                     game_objects_.erase(game_objects_.end() - 1); //Erase a shield
                     player->minusShield(1); //Update shield erase in player object
-                    std::cout << player->getNumShield() << std::endl;
                     player->resetIFrame(); //Make player invincible for short time
 
                 }
@@ -826,6 +834,7 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
 
 void Game::DamagePlayer (int damage) {
     PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
+    
     if (player->getNumShield() > 0) {
         float shieldOrbsBefore = ceil(player->getNumShield () / float((MAX_SHIELD) / 4)); // Current number of orbs is proportional to shielding
         //std::cout << "Shields before: " << player->getNumShield () / ((MAX_SHIELD) / 4) << std::endl;
@@ -860,6 +869,7 @@ void Game::ApplyEffect (int collectible_hit, CollectibleObject* collectible) {
                 else {
                     Shield* backshield = (Shield*)(game_objects_.back ());
                     shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], false, 1, backshield->getOrbit ());
+                    std::cout << "Added shield" << std::endl;
                 }
                 shield->SetScale (0.4);
                 shield->setParent (game_objects_[0]);
@@ -1056,7 +1066,7 @@ void Game::Render(std::vector<UI_Element*> extras) {
     //render extra ui elements
     for (int i = 0; i < extras.size(); ++i) {
         extras[i]->Update(delta_time);
-        extras[i]->Render(shader_);
+        extras[i]->Render(shader_, view_matrix);
     }
 
     //render normal ui elements
@@ -1068,7 +1078,7 @@ void Game::Render(std::vector<UI_Element*> extras) {
         }
 
         ui_objects_[i]->Update(delta_time);
-        ui_objects_[i]->Render(shader_);
+        ui_objects_[i]->Render(shader_, view_matrix);
     }
 
     // Update and render the enemy objects
@@ -1077,7 +1087,7 @@ void Game::Render(std::vector<UI_Element*> extras) {
         if (!gameOver) {
             current_enemy_object->Update(delta_time);
         }
-        current_enemy_object->Render(shader_);
+        current_enemy_object->Render(shader_, view_matrix);
     }
 
     // Update and render the bullet objects
@@ -1096,7 +1106,7 @@ void Game::Render(std::vector<UI_Element*> extras) {
             --i;
         }
         else {
-            current_bullet_object->Render(shader_);
+            current_bullet_object->Render(shader_, view_matrix);
         }
 
     }
@@ -1107,7 +1117,7 @@ void Game::Render(std::vector<UI_Element*> extras) {
         if (!gameOver) {
             current_collectible_object->Update(delta_time);
         }
-        current_collectible_object->Render(shader_);
+        current_collectible_object->Render(shader_, view_matrix);
     }
 
 
@@ -1117,7 +1127,7 @@ void Game::Render(std::vector<UI_Element*> extras) {
         if (!gameOver) {
             current_base->Update(delta_time);
         }
-        current_base->Render(shader_);
+        current_base->Render(shader_, view_matrix);
     }
 
     // Update and render buoys
@@ -1126,7 +1136,7 @@ void Game::Render(std::vector<UI_Element*> extras) {
         if (!gameOver) {
             current_buoy_object->Update(delta_time);
         }
-        current_buoy_object->Render(shader_);
+        current_buoy_object->Render(shader_, view_matrix);
     }
 
     // Update and render missiles
@@ -1158,7 +1168,7 @@ void Game::Render(std::vector<UI_Element*> extras) {
             --i;
         }
         else {
-            current_missile_object->Render(shader_);
+            current_missile_object->Render(shader_, view_matrix);
         }
     }
 
@@ -1172,7 +1182,7 @@ void Game::Render(std::vector<UI_Element*> extras) {
         }
 
         // Render game object
-        current_game_object->Render(shader_);
+        current_game_object->Render(shader_, view_matrix);
     }
     //This isn't properly rendering the particles yet...
     for (int i = 0; i < particle_objects_.size(); i++) {
@@ -1180,18 +1190,18 @@ void Game::Render(std::vector<UI_Element*> extras) {
         current_particle_object->Update(delta_time);
 
         if (current_particle_object != nullptr) {
-            current_particle_object->Render(particle_shader_, current_time_);
+            current_particle_object->Render(particle_shader_, view_matrix, current_time_);
             std::cout << "Rendering Particles" << std::endl;
         }
         else {
-            current_particle_object->Render(shader_, current_time_);
+            current_particle_object->Render(shader_, view_matrix, current_time_);
         }
     }
 
     // Update and render the background
     for (int i = 0; i < background_objects_.size(); i++) {
         background_objects_[i]->Update(delta_time);
-        background_objects_[i]->Render(shader_);
+        background_objects_[i]->Render(shader_, view_matrix);
     }
 }
 

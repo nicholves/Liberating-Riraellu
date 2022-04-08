@@ -21,6 +21,7 @@ Shader::Shader(void)
 }
 
 
+
 void Shader::Init(const char *vertPath, const char *fragPath)
 {
    
@@ -79,7 +80,6 @@ void Shader::Init(const char *vertPath, const char *fragPath)
     glDeleteShader(vs);
     glDeleteShader(fs);
 
-
     // Set attributes for shaders
     // Should be consistent with how we created the buffers for the square
     GLint vertex_att = glGetAttribLocation(shader_program_, "vertex");
@@ -94,6 +94,7 @@ void Shader::Init(const char *vertPath, const char *fragPath)
     glVertexAttribPointer(tex_att, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (void *)(5 * sizeof(GLfloat)));
     glEnableVertexAttribArray(tex_att);
 }
+
 
 void Shader::CreateSprite(void) {
 
