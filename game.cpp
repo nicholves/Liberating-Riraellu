@@ -643,7 +643,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         
         hitTarget = BulletCastCollision(current_missile_object);
         double missileTime = current_missile_object->getTimer();
-        if (missileTime > duration || hitTarget) {          
+        if (missileTime > duration || hitTarget) {         
             particle_objects_.erase(particle_objects_.begin() + i);            
             missile_objects_.erase(missile_objects_.begin() + i); //If the missile time has exceeded its duration, or if it hit something, get rid of it and it's particles
             --i;
@@ -662,10 +662,8 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
             current_game_object->Update (delta_time);
         }
 
-       
-
             // Render game object
-            current_game_object->Render (shader_, view_matrix);
+        current_game_object->Render (shader_, view_matrix);
     }
 
 
@@ -701,6 +699,7 @@ void Game::IterateCollision () {
             if (player->GetCollidable()) {
                 DamagePlayer (5);
             }
+            delete enemy_objects_[i];
             enemy_objects_.erase (enemy_objects_.begin () + i);
             break;
         }
@@ -794,16 +793,14 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
     if (bullet->GetFrom() == "player") {
 
         //Checking for enemy collision with bullets
-        for (int i = 0; i < enemy_objects_.size(); i++) {
-            if (enemy_objects_[i]->GetCollidable()) {
-                float distance = glm::length(enemy_objects_[i]->GetPosition() - bullet->GetPosition());
-                //Increased hitbox of turret boi because bullets were missing too often.
-                if (distance < 0.35f) {
-                    delete enemy_objects_[i];
-                    enemy_objects_.erase(enemy_objects_.begin() + i); 
-                    std::cout << "hit" << std::endl;
-                    return true;                
-                }
+        for (int i = 0; i < enemy_objects_.size(); i++) {            
+            float distance = glm::length(enemy_objects_[i]->GetPosition() - bullet->GetPosition());
+            //Increased hitbox of turret boi because bullets were missing too often.
+            if (distance < 0.35f) {
+                delete enemy_objects_[i];
+                enemy_objects_.erase(enemy_objects_.begin() + i); 
+                std::cout << "hit" << std::endl;
+                return true;                
             }
         }
     }
