@@ -14,6 +14,8 @@ namespace game {
 		health_ = health;
 	}
 
+	EnemyGameObject::~EnemyGameObject() {}
+
 	void EnemyGameObject::Update (double delta_time) {
 		if (state == 0) {
 			internal_timer += delta_time;

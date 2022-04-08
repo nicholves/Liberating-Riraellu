@@ -1,5 +1,6 @@
 #include "base.h"
 
+#include <iostream>
 #include <stdlib.h>
 #include <time.h>
 #include "turret.h"

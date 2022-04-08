@@ -162,11 +162,11 @@ void Game::Setup(void)
     // Note that, in this specific implementation, the player object should always be the first object in the game object vector (but not this one :) )
     game_objects_.push_back(new PlayerGameObject(glm::vec3(0.0f, 0.0f, 0.0f), tex_[0],  true, 1, 10));
 
-    // Setup blades object
-    game_objects_.push_back (new HelicopterBlades (glm::vec3 (0.0f, 0.13f, 0.0f), tex_[6],  false, 1));
+    //// Setup blades object
+    //game_objects_.push_back (new HelicopterBlades (glm::vec3 (0.0f, 0.13f, 0.0f), tex_[6],  false, 1));
 
-    HelicopterBlades* blades = (HelicopterBlades*)(game_objects_[1]);
-    blades->setParent (game_objects_[0]);
+    //HelicopterBlades* blades = (HelicopterBlades*)(game_objects_[1]);
+    //blades->setParent (game_objects_[0]);
 
     // Set up shields (applied to the player)
     //game_objects_.push_back (new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], false, 1, 0));
@@ -190,7 +190,7 @@ void Game::Setup(void)
     drone->SetScale(2.0f);
     enemy_objects_.push_back(drone);
 
-    Base* base = new Base(glm::vec3(-16.0f, 12.0f, 0.0f), tex_[31], false, 1, 0, 10.0f);
+    Base* base = new Base(glm::vec3(-16.0f, 12.0f, 0.0f), tex_[31], false, 1, 1, 10.0f);
     bases_.push_back(base);
     
     // Set up collectibles
@@ -437,7 +437,7 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
             BulletObject* bullet = new BulletObject
             (curpos + glm::vec3 ((-(0.25 * sin (currotRadians))), ((0.25 * cos (currotRadians))), 0),
                 tex_[7],  false, 1, currot, 30.0f, "player");
-            bullet->SetScale (0.3f);
+            bullet->SetScale (0.5f);
             bullet_objects_.push_back (bullet);
             *bullet_cooldown = 0.20;
         }
@@ -575,6 +575,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         hitTarget = BulletCastCollision (current_bullet_object);
         double bulletTime = current_bullet_object->getTimer ();
         if (bulletTime > duration || hitTarget) {
+            delete bullet_objects_[i];
             bullet_objects_.erase (bullet_objects_.begin () + i);
             --i;
         }
@@ -633,8 +634,10 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
             //This is here because the enemy missiles currently don't instantiate any particle system.
             //So in order to avoid "vector out of subscript range", check if the missile is from the player
             if (current_missile_object->GetFrom() == "player") {
+                delete particle_objects_[i];
                 particle_objects_.erase(particle_objects_.begin() + i);
             }
+            delete particle_objects_[i];
             missile_objects_.erase(missile_objects_.begin() + i);
             --i;
         }
@@ -645,18 +648,6 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
 
     // Update and render other game objects
     for (int i = (int)game_objects_.size () - 1; i >= 0; --i) {
-
-        if (i == 1) { // Helicopter blades get updated before their list order
-            continue;
-        }
-
-        if (i == 0) { // Exception to update the blades after the helicopter is updated, but it needs to be rendered first.
-            if (!gameOver) {
-                game_objects_[1]->Update(delta_time);
-            }
-            game_objects_[1]->Render(shader_);
-            continue;
-        }
 
         // Get the current game object
         current_game_object = game_objects_[i];
@@ -700,6 +691,7 @@ void Game::IterateCollision () {
     for (int i = 0; i < enemy_objects_.size (); ++i) {
         if (DetectCollision (player, enemy_objects_[i])) {
             DamagePlayer (5);
+            delete enemy_objects_[i];
             enemy_objects_.erase (enemy_objects_.begin () + i);
             break;
         }
@@ -798,7 +790,9 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
                 float distance = glm::length(enemy_objects_[i]->GetPosition() - bullet->GetPosition());
                 //Increased hitbox of turret boi because bullets were missing too often.
                 if (distance < 0.35f) {
+                    delete enemy_objects_[i];
                     enemy_objects_.erase(enemy_objects_.begin() + i); 
+                    std::cout << "hit" << std::endl;
                     return true;                
                 }
             }
@@ -811,6 +805,7 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
             float distance = glm::length(player->GetPosition() - bullet->GetPosition());
             if (distance < 0.2f) {
                 if (player->getNumShield() > 0 && !player->IsInvincible()) {
+                    delete game_objects_.at(enemy_objects_.size() - 1);
                     game_objects_.erase(game_objects_.end() - 1); //Erase a shield
                     player->minusShield(1); //Update shield erase in player object
                     std::cout << player->getNumShield() << std::endl;
@@ -871,17 +866,20 @@ void Game::ApplyEffect (int collectible_hit, CollectibleObject* collectible) {
                 game_objects_.push_back (shield);
             }
             player->addShield(MAX_SHIELD/4);
+            delete collectible_objects_[collectible_hit];
             collectible_objects_.erase (collectible_objects_.begin () + collectible_hit);
         }
     }
     else if (collectible->getType () == 1) {
         if (player->getHealth () < MAX_HEALTH) {
             player->addHealth (3);
+            delete collectible_objects_[collectible_hit];
             collectible_objects_.erase (collectible_objects_.begin () + collectible_hit);
         }
     }
     else if (collectible->getType () == 2) {
         player->cloak ();
+        delete collectible_objects_[collectible_hit];
         collectible_objects_.erase (collectible_objects_.begin () + collectible_hit);
     }
 }
@@ -1093,6 +1091,7 @@ void Game::Render(std::vector<UI_Element*> extras) {
         hitTarget = BulletCastCollision(current_bullet_object);
         double bulletTime = current_bullet_object->getTimer();
         if (bulletTime > duration || hitTarget) {
+            delete bullet_objects_[i];
             bullet_objects_.erase(bullet_objects_.begin() + i);
             --i;
         }
@@ -1151,8 +1150,10 @@ void Game::Render(std::vector<UI_Element*> extras) {
             //This is here because the enemy missiles currently don't instantiate any particle system.
             //So in order to avoid "vector out of subscript range", check if the missile is from the player
             if (current_missile_object->GetFrom() == "player") {
+                delete particle_objects_[i];
                 particle_objects_.erase(particle_objects_.begin() + i);
             }
+            delete missile_objects_[i];
             missile_objects_.erase(missile_objects_.begin() + i);
             --i;
         }
@@ -1164,21 +1165,10 @@ void Game::Render(std::vector<UI_Element*> extras) {
     // Update and render other game objects
     for (int i = (int)game_objects_.size() - 1; i >= 0; --i) {
 
-        if (i == 1) { // Helicopter blades get updated before their list order
-            continue;
-        }
-
         // Get the current game object
         current_game_object = game_objects_[i];
         if (!gameOver) {
             current_game_object->Update(delta_time);
-        }
-
-        if (i == 0) { // Exception to update the blades after the helicopter is updated, but it needs to be rendered first.
-            if (!gameOver) {
-                game_objects_[1]->Update(delta_time);
-            }
-            game_objects_[1]->Render(shader_);
         }
 
         // Render game object
