@@ -15,8 +15,14 @@ namespace game {
 
             void Render(Shader &shader, glm::mat4 view_matrix, double current_time);
 
+            inline void SetLifetime(float lt) { lifetime = lt; }
+
+            inline float GetLifetime() { return lifetime; }
+
         private:
             GameObject *parent_;
+
+            float lifetime;
 
     }; // class ParticleSystem
 

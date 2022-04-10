@@ -63,14 +63,18 @@ namespace game {
 
             Shader player_shader_;
 
+            Shader jet_shader_;
+
             // Size of geometry to be rendered
             int size_;
 
             // References to textures
-#define NUM_TEXTURES 37
+#define NUM_TEXTURES 47
             GLuint tex_[NUM_TEXTURES];
 
             std::vector<GLuint> text_arr_;
+
+            std::vector<GLuint> explo_arr_;
 
             // List for background game objects
             // This is so we can create a tilemap without making the game_objects_ array overloaded with stuff
@@ -109,7 +113,13 @@ namespace game {
             bool selection_made_; //a choice has been made on the pause menu
             int choice_;
 
+            //Missile particles
             std::vector<GameObject*> particle_objects_;
+
+            std::vector<GameObject*> player_particles_;
+
+            //Explosion particles
+            std::vector<GameObject*> explosion_objects_;
 
             // Keep track of time for particles
             double current_time_;

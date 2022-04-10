@@ -55,6 +55,8 @@ set(SRCS
     drone.cpp
     player_fragment_shader.glsl
     player_vertex_shader.glsl
+    jet_fragment_shader.glsl
+    jet_vertex_shader.glsl
 )
 
 # Add path name to configuration file

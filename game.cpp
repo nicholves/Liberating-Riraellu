@@ -72,6 +72,9 @@ void Game::Init(void)
     particle_shader_.Init((resources_directory_g + std::string("/particle_vertex_shader.glsl")).c_str(), (resources_directory_g + std::string("/particle_fragment_shader.glsl")).c_str());
     particle_shader_.CreateParticles();
 
+    //Meant to be the explosion shader but more needs to be done to get explosion looking like an explosion
+    jet_shader_.Init((resources_directory_g + std::string("/jet_vertex_shader.glsl")).c_str(), (resources_directory_g + std::string("/jet_fragment_shader.glsl")).c_str());
+    jet_shader_.CreateParticles();
 
     // Set up square geometry
 
@@ -113,17 +116,6 @@ void Game::Setup(void)
     // Load textures
     SetAllTextures();
 
-    // Setup background
-    //GameObject* background = new GameObject (glm::vec3 (0.0f, 0.0f, 0.0f), tex_[3],  false, 10);
-    //background->SetScale (50.0);
-    //game_objects_.push_back (background);
-    //GameObject* background = new GameObject(glm::vec3((float)0, (float)0, 0.0f), tex_[11],  false, 1);
-    //background->SetScale(10.0f);
-    //background_objects_.push_back(background);
-    //Islands
-    GameObject* island = new GameObject(glm::vec3(0.0f, 4.0f, 0.0f), tex_[14], false, 1);
-    //island->SetScale(10.0f);
-    //background_objects_.push_back(island);
 
     Healthbar* health_foreground = new Healthbar(glm::vec3(1.43f, -0.15f, 0.0f), tex_[16], 1);
     healthbar_ = health_foreground;
@@ -190,7 +182,7 @@ void Game::Setup(void)
     drone->SetScale(2.0f);
     enemy_objects_.push_back(drone);
 
-    Base* base = new Base(glm::vec3(-16.0f, 12.0f, 0.0f), tex_[31], false, 1, 1, 10.0f);
+    Base* base = new Base(glm::vec3(-16.0f, 12.0f, 0.0f), tex_[31], false, 1, 4, 10.0f);
     bases_.push_back(base);
     
     // Set up enemy objects
@@ -219,10 +211,10 @@ void Game::Setup(void)
 
     // Setup particle system
     /*
+    */
     GameObject* particles = new ParticleSystem(glm::vec3(0.0f, -0.5f, 0.0f), tex_[30], game_objects_[0]);
     particles->SetScale(0.2);
-    particle_objects_.push_back(particles);
-    */
+    player_particles_.push_back(particles);
 
     
 
@@ -330,7 +322,7 @@ void Game::SetAllTextures(void)
 {
     // Load all textures that we will need
     glGenTextures(NUM_TEXTURES, tex_);
-    SetTexture(tex_[0], (resources_directory_g+std::string("/textures/chopper.png")).c_str(), false);
+    SetTexture(tex_[0], (resources_directory_g+std::string("/textures/jetfighter.png")).c_str(), false);
     SetTexture(tex_[1], (resources_directory_g+std::string("/textures/plane_red.png")).c_str(), false);
     SetTexture(tex_[2], (resources_directory_g+std::string("/textures/plane_green.png")).c_str(), false);
     SetTexture(tex_[3], (resources_directory_g+std::string("/textures/dune.png")).c_str(), true);
@@ -375,7 +367,6 @@ void Game::SetAllTextures(void)
     SetTexture(tex_[30], (resources_directory_g + std::string("/textures/particleOrb.png")).c_str(), false);
     glBindTexture(GL_TEXTURE_2D, tex_[0]);
 
-    SetTexture(tex_[36], (resources_directory_g + std::string("/textures/blank.png")).c_str(), false);
     SetTexture(tex_[31], (resources_directory_g + std::string("/textures/base.png")).c_str(), false);
 
     //big squre
@@ -389,11 +380,30 @@ void Game::SetAllTextures(void)
 
     //drone texture
     SetTexture(tex_[35], (resources_directory_g + std::string("/textures/drone.png")).c_str(), false);
+    //Particle texture
+    SetTexture(tex_[36], (resources_directory_g + std::string("/textures/blank.png")).c_str(), false);
 
+    //Explosion Textures
+
+    SetTexture(tex_[37], (resources_directory_g + std::string("/textures/explosions/bubble_explo1.png")).c_str(), false);
+    SetTexture(tex_[38], (resources_directory_g + std::string("/textures/explosions/bubble_explo2.png")).c_str(), false);
+    SetTexture(tex_[39], (resources_directory_g + std::string("/textures/explosions/bubble_explo3.png")).c_str(), false);
+    SetTexture(tex_[40], (resources_directory_g + std::string("/textures/explosions/bubble_explo4.png")).c_str(), false);
+    SetTexture(tex_[41], (resources_directory_g + std::string("/textures/explosions/bubble_explo5.png")).c_str(), false);
+    SetTexture(tex_[42], (resources_directory_g + std::string("/textures/explosions/bubble_explo6.png")).c_str(), false);
+    SetTexture(tex_[43], (resources_directory_g + std::string("/textures/explosions/bubble_explo7.png")).c_str(), false);
+    SetTexture(tex_[44], (resources_directory_g + std::string("/textures/explosions/bubble_explo8.png")).c_str(), false);
+    SetTexture(tex_[45], (resources_directory_g + std::string("/textures/explosions/bubble_explo9.png")).c_str(), false);
+    SetTexture(tex_[46], (resources_directory_g + std::string("/textures/explosions/bubble_explo10.png")).c_str(), false);
 
     //setup number textures:
     for (int i = 18; i < 28; ++i) {
         text_arr_.push_back(tex_[i]);
+    }
+
+    //Setup explosion textures
+    for (int i = 37; i < 47; i++) {
+        explo_arr_.push_back(tex_[i]);
     }
 
     //setup static variables number
@@ -613,14 +623,6 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     }
 
 
-    // Update and render bases
-    for (int i = 0; i < bases_.size(); i++) {
-        current_base = bases_[i];
-        if (!gameOver) {
-            current_base->Update(delta_time);
-        }
-        current_base->Render(shader_, view_matrix);
-    }
 
     // Update and render buoys
     for (int i = 0; i < buoy_objects_.size (); i++) {
@@ -648,7 +650,13 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         hitTarget = BulletCastCollision(current_missile_object);
         double missileTime = current_missile_object->getTimer();
         if (missileTime > duration || hitTarget) {         
-            particle_objects_.erase(particle_objects_.begin() + i);            
+            //If the missile hit, create an explosion at it's point of impact            
+            GameObject* explosion = new GameObject(current_missile_object->GetPosition(), explo_arr_[0], false, 1);
+            explosion->SetScale(1.2f);
+            explosion->SetTime(0);
+            explosion_objects_.push_back(explosion);            
+            
+            particle_objects_.erase(particle_objects_.begin() + i);           
             missile_objects_.erase(missile_objects_.begin() + i); //If the missile time has exceeded its duration, or if it hit something, get rid of it and it's particles
             --i;
         }
@@ -658,7 +666,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     }
 
     // Update and render other game objects
-    for (int i = (int)game_objects_.size () - 1; i >= 0; --i) {
+    for (int i = 0; i < game_objects_.size(); i++) {
 
         // Get the current game object
         current_game_object = game_objects_[i];
@@ -671,12 +679,41 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     }
 
 
+
+    for (int i = 0; i < explosion_objects_.size(); i++) {
+        GameObject* current_explosion_object = explosion_objects_[i];
+        current_explosion_object->Update(delta_time);
+        std::cout << current_explosion_object->GetTime() << std::endl;
+        if (current_explosion_object->GetTexture() < 47 && current_explosion_object->GetTime() > 0.07f) {
+            current_explosion_object->SetTexture(current_explosion_object->GetTexture() + 1);
+            current_explosion_object->SetTime(0);
+        }
+        else if (!(current_explosion_object->GetTime() > 0.07f)) {
+            current_explosion_object->SetTime(current_explosion_object->GetTime() + delta_time);
+        }
+        else {
+            delete current_explosion_object;
+            explosion_objects_.erase(explosion_objects_.begin() + i);
+            --i;
+            continue;
+        }
+        current_explosion_object->Render(shader_, view_matrix);
+      
+    }
+    // Update and render bases
+    for (int i = 0; i < bases_.size(); i++) {
+        current_base = bases_[i];
+        if (!gameOver) {
+            current_base->Update(delta_time);
+        }
+        current_base->Render(shader_, view_matrix);
+    }
     // Update and render the background
     for (int i = 0; i < background_objects_.size(); i++) {
         background_objects_[i]->Update(delta_time);
         background_objects_[i]->Render(shader_, view_matrix);
     }
-    //This isn't properly rendering the particles yet...
+    //Render particles (missiles)
     for (int i = 0; i < particle_objects_.size(); i++) {
         ParticleSystem* current_particle_object = dynamic_cast<ParticleSystem*>(particle_objects_[i]);
         current_particle_object->Update(delta_time);
@@ -687,6 +724,20 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         else {
             current_particle_object->Render(shader_, view_matrix, current_time_);
         }
+    }
+
+    //Render particles (player)
+    for (int i = 0; i < player_particles_.size(); i++) {
+        ParticleSystem* player_particle = dynamic_cast<ParticleSystem*>(player_particles_[i]);
+        player_particle->Update(delta_time);
+
+        if (player_particle != nullptr) {
+            player_particle->Render(jet_shader_, view_matrix, current_time_); 
+        }
+        else {
+            player_particle->Render(shader_, view_matrix, current_time_);
+        }
+        
     }
 
     IterateCollision();
@@ -1125,14 +1176,6 @@ void Game::Render(std::vector<UI_Element*> extras) {
     }
 
 
-    // Update and render bases
-    for (int i = 0; i < bases_.size(); i++) {
-        current_base = bases_[i];
-        if (!gameOver) {
-            current_base->Update(delta_time);
-        }
-        current_base->Render(shader_, view_matrix);
-    }
 
     // Update and render buoys
     for (int i = 0; i < buoy_objects_.size(); i++) {
@@ -1159,10 +1202,7 @@ void Game::Render(std::vector<UI_Element*> extras) {
 
         hitTarget = BulletCastCollision(current_missile_object);
         double missileTime = current_missile_object->getTimer();
-        if (missileTime > duration || hitTarget) {
-            //GET RID OF IF STATEMENT WHEN PARTICLES ARE WORKING PROPERLY
-            //This is here because the enemy missiles currently don't instantiate any particle system.
-            //So in order to avoid "vector out of subscript range", check if the missile is from the player
+        if (missileTime > duration || hitTarget) {         
             
             delete particle_objects_[i];
             particle_objects_.erase(particle_objects_.begin() + i);
@@ -1188,24 +1228,31 @@ void Game::Render(std::vector<UI_Element*> extras) {
         // Render game object
         current_game_object->Render(shader_, view_matrix);
     }
-    //This isn't properly rendering the particles yet...
-    for (int i = 0; i < particle_objects_.size(); i++) {
-        ParticleSystem* current_particle_object = dynamic_cast<ParticleSystem*>(particle_objects_[i]);
-        current_particle_object->Update(delta_time);
-
-        if (current_particle_object != nullptr) {
-            current_particle_object->Render(particle_shader_, view_matrix, current_time_);
-            std::cout << "Rendering Particles" << std::endl;
+    // Update and render bases
+    for (int i = 0; i < bases_.size(); i++) {
+        current_base = bases_[i];
+        if (!gameOver) {
+            current_base->Update(delta_time);
         }
-        else {
-            current_particle_object->Render(shader_, view_matrix, current_time_);
-        }
+        current_base->Render(shader_, view_matrix);
     }
 
     // Update and render the background
     for (int i = 0; i < background_objects_.size(); i++) {
         background_objects_[i]->Update(delta_time);
         background_objects_[i]->Render(shader_, view_matrix);
+    }
+    //This isn't properly rendering the particles yet...
+    for (int i = 0; i < particle_objects_.size(); i++) {
+        ParticleSystem* current_particle_object = dynamic_cast<ParticleSystem*>(particle_objects_[i]);
+        current_particle_object->Update(delta_time);
+
+        if (current_particle_object != nullptr) {
+            //current_particle_object->Render(particle_shader_, view_matrix, current_time_);           
+        }
+        else {
+            current_particle_object->Render(shader_, view_matrix, current_time_);
+        }
     }
 }
 

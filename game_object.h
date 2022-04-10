@@ -33,6 +33,8 @@ namespace game {
             inline bool GetCollidable (void) { return collidable_; }
             inline float GetRotation (void) { return rotation_; }
             inline glm::mat4& GetTransfMatrix (void) { return transformation_matrix_; };
+            inline GLuint GetTexture(void) { return texture_; }
+            inline float GetTime(void) { return time_between; }
 
             // Setters
             virtual inline void SetPosition(const glm::vec3& position) { position_ = position; }
@@ -51,7 +53,7 @@ namespace game {
             inline void SetRotation (float rotation) { rotation_ = rotation; }
             inline void SetVelocity(const glm::vec3& velocity) { velocity_ = velocity; }
             inline void SetCollidable (bool c) { collidable_ = c; }
-
+            inline void SetTime(float time) { time_between = time; }
 
         protected:
             // Object's Transform Variables
@@ -79,6 +81,9 @@ namespace game {
 
             // Number of tiles to represent object with
             int tiles_;
+
+            //Time between frames for explosion
+            float time_between;
 
     }; // class GameObject
 
