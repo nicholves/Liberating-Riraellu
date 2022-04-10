@@ -50,7 +50,7 @@ namespace game {
 
 		static GLuint* particleTex_; //the texture of the particle
 
-	}; // Class EnemyGameObject
+	}; // Class Turret
 
 }
 

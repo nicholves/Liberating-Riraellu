@@ -25,6 +25,7 @@ set(HDRS
     particle_system.h
     base.h
     drone.h
+    helicopter.h
 )
  
 set(SRCS
@@ -53,6 +54,7 @@ set(SRCS
     particle_system.cpp
     base.cpp
     drone.cpp
+    helicopter.cpp
     player_fragment_shader.glsl
     player_vertex_shader.glsl
 )

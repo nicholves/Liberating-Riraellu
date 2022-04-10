@@ -23,6 +23,7 @@
 #include "number.h"
 #include "base.h"
 #include "drone.h"
+#include "helicopter.h"
 
 #define FONT_SIZE 20.0f
 
@@ -153,6 +154,9 @@ namespace game {
 
             // Applies damage to the player. If the player's # of shields is -1, then we'll apply game over
             void DamagePlayer (int);
+
+            //
+            void addShieldToPlayer ();
 
             // Applies the effect of the collectible
             void ApplyEffect (int, CollectibleObject*);
