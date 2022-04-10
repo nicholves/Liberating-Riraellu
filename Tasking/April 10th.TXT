@@ -1,0 +1,10 @@
+1. Minimap + splash screen when victory
+
+2. Score moddifying when doing stuff + cloaking effect
+
+3. Distribute enemies and bases and powerups
+
+
+1. Nick
+2. Austin
+3. Carter

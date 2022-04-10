@@ -472,7 +472,7 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
                 tex_[7],  false, 1, currot, 30.0f, "player");
             bullet->SetScale (0.5f);
             bullet_objects_.push_back (bullet);
-            *bullet_cooldown = 0.20;
+            *bullet_cooldown = 0.10f;
         }
     }
     if (glfwGetKey(window_, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && player->getMissileCooldown() >= MISSILE_COOLDOWN) {
@@ -858,9 +858,12 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
                 float distance = glm::length(enemy_objects_[i]->GetPosition() - bullet->GetPosition());
                 //Increased hitbox of turret boi because bullets were missing too often.
                 if (distance < 0.35f) {
-                    delete enemy_objects_[i];
-                    enemy_objects_.erase(enemy_objects_.begin() + i); 
-                    return true;                
+                    enemy_objects_[i]->setHealth(enemy_objects_[i]->getHealth() - bullet->GetDamage());
+                    if (enemy_objects_[i]->getHealth() <= 0) {
+                        delete enemy_objects_[i];
+                        enemy_objects_.erase(enemy_objects_.begin() + i);
+                        return true;
+                    }
                 }
         }
     }
