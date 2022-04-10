@@ -23,6 +23,7 @@
 #include "number.h"
 #include "base.h"
 #include "drone.h"
+#include "helicopter.h"
 
 #define FONT_SIZE 20.0f
 
@@ -52,6 +53,9 @@ namespace game {
             //Pause to allow player to do something
             void ChooseLoop(void);
 
+            //Game over loop
+            void GameOverLoop(void);
+
         private:
             // Main window: pointer to the GLFW window structure
             GLFWwindow *window_;
@@ -69,7 +73,7 @@ namespace game {
             int size_;
 
             // References to textures
-#define NUM_TEXTURES 47
+#define NUM_TEXTURES 49
             GLuint tex_[NUM_TEXTURES];
 
             std::vector<GLuint> text_arr_;
@@ -163,6 +167,9 @@ namespace game {
 
             // Applies damage to the player. If the player's # of shields is -1, then we'll apply game over
             void DamagePlayer (int);
+
+            //
+            void addShieldToPlayer ();
 
             // Applies the effect of the collectible
             void ApplyEffect (int, CollectibleObject*);

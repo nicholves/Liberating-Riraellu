@@ -11,6 +11,8 @@ namespace game {
 		: GameObject (position, texture, collidable, tiles) {
 	}
 
+	HelicopterBlades::~HelicopterBlades () {}
+
 	// Detemines which object the blades will attach to
 	void HelicopterBlades::setParent (GameObject* p) {
 		parent_ = p;
@@ -19,7 +21,7 @@ namespace game {
 	// Update just uses the parent function
 	void HelicopterBlades::Update (double delta_time) {
 		GameObject::Update (delta_time);
-		rotation_ += 16;
+		rotation_ += 12;
 		transformation_matrix_ = parent_->GetTransfMatrix () * transformation_matrix_;
 		float invincible_timer = ((PlayerGameObject*)(parent_))->getInvincibilityTimer();
 		if (invincible_timer > 1.5f) {

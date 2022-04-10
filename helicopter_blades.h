@@ -6,11 +6,12 @@
 
 namespace game {
 
-	// Inherits from GameObject
+	// Inherits from EnemyGameObject
 	class HelicopterBlades : public GameObject {
 
 		public:
 			HelicopterBlades (const glm::vec3& position, GLuint texture, bool collidable, int tiles);
+			~HelicopterBlades ();
 
 			// Update function for moving the helicopter blades around
 			void Update (double delta_time) override;

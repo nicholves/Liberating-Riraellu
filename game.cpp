@@ -191,6 +191,15 @@ void Game::Setup(void)
     BulletObject::SetDamageBullet(1);
     MissileObject::SetDamageMissile(4);
 
+    Helicopter* helicopter = new Helicopter (glm::vec3 (-2.0f, 2.0f, 0.0f), tex_[38], true, 1, 5);
+    Helicopter::SetupBullets (&bullet_objects_, &tex_[7], game_objects_[0]);
+    HelicopterBlades* blades = new HelicopterBlades (glm::vec3 (0.0f, 0.13f, 0.0f), tex_[6], false, 1);
+    blades->setParent (helicopter);
+    helicopter->setBlades (blades);
+
+    enemy_objects_.push_back (helicopter);
+
+
 
     // Set up collectibles
     collectible_objects_.push_back (new CollectibleObject (glm::vec3 (3.0f, 3.0f, 0.0f), tex_[9],  true, 1, 0));
@@ -227,7 +236,7 @@ void Game::MainLoop(void)
     double lastTime = glfwGetTime();
     double timeHold = 0; // A counter for displaying an explosion for a certain length
     double bulletCooldown = 0; // Keeps track of the cooldown between shots
-    int numShield = 2; // Keeps track of the number of shields the player has
+    int numShield = 0; // Keeps track of the number of shields the player has
 
     // Loop while the user did not close the window
     while (!glfwWindowShouldClose(window_)){
@@ -383,18 +392,22 @@ void Game::SetAllTextures(void)
     //Particle texture
     SetTexture(tex_[36], (resources_directory_g + std::string("/textures/blank.png")).c_str(), false);
 
+    //game over screen
+    SetTexture(tex_[37], (resources_directory_g + std::string("/textures/game_over.png")).c_str(), false);
+    // Helicopter texture
+    SetTexture (tex_[38], (resources_directory_g + std::string ("/textures/chopper.png")).c_str (), false);
     //Explosion Textures
 
-    SetTexture(tex_[37], (resources_directory_g + std::string("/textures/explosions/bubble_explo1.png")).c_str(), false);
-    SetTexture(tex_[38], (resources_directory_g + std::string("/textures/explosions/bubble_explo2.png")).c_str(), false);
-    SetTexture(tex_[39], (resources_directory_g + std::string("/textures/explosions/bubble_explo3.png")).c_str(), false);
-    SetTexture(tex_[40], (resources_directory_g + std::string("/textures/explosions/bubble_explo4.png")).c_str(), false);
-    SetTexture(tex_[41], (resources_directory_g + std::string("/textures/explosions/bubble_explo5.png")).c_str(), false);
-    SetTexture(tex_[42], (resources_directory_g + std::string("/textures/explosions/bubble_explo6.png")).c_str(), false);
-    SetTexture(tex_[43], (resources_directory_g + std::string("/textures/explosions/bubble_explo7.png")).c_str(), false);
-    SetTexture(tex_[44], (resources_directory_g + std::string("/textures/explosions/bubble_explo8.png")).c_str(), false);
-    SetTexture(tex_[45], (resources_directory_g + std::string("/textures/explosions/bubble_explo9.png")).c_str(), false);
-    SetTexture(tex_[46], (resources_directory_g + std::string("/textures/explosions/bubble_explo10.png")).c_str(), false);
+    SetTexture(tex_[39], (resources_directory_g + std::string("/textures/explosions/bubble_explo1.png")).c_str(), false);
+    SetTexture(tex_[40], (resources_directory_g + std::string("/textures/explosions/bubble_explo2.png")).c_str(), false);
+    SetTexture(tex_[41], (resources_directory_g + std::string("/textures/explosions/bubble_explo3.png")).c_str(), false);
+    SetTexture(tex_[42], (resources_directory_g + std::string("/textures/explosions/bubble_explo4.png")).c_str(), false);
+    SetTexture(tex_[43], (resources_directory_g + std::string("/textures/explosions/bubble_explo5.png")).c_str(), false);
+    SetTexture(tex_[44], (resources_directory_g + std::string("/textures/explosions/bubble_explo6.png")).c_str(), false);
+    SetTexture(tex_[45], (resources_directory_g + std::string("/textures/explosions/bubble_explo7.png")).c_str(), false);
+    SetTexture(tex_[46], (resources_directory_g + std::string("/textures/explosions/bubble_explo8.png")).c_str(), false);
+    SetTexture(tex_[47], (resources_directory_g + std::string("/textures/explosions/bubble_explo9.png")).c_str(), false);
+    SetTexture(tex_[48], (resources_directory_g + std::string("/textures/explosions/bubble_explo10.png")).c_str(), false);
 
     //setup number textures:
     for (int i = 18; i < 28; ++i) {
@@ -402,7 +415,7 @@ void Game::SetAllTextures(void)
     }
 
     //Setup explosion textures
-    for (int i = 37; i < 47; i++) {
+    for (int i = 39; i < 49; i++) {
         explo_arr_.push_back(tex_[i]);
     }
 
@@ -461,9 +474,6 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
             bullet_objects_.push_back (bullet);
             *bullet_cooldown = 0.20;
         }
-        else {
-            *bullet_cooldown -= delta_time;
-        }
     }
     if (glfwGetKey(window_, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && player->getMissileCooldown() >= MISSILE_COOLDOWN) {
         GameObject* target = FindClosest();
@@ -484,19 +494,14 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
         }
     }
 
-    //temporary health demonstration until health system implemented
-    //don't work rn
-    if (glfwGetKey(window_, GLFW_KEY_LEFT) == GLFW_PRESS) {
-        ui_objects_[0]->SetScaley(2.5f);
+
+    if (glfwGetKey(window_, GLFW_KEY_UP) == GLFW_PRESS && !gameOver) {
+        gameOver = true;
+        GameOverLoop();
     }
-    if (glfwGetKey(window_, GLFW_KEY_UP) == GLFW_PRESS) {
-        ui_objects_[0]->SetScaley(2.0f);
-    }
-    if (glfwGetKey(window_, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-        ui_objects_[0]->SetScaley(1.5f);
-    }
-    if (glfwGetKey(window_, GLFW_KEY_DOWN) == GLFW_PRESS) {
-        ui_objects_[0]->SetScaley(1.0f);
+
+    if (glfwGetKey(window_, GLFW_KEY_DOWN) == GLFW_PRESS && !gameOver) {
+        score_ += 5;
     }
 
     if (glfwGetKey(window_, GLFW_KEY_1) == GLFW_PRESS) {
@@ -538,9 +543,9 @@ void Game::EnemyDetect (void) { // Used for enemy objects to detect the player
 
 void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown, int* num_shield)
 {
-    if (!gameOver) {
-        Controls(delta_time, bullet_cooldown);
-    }
+
+    Controls(delta_time, bullet_cooldown);
+    
     current_time_ += delta_time;
 
     GameObject* current_game_object;
@@ -564,6 +569,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     // Update and render the ui elements
     int health = player->getHealth();
 
+    *bullet_cooldown -= delta_time;
 
     float health_percent = health * (2.5f / 10);
 
@@ -684,7 +690,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         GameObject* current_explosion_object = explosion_objects_[i];
         current_explosion_object->Update(delta_time);
         std::cout << current_explosion_object->GetTime() << std::endl;
-        if (current_explosion_object->GetTexture() < 47 && current_explosion_object->GetTime() > 0.07f) {
+        if (current_explosion_object->GetTexture() < 49 && current_explosion_object->GetTime() > 0.07f) {
             current_explosion_object->SetTexture(current_explosion_object->GetTexture() + 1);
             current_explosion_object->SetTime(0);
         }
@@ -864,14 +870,7 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
         if (player->GetCollidable()) {
             float distance = glm::length(player->GetPosition() - bullet->GetPosition());
             if (distance < 0.2f) {
-                if (player->getNumShield() > 0 && !player->IsInvincible()) {
-                    delete game_objects_.at(enemy_objects_.size() - 1);
-                    game_objects_.erase(game_objects_.end() - 1); //Erase a shield
-                    player->minusShield(1); //Update shield erase in player object
-                    player->resetIFrame(); //Make player invincible for short time
-
-                }
-                else if(!player->IsInvincible()) {
+                if(!player->IsInvincible()) {
                     int damage = bullet->GetDamage();
                     DamagePlayer(damage);
                 }
@@ -896,6 +895,7 @@ void Game::DamagePlayer (int damage) {
         //std::cout << "Shields now: " << player->getNumShield() << std::endl;
         //std::cout << "Before: " << shieldOrbsBefore << " After: " << shieldOrbsAfter << std::endl;
         if (shieldOrbsBefore > shieldOrbsAfter) {
+            delete game_objects_.at (game_objects_.size () - 1);
             game_objects_.erase (game_objects_.end () - 1);
         }
  
@@ -905,32 +905,37 @@ void Game::DamagePlayer (int damage) {
         player->resetIFrame (); //Make player invincible for short time
     }
     else {
-        //gameOver = true; // TODO: flip back to true once gameOver working
+        GameOverLoop(); // TODO: flip back to true once gameOver working
     }
 
     float scale = player->getHealth() / 4;
     healthbar_->SetScaley(scale);
 }
 
+void Game::addShieldToPlayer () {
+    PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
+    if (player->getNumShield () < (MAX_SHIELD / 4) * 3 + 1) {
+        Shield* shield;
+        if (player->getNumShield () == 0) {
+            shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], false, 1, 0);
+        }
+        else {
+            Shield* backshield = (Shield*)(game_objects_.back ());
+            shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], false, 1, backshield->getOrbit ());
+            std::cout << "Added shield" << std::endl;
+        }
+        shield->SetScale (0.4);
+        shield->setParent (game_objects_[0]);
+        game_objects_.push_back (shield);
+    }
+    player->addShield (MAX_SHIELD / 4);
+}
+
 void Game::ApplyEffect (int collectible_hit, CollectibleObject* collectible) {
     PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
     if (collectible->getType() == 0) { // Check the collectible type
         if (player->getNumShield() < MAX_SHIELD) { // Player can't have more than MAX_SHIELD shielding
-            if (player->getNumShield () < (MAX_SHIELD / 4) * 3 + 1) {
-                Shield* shield;
-                if (player->getNumShield () == 0) {
-                    shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], false, 1, 0);
-                }
-                else {
-                    Shield* backshield = (Shield*)(game_objects_.back ());
-                    shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], false, 1, backshield->getOrbit ());
-                    std::cout << "Added shield" << std::endl;
-                }
-                shield->SetScale (0.4);
-                shield->setParent (game_objects_[0]);
-                game_objects_.push_back (shield);
-            }
-            player->addShield(MAX_SHIELD/4);
+            addShieldToPlayer ();
             delete collectible_objects_[collectible_hit];
             collectible_objects_.erase (collectible_objects_.begin () + collectible_hit);
         }
@@ -1050,18 +1055,7 @@ void Game::ChooseLoop() {
                 break;
             }
 
-            Shield* shield;
-            if (player->getNumShield() == 0) {
-                shield = new Shield(glm::vec3(0.0f, 0.8f, 0.0f), tex_[8], false, 1, 0);
-            }
-            else {
-                Shield* backshield = (Shield*)(game_objects_.back());
-                shield = new Shield(glm::vec3(0.0f, 0.8f, 0.0f), tex_[8], false, 1, backshield->getOrbit());
-            }
-            shield->SetScale(0.4);
-            shield->setParent(game_objects_[0]);
-            game_objects_.push_back(shield);
-            player->addShield(1);
+            addShieldToPlayer ();
             break;
     }
 
@@ -1092,9 +1086,8 @@ void Game::Render(std::vector<UI_Element*> extras) {
 
     double delta_time = 0;
     double garbage = 99999;
-    if (!gameOver) {
-        Controls(delta_time, &garbage);
-    }
+
+    Controls(delta_time, &garbage);
     current_time_ += delta_time;
 
     GameObject* current_game_object;
@@ -1255,5 +1248,54 @@ void Game::Render(std::vector<UI_Element*> extras) {
         }
     }
 }
+
+void Game::GameOverLoop() {
+    PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
+    glm::vec3 player_pos = player->GetPosition();
+    paused_ = true;
+
+    const int arr_size = 3;
+    int added_ui_count[arr_size] = { 0, 0, 0 };
+
+
+    //vector of extra ui elements to pass into render
+    std::vector<UI_Element*> extras;
+
+    //big square background
+    UI_Element* menu1 = new UI_Element(glm::vec3(player->GetPosition()), tex_[37], 1);
+    menu1->SetAbsolute(true);
+    menu1->SetScale(15.0f);
+
+
+
+
+    //Score value
+    Number* menu2 = new Number(glm::vec3(1.0f, -2.0f, 0), tex_[17], 1, score_);
+    menu2->SetScale(FONT_SIZE * 0.8);
+
+    UI_Element* score_prompt = new UI_Element(glm::vec3(-1.0f, -2.0f, 0), tex_[17], 1);
+    score_prompt->SetScale(FONT_SIZE * 0.8);
+
+
+
+    extras.push_back(score_prompt);
+    extras.push_back(menu2);
+    extras.push_back(menu1);
+
+
+    // Loop while the user did not close the window
+    while (!glfwWindowShouldClose(window_)) {
+        // Update the game
+        Render(extras);
+
+
+
+        // Push buffer drawn in the background onto the display
+        glfwSwapBuffers(window_);
+
+        // Update other events like input handling
+        glfwPollEvents();
+    }
+   }
 
 } // namespace game

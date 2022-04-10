@@ -1,0 +1,10 @@
+1. Game over screen, and maybe mini-map.
+
+2. Helicopter ai enemy
+
+3. More particle systems explosions, player jet texture + afterburners
+
+
+1. Nick
+2. Carter
+3. Austin
