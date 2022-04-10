@@ -26,6 +26,7 @@ set(HDRS
     base.h
     drone.h
     helicopter.h
+    minimap.h
 )
  
 set(SRCS
@@ -55,6 +56,7 @@ set(SRCS
     base.cpp
     drone.cpp
     helicopter.cpp
+    minimap.cpp
     player_fragment_shader.glsl
     player_vertex_shader.glsl
     jet_fragment_shader.glsl

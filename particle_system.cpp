@@ -18,7 +18,7 @@ void ParticleSystem::Update(double delta_time) {
 	// Call the parent's update method to move the object in standard way, if desired
 	GameObject::Update(delta_time);
     if (lifetime != NULL) {
-        lifetime -= delta_time;
+        lifetime -= (float)delta_time;
     }
 }
 
@@ -62,7 +62,7 @@ void ParticleSystem::Render(Shader& shader, glm::mat4 view_matrix, double curren
     shader.SetUniformMat4("transformation_matrix", transformation_matrix);
 
     // Set the time in the shader
-    shader.SetUniform1f("time", current_time);
+    shader.SetUniform1f("time", (float)current_time);
 
     shader.SetUniformMat4("view_matrix", view_matrix);
 

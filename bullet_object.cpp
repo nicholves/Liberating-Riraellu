@@ -11,7 +11,7 @@ namespace game {
 	BulletObject::BulletObject(const glm::vec3& position, GLuint texture, bool collidable, int tiles, float direction, float speed, std::string from)
 		: GameObject (position, texture, collidable, tiles) {
 		rotation_ = direction;
-		duration_ = 0.2f;
+		duration_ = 0.4f;
 		float currotRadians = rotation_ * 3.14159f / 180.0f;
 		speed_ = speed; //speed is the magnitude for the velocity of bullets
 		velocity_ = glm::vec3 ( // Velocity is constant and set from the start

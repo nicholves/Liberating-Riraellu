@@ -24,6 +24,7 @@
 #include "base.h"
 #include "drone.h"
 #include "helicopter.h"
+#include "minimap.h"
 
 #define FONT_SIZE 20.0f
 
@@ -73,7 +74,7 @@ namespace game {
             int size_;
 
             // References to textures
-#define NUM_TEXTURES 49
+#define NUM_TEXTURES 52
             GLuint tex_[NUM_TEXTURES];
 
             std::vector<GLuint> text_arr_;

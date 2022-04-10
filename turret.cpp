@@ -91,11 +91,11 @@ namespace game {
 
 			
 			//Attach particle system to missile
-			int size = missile_objects_ptr_->size() - 1;
+			int size = (int)(missile_objects_ptr_->size() - 1);
 			//MissileObject* endMissile = &(missile_objects_ptr_[size]);
 			//GameObject* particles = new ParticleSystem(glm::vec3(0.0f, -0.5f, 0.0f), *particleTex_, missile_objects_ptr_[size]);
 			GameObject* particles = new ParticleSystem(glm::vec3(0.3f, 0.0f, 0.0f), *particleTex_, missile);
-			particles->SetScale(0.2);
+			particles->SetScale(0.2f);
 			particles->SetRotation(90);
 			particle_objects_ptr_->push_back(particles);
 			

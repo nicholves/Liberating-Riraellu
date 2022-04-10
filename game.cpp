@@ -163,16 +163,7 @@ void Game::Setup(void)
     //HelicopterBlades* blades = (HelicopterBlades*)(game_objects_[1]);
     //blades->setParent (game_objects_[0]);
 
-    // Set up shields (applied to the player)
-    //game_objects_.push_back (new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], false, 1, 0));
-    //game_objects_.push_back (new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], false, 1, 90));
 
-    /*Shield* shield = (Shield*)(game_objects_[2]);
-    shield->SetScale (0.4);
-    shield->setParent (game_objects_[0]);*/
-    /*shield = (Shield*)(game_objects_[3]);
-    shield->SetScale (0.4);
-    shield->setParent (game_objects_[0]);*/
 
     UI_Element::Setup(game_objects_[0]); // setup ui elements object
     //enemy_objects_.push_back (turret);
@@ -214,7 +205,7 @@ void Game::Setup(void)
     collectible_objects_.push_back (new CollectibleObject (glm::vec3 (5.0f, -5.0f, 0.0f), tex_[29], true, 1, 2));
 
     for (int i = 0; i < collectible_objects_.size (); ++i) {
-        collectible_objects_[i]->SetScale (0.7);
+        collectible_objects_[i]->SetScale (0.7f);
     }
 
 
@@ -222,8 +213,14 @@ void Game::Setup(void)
     /*
     */
     GameObject* particles = new ParticleSystem(glm::vec3(0.0f, -0.5f, 0.0f), tex_[30], game_objects_[0]);
-    particles->SetScale(0.2);
+    particles->SetScale(0.2f);
     player_particles_.push_back(particles);
+
+
+    //setup minimap
+    Minimap* minimap = new Minimap(glm::vec3(3.8f, 4.2f, 0.0f), tex_[49], 1);
+    minimap->SetScale(8.0f);
+    ui_objects_.push_back(minimap);
 
     
 
@@ -409,6 +406,13 @@ void Game::SetAllTextures(void)
     SetTexture(tex_[47], (resources_directory_g + std::string("/textures/explosions/bubble_explo9.png")).c_str(), false);
     SetTexture(tex_[48], (resources_directory_g + std::string("/textures/explosions/bubble_explo10.png")).c_str(), false);
 
+
+    //minimap textures
+    SetTexture(tex_[49], (resources_directory_g + std::string("/textures/radar_display.png")).c_str(), false);
+    SetTexture(tex_[50], (resources_directory_g + std::string("/textures/red_chevron.png")).c_str(), false);
+    SetTexture(tex_[51], (resources_directory_g + std::string("/textures/green_circle.png")).c_str(), false);
+
+
     //setup number textures:
     for (int i = 18; i < 28; ++i) {
         text_arr_.push_back(tex_[i]);
@@ -424,6 +428,9 @@ void Game::SetAllTextures(void)
 
     //setup static variables for base
     Base::SetupBases(&enemy_objects_, &tex_[13]);
+
+    //setup statics for minimap
+    Minimap::Setup(&enemy_objects_, &bases_, &tex_[51], &tex_[50]);
 }
 
 
@@ -472,7 +479,7 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
                 tex_[7],  false, 1, currot, 30.0f, "player");
             bullet->SetScale (0.5f);
             bullet_objects_.push_back (bullet);
-            *bullet_cooldown = 0.20;
+            *bullet_cooldown = 0.10f;
         }
     }
     if (glfwGetKey(window_, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && player->getMissileCooldown() >= MISSILE_COOLDOWN) {
@@ -486,7 +493,7 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
             player->SetMissileCooldown(0);
             //Attach particle system to missile
             ParticleSystem* particles = new ParticleSystem(glm::vec3(0.3f, 0.0f, 0.0f), tex_[30], missile_objects_[missile_objects_.size() - 1]);
-            particles->SetScale(0.2);
+            particles->SetScale(0.2f);
             particles->SetRotation(90);
             
             particle_objects_.push_back(particles);
@@ -521,7 +528,6 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
 
 void Game::EnemyDetect (void) { // Used for enemy objects to detect the player
     PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
-    float distance;    
     
     for (int i = 0; i < enemy_objects_.size(); ++i) {
         float distance = glm::length (player->GetPosition () - enemy_objects_[i]->GetPosition ());
@@ -694,13 +700,12 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     for (int i = 0; i < explosion_objects_.size(); i++) {
         GameObject* current_explosion_object = explosion_objects_[i];
         current_explosion_object->Update(delta_time);
-        std::cout << current_explosion_object->GetTime() << std::endl;
         if (current_explosion_object->GetTexture() < 49 && current_explosion_object->GetTime() > 0.07f) {
             current_explosion_object->SetTexture(current_explosion_object->GetTexture() + 1);
             current_explosion_object->SetTime(0);
         }
         else if (!(current_explosion_object->GetTime() > 0.07f)) {
-            current_explosion_object->SetTime(current_explosion_object->GetTime() + delta_time);
+            current_explosion_object->SetTime(current_explosion_object->GetTime() + (float)delta_time);
         }
         else {
             delete current_explosion_object;
@@ -864,9 +869,12 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
                 float distance = glm::length(enemy_objects_[i]->GetPosition() - bullet->GetPosition());
                 //Increased hitbox of turret boi because bullets were missing too often.
                 if (distance < 0.35f) {
-                    delete enemy_objects_[i];
-                    enemy_objects_.erase(enemy_objects_.begin() + i); 
-                    return true;                
+                    enemy_objects_[i]->setHealth(enemy_objects_[i]->getHealth() - bullet->GetDamage());
+                    if (enemy_objects_[i]->getHealth() <= 0) {
+                        delete enemy_objects_[i];
+                        enemy_objects_.erase(enemy_objects_.begin() + i);
+                        return true;
+                    }
                 }
         }
     }
@@ -891,6 +899,7 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
 
 void Game::DamagePlayer (int damage) {
     PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
+    std::cout << "shields before: " << player->getNumShield() << std::endl;
     
     if (player->getNumShield() > 0) {
         float shieldOrbsBefore = ceil(player->getNumShield () / float((MAX_SHIELD) / 4)); // Current number of orbs is proportional to shielding
@@ -914,8 +923,10 @@ void Game::DamagePlayer (int damage) {
         GameOverLoop(); // TODO: flip back to true once gameOver working
     }
 
-    float scale = player->getHealth() / 4;
+    float scale = (float)(player->getHealth() / 4.0f);
     healthbar_->SetScaley(scale);
+
+    std::cout << "shields after: " << player->getNumShield() << std::endl;
 }
 
 void Game::addShieldToPlayer () {
@@ -930,7 +941,7 @@ void Game::addShieldToPlayer () {
             shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], false, 1, backshield->getOrbit ());
             std::cout << "Added shield" << std::endl;
         }
-        shield->SetScale (0.4);
+        shield->SetScale (0.4f);
         shield->setParent (game_objects_[0]);
         game_objects_.push_back (shield);
     }
@@ -1124,7 +1135,7 @@ void Game::Render(std::vector<UI_Element*> extras) {
     }
 
     //render normal ui elements
-    for (int i = ui_objects_.size() - 1; i >= 0; --i) {
+    for (int i = (int)ui_objects_.size() - 1; i >= 0; --i) {
 
         //don't render missile ready ui element when missile isn't ready
         if (ui_objects_[i] == missile_ready_ && ((PlayerGameObject*)game_objects_[0])->getMissileCooldown() < MISSILE_COOLDOWN) {
