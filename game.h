@@ -53,6 +53,9 @@ namespace game {
             //Pause to allow player to do something
             void ChooseLoop(void);
 
+            //Game over loop
+            void GameOverLoop(void);
+
         private:
             // Main window: pointer to the GLFW window structure
             GLFWwindow *window_;
@@ -68,7 +71,7 @@ namespace game {
             int size_;
 
             // References to textures
-#define NUM_TEXTURES 37
+#define NUM_TEXTURES 39
             GLuint tex_[NUM_TEXTURES];
 
             std::vector<GLuint> text_arr_;
