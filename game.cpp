@@ -390,6 +390,9 @@ void Game::SetAllTextures(void)
     //drone texture
     SetTexture(tex_[35], (resources_directory_g + std::string("/textures/drone.png")).c_str(), false);
 
+    //game over screen
+    SetTexture(tex_[37], (resources_directory_g + std::string("/textures/game_over.png")).c_str(), false);
+
 
     //setup number textures:
     for (int i = 18; i < 28; ++i) {
@@ -474,19 +477,14 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
         }
     }
 
-    //temporary health demonstration until health system implemented
-    //don't work rn
-    if (glfwGetKey(window_, GLFW_KEY_LEFT) == GLFW_PRESS) {
-        ui_objects_[0]->SetScaley(2.5f);
+
+    if (glfwGetKey(window_, GLFW_KEY_UP) == GLFW_PRESS && !gameOver) {
+        gameOver = true;
+        GameOverLoop();
     }
-    if (glfwGetKey(window_, GLFW_KEY_UP) == GLFW_PRESS) {
-        ui_objects_[0]->SetScaley(2.0f);
-    }
-    if (glfwGetKey(window_, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-        ui_objects_[0]->SetScaley(1.5f);
-    }
-    if (glfwGetKey(window_, GLFW_KEY_DOWN) == GLFW_PRESS) {
-        ui_objects_[0]->SetScaley(1.0f);
+
+    if (glfwGetKey(window_, GLFW_KEY_DOWN) == GLFW_PRESS && !gameOver) {
+        score_ += 5;
     }
 
     if (glfwGetKey(window_, GLFW_KEY_1) == GLFW_PRESS) {
@@ -528,9 +526,9 @@ void Game::EnemyDetect (void) { // Used for enemy objects to detect the player
 
 void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown, int* num_shield)
 {
-    if (!gameOver) {
-        Controls(delta_time, bullet_cooldown);
-    }
+
+    Controls(delta_time, bullet_cooldown);
+    
     current_time_ += delta_time;
 
     GameObject* current_game_object;
@@ -854,7 +852,7 @@ void Game::DamagePlayer (int damage) {
         player->resetIFrame (); //Make player invincible for short time
     }
     else {
-        //gameOver = true; // TODO: flip back to true once gameOver working
+        GameOverLoop(); // TODO: flip back to true once gameOver working
     }
 
     float scale = player->getHealth() / 4;
@@ -1041,9 +1039,8 @@ void Game::Render(std::vector<UI_Element*> extras) {
 
     double delta_time = 0;
     double garbage = 99999;
-    if (!gameOver) {
-        Controls(delta_time, &garbage);
-    }
+
+    Controls(delta_time, &garbage);
     current_time_ += delta_time;
 
     GameObject* current_game_object;
@@ -1208,5 +1205,54 @@ void Game::Render(std::vector<UI_Element*> extras) {
         background_objects_[i]->Render(shader_, view_matrix);
     }
 }
+
+void Game::GameOverLoop() {
+    PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
+    glm::vec3 player_pos = player->GetPosition();
+    paused_ = true;
+
+    const int arr_size = 3;
+    int added_ui_count[arr_size] = { 0, 0, 0 };
+
+
+    //vector of extra ui elements to pass into render
+    std::vector<UI_Element*> extras;
+
+    //big square background
+    UI_Element* menu1 = new UI_Element(glm::vec3(player->GetPosition()), tex_[37], 1);
+    menu1->SetAbsolute(true);
+    menu1->SetScale(15.0f);
+
+
+
+
+    //Score value
+    Number* menu2 = new Number(glm::vec3(1.0f, -2.0f, 0), tex_[17], 1, score_);
+    menu2->SetScale(FONT_SIZE * 0.8);
+
+    UI_Element* score_prompt = new UI_Element(glm::vec3(-1.0f, -2.0f, 0), tex_[17], 1);
+    score_prompt->SetScale(FONT_SIZE * 0.8);
+
+
+
+    extras.push_back(score_prompt);
+    extras.push_back(menu2);
+    extras.push_back(menu1);
+
+
+    // Loop while the user did not close the window
+    while (!glfwWindowShouldClose(window_)) {
+        // Update the game
+        Render(extras);
+
+
+
+        // Push buffer drawn in the background onto the display
+        glfwSwapBuffers(window_);
+
+        // Update other events like input handling
+        glfwPollEvents();
+    }
+   }
 
 } // namespace game
