@@ -167,8 +167,8 @@ void Shader::CreateParticles(void)
     for (int i = 0; i < NUM_PARTICLES; i++) {
         if (i % 4 == 0) {
             //theta = (two_pi*(rand() % 1000) / 1000.0f);
-            theta = (2.0 * (rand() % 10000) / 10000.0f - 1.0f) * 0.13f + pi;
-            r = 0.0f + 0.8 * (rand() % 10000) / 10000.0f;
+            theta = (2.0f * (rand() % 10000) / 10000.0f - 1.0f) * 0.13f + pi;
+            r = 0.0f + 0.8f * (rand() % 10000) / 10000.0f;
             tmod = (rand() % 10000) / 10000.0f;
         }
 

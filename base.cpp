@@ -15,7 +15,7 @@ namespace game {
 
 	Base::Base(const glm::vec3& position, GLuint texture, bool collidable, int tiles, int turrets, float scale)
 		: GameObject(position, texture, collidable, tiles) {
-		srand(time(NULL));
+		srand((unsigned int)time(NULL));
 		SetScale(scale);
 		active_turrets_ = turrets;
 		is_enemy_ = true;
@@ -24,7 +24,7 @@ namespace game {
 		//rotation_ = rand() % 360; // for random orientation
 
 		for (int i = 0; i < turrets; ++i) {
-			float angle = rand() % 360;
+			float angle = (float)(rand() % 360);
 			float radius = scale_ * 0.75f;
 
 			float x = cos(angle) * radius;

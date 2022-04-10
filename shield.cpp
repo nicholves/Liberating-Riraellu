@@ -5,7 +5,7 @@ namespace game {
 	Shield::Shield (const glm::vec3& position, GLuint texture, bool collidable, int tiles, double additional_rotation)
 		: GameObject (position, texture, collidable, tiles) {
 		//rotation_ = additional_rotation + 90;
-		orbit = additional_rotation + 90;
+		orbit = (float)(additional_rotation + 90);
 	}
 
 	void Shield::setParent (GameObject* p) {

@@ -72,7 +72,7 @@ void PlayerGameObject::Update(double delta_time) {
 	// Call the parent's update method to move the object in standard way, if desired
 	GameObject::Update(delta_time);
 	missile_cooldown_ += delta_time;
-	cloak_timer += delta_time;
+	cloak_timer += (float)delta_time;
 	if (cloak_timer >= CLOAK_LENGTH) {
 		uncloak ();
 	}
