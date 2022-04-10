@@ -490,7 +490,7 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
             particles->SetRotation(90);
             
             particle_objects_.push_back(particles);
-            player->addHealth(-1);
+            //player->addHealth(-1);
         }
     }
 
@@ -576,7 +576,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     healthbar_->SetScaley(health_percent);
 
     player->Update(delta_time);
-    player->Render(shader_, view_matrix);
+    player->Render(player_shader_, view_matrix);
 
     for (int i = 0; i < ui_objects_.size(); i++) {
         ui_objects_[i]->Update(delta_time);
@@ -679,9 +679,14 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         if (!gameOver) {
             current_game_object->Update (delta_time);
         }
+        // Render game object
+        if (i == 0) {
+            current_game_object->Render(player_shader_, view_matrix);
+        }
 
-            // Render game object
-        current_game_object->Render (shader_, view_matrix);
+        else {
+            current_game_object->Render (shader_, view_matrix);
+        }
     }
 
 
@@ -760,6 +765,7 @@ void Game::IterateCollision () {
             if (player->GetCollidable()) {
                 DamagePlayer (5);
             }
+            score_ -= 50;
             delete enemy_objects_[i];
             enemy_objects_.erase (enemy_objects_.begin () + i);
             break;

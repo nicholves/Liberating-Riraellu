@@ -89,6 +89,13 @@ void PlayerGameObject::Render(Shader &shader, glm::mat4 view_matrix) {
 
 	glm::mat4 transformation_matrix = GetTransfMatrix();
 	// TODO: Add other types of transformations
+	if (cloaked) {
+		shader.SetUniform1f("cloaked", 0.5f);
+	}
+	else {
+		shader.SetUniform1f("cloaked", 0.0f);
+	}
+
 
 	// Set the transformation matrix in the shader
 	shader.SetUniformMat4("transformation_matrix", transformation_matrix);	
