@@ -495,7 +495,7 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
             BulletObject* bullet = new BulletObject
             (curpos + glm::vec3 ((-(0.25 * sin (currotRadians))), ((0.25 * cos (currotRadians))), 0),
                 tex_[7],  false, 1, currot, 30.0f, "player");
-            bullet->SetScale (0.5f);
+            bullet->SetScale (0.3f);
             bullet_objects_.push_back (bullet);
             *bullet_cooldown = 0.10f;
         }
