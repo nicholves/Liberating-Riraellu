@@ -60,7 +60,7 @@ player is travelling (less particles for lower speeds).
 	Note: there are explosions in the game when the missiles despawn but these were implemented
 	using a "frame by frame" approach rather than with a particle system.
 ### 5. Collectible Items
-See above @Collectibles
+See above [Collectibles](https://github.com/nicholves/Liberating-Riraellu/blob/main/README.md#collectibles)
 
 ### 6. Movement and Transformations
 #### 6.1 All movement in our game is done using transformations.
