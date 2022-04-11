@@ -57,6 +57,9 @@ namespace game {
             //Game over loop
             void GameOverLoop(void);
 
+            //Increase score for player
+            void UpdateScore(int score);
+
         private:
             // Main window: pointer to the GLFW window structure
             GLFWwindow *window_;

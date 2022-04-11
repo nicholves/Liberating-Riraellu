@@ -770,7 +770,7 @@ void Game::IterateCollision () {
             if (player->GetCollidable()) {
                 DamagePlayer (5);
             }
-            score_ -= 50;
+            UpdateScore(-50);
             delete enemy_objects_[i];
             enemy_objects_.erase (enemy_objects_.begin () + i);
             break;
@@ -872,6 +872,7 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
                     enemy_objects_[i]->setHealth(enemy_objects_[i]->getHealth() - bullet->GetDamage());
                     if (enemy_objects_[i]->getHealth() <= 0) {
                         delete enemy_objects_[i];
+                        UpdateScore(100);
                         enemy_objects_.erase(enemy_objects_.begin() + i);
                         return true;
                     }
@@ -899,34 +900,34 @@ bool Game::BulletCastCollision (BulletObject* bullet) {
 
 void Game::DamagePlayer (int damage) {
     PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
-    std::cout << "shields before: " << player->getNumShield() << std::endl;
+  ;
     
     if (player->getNumShield() > 0) {
         float shieldOrbsBefore = ceil(player->getNumShield () / float((MAX_SHIELD) / 4)); // Current number of orbs is proportional to shielding
-        //std::cout << "Shields before: " << player->getNumShield () / ((MAX_SHIELD) / 4) << std::endl;
+       
         player->minusShield(damage);
         player->resetIFrame(); //Make player invincible for short time
         float shieldOrbsAfter = ceil(player->getNumShield () / float((MAX_SHIELD) /4));
-        //std::cout << "Shields now: " << player->getNumShield() << std::endl;
-        //std::cout << "Before: " << shieldOrbsBefore << " After: " << shieldOrbsAfter << std::endl;
+      
         if (shieldOrbsBefore > shieldOrbsAfter) {
             delete game_objects_.at (game_objects_.size () - 1);
             game_objects_.erase (game_objects_.end () - 1);
         }
  
     }
-    else if (player->getHealth() > 0){
+    else if (player->getHealth() - damage > 0){
         player->addHealth (-damage);
         player->resetIFrame (); //Make player invincible for short time
     }
     else {
+        //gameOver = true;
         GameOverLoop(); // TODO: flip back to true once gameOver working
     }
 
     float scale = (float)(player->getHealth() / 4.0f);
     healthbar_->SetScaley(scale);
 
-    std::cout << "shields after: " << player->getNumShield() << std::endl;
+   
 }
 
 void Game::addShieldToPlayer () {
@@ -939,7 +940,7 @@ void Game::addShieldToPlayer () {
         else {
             Shield* backshield = (Shield*)(game_objects_.back ());
             shield = new Shield (glm::vec3 (0.0f, 0.8f, 0.0f), tex_[8], false, 1, backshield->getOrbit ());
-            std::cout << "Added shield" << std::endl;
+            
         }
         shield->SetScale (0.4f);
         shield->setParent (game_objects_[0]);
@@ -1166,12 +1167,12 @@ void Game::Render(std::vector<UI_Element*> extras) {
         hitTarget = BulletCastCollision(current_bullet_object);
         double bulletTime = current_bullet_object->getTimer();
         if (bulletTime > duration || hitTarget) {
-            delete bullet_objects_[i];
-            bullet_objects_.erase(bullet_objects_.begin() + i);
-            --i;
+delete bullet_objects_[i];
+bullet_objects_.erase(bullet_objects_.begin() + i);
+--i;
         }
         else {
-            current_bullet_object->Render(shader_, view_matrix);
+        current_bullet_object->Render(shader_, view_matrix);
         }
 
     }
@@ -1212,8 +1213,8 @@ void Game::Render(std::vector<UI_Element*> extras) {
 
         hitTarget = BulletCastCollision(current_missile_object);
         double missileTime = current_missile_object->getTimer();
-        if (missileTime > duration || hitTarget) {         
-            
+        if (missileTime > duration || hitTarget) {
+
             delete particle_objects_[i];
             particle_objects_.erase(particle_objects_.begin() + i);
 
@@ -1263,6 +1264,16 @@ void Game::Render(std::vector<UI_Element*> extras) {
         else {
             current_particle_object->Render(shader_, view_matrix, current_time_);
         }
+    }
+}
+
+void Game::UpdateScore(int score){
+
+    if (score_ + score >= 0) {
+        score_ += score;
+    }
+    else {
+        score_ = 0;
     }
 }
 

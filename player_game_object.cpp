@@ -62,8 +62,7 @@ void PlayerGameObject::Update(double delta_time) {
 		else {
 			SetTexture(37);
 		}
-		
-		//std::cout << "Player is invincible. Collidable in: " << 2.0f - invincible_timer << std::endl;
+	
 		
 		collidable_ = false;
 		invincible_timer += (float)delta_time;
