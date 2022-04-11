@@ -33,7 +33,7 @@ namespace game {
 
 			float duration_; //the duration that the bullet object lasts
 
-			std::string from_;
+			std::string from_; //Who fired the bullet ("enemy" or "player")
 
 			static int damage_;
 	};

@@ -3,8 +3,7 @@
 
 namespace game {
 	Shield::Shield (const glm::vec3& position, GLuint texture, bool collidable, int tiles, double additional_rotation)
-		: GameObject (position, texture, collidable, tiles) {
-		//rotation_ = additional_rotation + 90;
+		: GameObject (position, texture, collidable, tiles) {		
 		orbit = (float)(additional_rotation + 90);
 	}
 

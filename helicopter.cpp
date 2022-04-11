@@ -83,8 +83,7 @@ namespace game {
 
 	void Helicopter::SetupBullets (std::vector<BulletObject*>* ptr, GLuint* bulletTex, GameObject* player) {
 		Helicopter::bullet_objects_ptr_ = ptr;
-		Helicopter::bulletTex_ = bulletTex;
-		//Helicopter::player_ = (PlayerGameObject*)(player);
+		Helicopter::bulletTex_ = bulletTex;		
 	}
 
 	void Helicopter::Render (Shader& shader, glm::mat4 view_matrix) {

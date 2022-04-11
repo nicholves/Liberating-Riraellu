@@ -72,18 +72,15 @@ void Game::Init(void)
     particle_shader_.Init((resources_directory_g + std::string("/particle_vertex_shader.glsl")).c_str(), (resources_directory_g + std::string("/particle_fragment_shader.glsl")).c_str());
     particle_shader_.CreateParticles();
 
-    //Meant to be the explosion shader but more needs to be done to get explosion looking like an explosion
+    //Shader for jet particles
     jet_shader_.Init((resources_directory_g + std::string("/jet_vertex_shader.glsl")).c_str(), (resources_directory_g + std::string("/jet_fragment_shader.glsl")).c_str());
     jet_shader_.CreateParticles();
-
-    // Set up square geometry
 
     // Initialize shader
     shader_.Init((resources_directory_g+std::string("/vertex_shader.glsl")).c_str(), (resources_directory_g+std::string("/fragment_shader.glsl")).c_str());
     shader_.CreateSprite();
-    //shader_.Enable();
-    //shader_.SetSpriteAttributes();
 
+    //Player's personal shader
     player_shader_.Init((resources_directory_g + std::string("/player_vertex_shader.glsl")).c_str(), (resources_directory_g + std::string("/player_fragment_shader.glsl")).c_str());
     player_shader_.CreateSprite();
 
@@ -116,14 +113,13 @@ void Game::Setup(void)
     // Load textures
     SetAllTextures();
 
-
+    //Initialize the hp bar beside the player
     Healthbar* health_foreground = new Healthbar(glm::vec3(1.43f, -0.15f, 0.0f), tex_[16], 1);
     healthbar_ = health_foreground;
     health_foreground->SetScale(2.5f);
     health_foreground->SetScaley(2.5f); 
 
     //important note the healthbar is scaled between 0 and 2.5. 2.5 being maximum health (only should change scaley)
-
     ui_objects_.push_back(health_foreground);
 
 
@@ -131,6 +127,7 @@ void Game::Setup(void)
     health_background->SetScale(2.5f);
     ui_objects_.push_back(health_background);
 
+    //Initialize missile_ready icon for UI
     UI_Element* missile_ready = new UI_Element(glm::vec3(-5.0f, 4.5f, 0.0f), tex_[14], 1);
     missile_ready->SetRotation(-135.0f);
     missile_ready->SetScale(1.5f);
@@ -148,12 +145,12 @@ void Game::Setup(void)
     score_value->SetScale(FONT_SIZE);
     ui_objects_.push_back(score_value);
 
+    //Complete background of Riraellu
     GameObject* background = new GameObject (glm::vec3 (0.0f, 0.0f, 0.0f), tex_[11], false, 1);
     background->SetScale (100.0);
     background_objects_.push_back (background);
 
     // Setup the player object (position, texture, vertex count)
-    // Note that, in this specific implementation, the player object should always be the first object in the game object vector
     game_objects_.push_back(new PlayerGameObject(glm::vec3(0.0f, 0.0f, 0.0f), tex_[0],  true, 1, 10));
 
     UI_Element::Setup(game_objects_[0]); // setup ui elements object
@@ -223,21 +220,15 @@ void Game::Setup(void)
     }
 
 
-    // Setup particle system
-    /*
-    */
+    // Setup particle system for player
     GameObject* particles = new ParticleSystem(glm::vec3(0.0f, -0.5f, 0.0f), tex_[30], game_objects_[0]);
     particles->SetScale(0.2f);
     player_particles_.push_back(particles);
-
 
     //setup minimap
     Minimap* minimap = new Minimap(glm::vec3(3.8f, 4.2f, 0.0f), tex_[49], 1);
     minimap->SetScale(8.0f);
     ui_objects_.push_back(minimap);
-
-    
-
 }
 
 
@@ -295,10 +286,6 @@ void Game::ResizeCallback(GLFWwindow* window, int width, int height)
     // Set OpenGL viewport based on framebuffer width and height
     glViewport(0, 0, width, height);
 }
-
-
-// Create the geometry for a sprite (a squared composed of two triangles)
-// Return the number of array elements that form the square
 
 
 void Game::SetTexture(GLuint w, const char *fname, bool tiling)
@@ -376,7 +363,6 @@ void Game::SetAllTextures(void)
     // Cloaker texture
     SetTexture (tex_[29], (resources_directory_g + std::string ("/textures/cloaker.png")).c_str (), false);
     SetTexture(tex_[30], (resources_directory_g + std::string("/textures/particleOrb.png")).c_str(), false);
-    glBindTexture(GL_TEXTURE_2D, tex_[0]);
 
     SetTexture(tex_[31], (resources_directory_g + std::string("/textures/base.png")).c_str(), false);
 
@@ -398,8 +384,8 @@ void Game::SetAllTextures(void)
     SetTexture(tex_[37], (resources_directory_g + std::string("/textures/game_over.png")).c_str(), false);
     // Helicopter texture
     SetTexture (tex_[38], (resources_directory_g + std::string ("/textures/chopper.png")).c_str (), false);
+    
     //Explosion Textures
-
     SetTexture(tex_[39], (resources_directory_g + std::string("/textures/explosions/bubble_explo1.png")).c_str(), false);
     SetTexture(tex_[40], (resources_directory_g + std::string("/textures/explosions/bubble_explo2.png")).c_str(), false);
     SetTexture(tex_[41], (resources_directory_g + std::string("/textures/explosions/bubble_explo3.png")).c_str(), false);
@@ -439,15 +425,16 @@ void Game::SetAllTextures(void)
 
     //setup statics for minimap
     Minimap::Setup(&enemy_objects_, &bases_, &tex_[51], &tex_[50]);
+    glBindTexture(GL_TEXTURE_2D, tex_[0]);
 }
 
+//Check to make sure that all the bases are still enemy bases. If they have all been captured, then game is over
 bool Game::CheckBasesFinished() {
     for (int i = 0; i < bases_.size(); ++i) {
         if (bases_[i]->GetAllegiance()) {
             return false;
         }
     }
-
     return true;
 }
 
@@ -509,11 +496,11 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
             missile->SetDuration(2.0f);
             missile_objects_.push_back(missile);
             player->SetMissileCooldown(0);
+
             //Attach particle system to missile
             ParticleSystem* particles = new ParticleSystem(glm::vec3(0.3f, 0.0f, 0.0f), tex_[30], missile_objects_[missile_objects_.size() - 1]);
             particles->SetScale(0.2f);
             particles->SetRotation(90);
-            
             particle_objects_.push_back(particles);
         }
     }
@@ -569,7 +556,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     BuoyObject* current_buoy_object;
     MissileObject* current_missile_object;
     PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
-
+    
     EnemyDetect ();
 
     //View_matrix initialization goes here
@@ -590,7 +577,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
 
     player->Update(delta_time);
     player->Render(player_shader_, view_matrix);
-
+    //Render UI
     for (int i = 0; i < ui_objects_.size(); i++) {
         ui_objects_[i]->Update(delta_time);
 
@@ -639,17 +626,6 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
             current_collectible_object->Update (delta_time);
         }
         current_collectible_object->Render (shader_, view_matrix);
-    }
-
-
-
-    // Update and render buoys
-    for (int i = 0; i < buoy_objects_.size (); i++) {
-        current_buoy_object = buoy_objects_[i];
-        if (!gameOver) {
-            current_buoy_object->Update (delta_time);
-        }
-        current_buoy_object->Render (shader_, view_matrix);
     }
 
     // Update and render missiles
@@ -705,7 +681,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     }
 
 
-
+    //Render explosions. This works by increasing the texture (like an animation frame) until it hits the max texture, then deletes itself.
     for (int i = 0; i < explosion_objects_.size(); i++) {
         GameObject* current_explosion_object = explosion_objects_[i];
         current_explosion_object->Update(delta_time);
@@ -733,7 +709,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         }
         current_base->Render(shader_, view_matrix);
     }
-    // Update and render the background
+    // Update and render the background (there's only one, but doesn't hurt to throw it in a for loop in case we decided to add more)
     for (int i = 0; i < background_objects_.size(); i++) {
         background_objects_[i]->Update(delta_time);
         background_objects_[i]->Render(shader_, view_matrix);
@@ -769,7 +745,7 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
 
 }
 
-// Does collision testing between all the objects in the game (except bullets for now)
+// Does collision testing between all the objects in the game (except bullets)
 void Game::IterateCollision () {
     PlayerGameObject* player = (PlayerGameObject*)(game_objects_[0]);
     bool playerHit = false;
@@ -791,13 +767,6 @@ void Game::IterateCollision () {
             ApplyEffect (i, collectible_objects_[i]);
         }
     }
-
-    for (int i = 0; i < buoy_objects_.size (); ++i) {
-        if (DetectCollision (player, buoy_objects_[i])) {
-            BuoyBounce (player, buoy_objects_[i]);
-        }
-    }
-
 
     for (int i = 0; i < bases_.size(); ++i) {
         if (DetectCollision(player, bases_[i]) && bases_[i]->IsCapturable()) {
@@ -839,18 +808,6 @@ bool Game::DetectCollision (PlayerGameObject* player, CollectibleObject* collect
     return false;
 }
 
-bool Game::DetectCollision (PlayerGameObject* player, BuoyObject* buoy) {
-    float x2 = buoy->GetPosition ().x;
-    float y2 = buoy->GetPosition ().y;
-    float r2 = 0.4f * buoy->GetScale();
-    float x1 = player->GetPosition ().x;
-    float y1 = player->GetPosition ().y;
-    float r1 = 0.4f;
-    if ((pow ((x2 - x1), 2) + pow ((y2 - y1), 2)) <= pow ((r1 + r2), 2)) {
-        return true;
-    }
-    return false;
-}
 
 bool Game::DetectCollision(PlayerGameObject* player, Base* base) {
     float x2 = base->GetPosition().x;
@@ -867,7 +824,6 @@ bool Game::DetectCollision(PlayerGameObject* player, Base* base) {
 
 //*************************************************************************
 
-// I was going to move this into different functions, but it became 11:00pm really quickly
 bool Game::BulletCastCollision (BulletObject* bullet) {
     //If the bullet fired is from the player, check the enemies to see who got hit
     
@@ -983,21 +939,7 @@ void Game::ApplyEffect (int collectible_hit, CollectibleObject* collectible) {
     }
 }
 
-void Game::BuoyBounce (PlayerGameObject* player, BuoyObject* buoy) {
-    // Turning variables into neater versions for the formula
-    float m1 = (float)player->getMass ();
-    float m2 = (float)buoy->getMass ();
-    glm::vec3 c1 = player->GetPosition ();
-    glm::vec3 c2 = buoy->GetPosition ();
-    glm::vec3 n = glm::normalize(c1 - c2);
-    glm::vec3 v1i = player->GetVelocity ();
-    glm::vec3 v2i = buoy->GetVelocity ();
-    glm::vec3 v1f = v1i - (((2 * m2) / (m1 + m2)) * (n * (v1i - v2i)) * n);
-    glm::vec3 v2f = v2i - (((2 * m1) / (m1 + m2)) * (n * (v2i - v1i)) * n);;
-    player->SetVelocity (v1f);
-    buoy->SetVelocity (v2f);
-}
-
+//Find closest enemy to the player within 6 units
 GameObject* Game::FindClosest() {
     PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
     GameObject* closest = NULL;
@@ -1142,7 +1084,7 @@ void Game::VictoryLoop() {
     }
 }
 
-
+//This function is meant to render things without updating their positions while the player is choosing what they want from the bases.
 void Game::Render(std::vector<UI_Element*> extras) {
     // Clear background
     glClearColor(viewport_background_color_g.r,
@@ -1177,9 +1119,6 @@ void Game::Render(std::vector<UI_Element*> extras) {
     BuoyObject* current_buoy_object;
     MissileObject* current_missile_object;
     PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
-
-    //EnemyDetect();
-
 
     // Update and render the ui elements
     int health = player->getHealth();
@@ -1228,12 +1167,12 @@ void Game::Render(std::vector<UI_Element*> extras) {
         hitTarget = BulletCastCollision(current_bullet_object);
         double bulletTime = current_bullet_object->getTimer();
         if (bulletTime > duration || hitTarget) {
-delete bullet_objects_[i];
-bullet_objects_.erase(bullet_objects_.begin() + i);
---i;
+            delete bullet_objects_[i];
+            bullet_objects_.erase(bullet_objects_.begin() + i);
+            --i;
         }
         else {
-        current_bullet_object->Render(shader_, view_matrix);
+            current_bullet_object->Render(shader_, view_matrix);
         }
 
     }
@@ -1245,17 +1184,6 @@ bullet_objects_.erase(bullet_objects_.begin() + i);
             current_collectible_object->Update(delta_time);
         }
         current_collectible_object->Render(shader_, view_matrix);
-    }
-
-
-
-    // Update and render buoys
-    for (int i = 0; i < buoy_objects_.size(); i++) {
-        current_buoy_object = buoy_objects_[i];
-        if (!gameOver) {
-            current_buoy_object->Update(delta_time);
-        }
-        current_buoy_object->Render(shader_, view_matrix);
     }
 
     // Update and render missiles
@@ -1327,7 +1255,7 @@ bullet_objects_.erase(bullet_objects_.begin() + i);
         }
     }
 }
-
+//This is to update player's score and to make sure that it can't be negative
 void Game::UpdateScore(int score){
 
     if (score_ + score >= 0) {
@@ -1337,7 +1265,7 @@ void Game::UpdateScore(int score){
         score_ = 0;
     }
 }
-
+//The loop that gets called when the player loses
 void Game::GameOverLoop() {
     PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
     glm::vec3 player_pos = player->GetPosition();

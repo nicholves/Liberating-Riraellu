@@ -13,12 +13,6 @@ void main()
 {   
     // Sample texture
     vec4 color = texture2D(onetex, vec2(uv_interp.x, uv_interp.y));
-    float percent = 0;
-    vec4 colorDifference = vec4(0,0,0,1);
-
-    //color.r -= cloakedFrag;
-    //color.g -= cloakedFrag;
-    //color.b -= cloakedFrag;
 
     // Assign color to fragment
     if (cloakedFrag == 0.5){

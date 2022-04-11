@@ -19,9 +19,7 @@ namespace game {
 		SetScale(scale);
 		active_turrets_ = turrets;
 		is_enemy_ = true;
-		capturable_ = false;
-
-		//rotation_ = rand() % 360; // for random orientation
+		capturable_ = false;		
 
 		for (int i = 0; i < turrets; ++i) {
 			float angle = (float)(rand() % 360);

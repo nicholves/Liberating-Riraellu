@@ -106,13 +106,20 @@ namespace game {
 
             // List for specific operations on collectible objects as they are added and removed
             std::vector<CollectibleObject*> collectible_objects_;
-
-            std::vector<BuoyObject*> buoy_objects_;
-
+            
+            //Bases
             std::vector<Base*> bases_;
 
             //ui element objects
             std::vector<UI_Element*> ui_objects_;
+
+            //Missile particles
+            std::vector<GameObject*> particle_objects_;
+
+            std::vector<GameObject*> player_particles_;
+
+            //Explosion particles
+            std::vector<GameObject*> explosion_objects_;
 
             //healthbar
             UI_Element* healthbar_;
@@ -125,14 +132,6 @@ namespace game {
             bool selection_made_; //a choice has been made on the pause menu
             int choice_;
 
-            //Missile particles
-            std::vector<GameObject*> particle_objects_;
-
-            std::vector<GameObject*> player_particles_;
-
-            //Explosion particles
-            std::vector<GameObject*> explosion_objects_;
-
             // Keep track of time for particles
             double current_time_;
 
@@ -144,7 +143,6 @@ namespace game {
 
             // Callback for when the window is resized
             static void ResizeCallback(GLFWwindow* window, int width, int height);
-
 
             // Set a specific texture
             void SetTexture(GLuint w, const char *fname, bool tiling);
@@ -163,8 +161,7 @@ namespace game {
 
             // Set of functions including all possible collision scenarios
             bool DetectCollision (PlayerGameObject*, EnemyGameObject*);
-            bool DetectCollision (PlayerGameObject*, CollectibleObject*);
-            bool DetectCollision (PlayerGameObject*, BuoyObject*);
+            bool DetectCollision (PlayerGameObject*, CollectibleObject*);          
             bool Game::DetectCollision(PlayerGameObject* player, Base* base);
 
             // Similar to IterateCollision but makes use of object functions for EnemyGameObject and is hard coded
@@ -180,10 +177,7 @@ namespace game {
             void addShieldToPlayer ();
 
             // Applies the effect of the collectible
-            void ApplyEffect (int, CollectibleObject*);
-
-            // Collision handling between player and buoys
-            void BuoyBounce (PlayerGameObject*, BuoyObject*);
+            void ApplyEffect (int, CollectibleObject*);           
 
             //Detects the closest enemy in front of the player
             GameObject* FindClosest(void);

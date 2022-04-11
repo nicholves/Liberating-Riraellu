@@ -11,7 +11,7 @@ uniform sampler2D onetex;
 
 void main()
 {
-    // Sample texture
+    
     vec4 color = texture2D(onetex, uv_interp);
     if(speed_colour > 2.5){
         color.rgb = vec3(0.02, 0.02, 0.75) * color_interp.r;
@@ -26,9 +26,4 @@ void main()
     // Assign color to fragment
     gl_FragColor = vec4(color.r, color.g, color.b, color.a);
 
-    // Check for transparency
-    //if(color.a < 1.0)
-    //{
-    //     discard;
-    //}
 }
