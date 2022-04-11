@@ -266,21 +266,7 @@ void Game::MainLoop(void)
                      viewport_background_color_g.b, 0.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // Set view to zoom out, centered by default at 0,0
-        float cameraZoom = 0.175f;
-        
-        // Get player game object
-        //GameObject* player = game_objects_[0];
-        //glm::vec3 curpos = player->GetPosition();
-
-        //glm::mat4 view_matrix = glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom));
-        //view_matrix = view_matrix * glm::translate(glm::mat4(0.5f), -curpos);
-        //shader_.SetUniformMat4("view_matrix", view_matrix);
-        //particle_shader_.SetUniformMat4("view_matrix", view_matrix);
-        
-        
-
-
+      
         // Calculate delta time
         double currentTime = glfwGetTime();
         double deltaTime = currentTime - lastTime;
@@ -457,12 +443,12 @@ void Game::SetAllTextures(void)
 
 bool Game::CheckBasesFinished() {
     for (int i = 0; i < bases_.size(); ++i) {
-        if (!bases_[i]->GetAllegiance()) {
-            return true;
+        if (bases_[i]->GetAllegiance()) {
+            return false;
         }
     }
 
-    return false;
+    return true;
 }
 
 
@@ -530,16 +516,6 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
             
             particle_objects_.push_back(particles);
         }
-    }
-
-
-    if (glfwGetKey(window_, GLFW_KEY_UP) == GLFW_PRESS && !gameOver) {
-        gameOver = true;
-        GameOverLoop();
-    }
-
-    if (glfwGetKey(window_, GLFW_KEY_DOWN) == GLFW_PRESS && !gameOver) {
-        score_ += 5;
     }
 
     if (glfwGetKey(window_, GLFW_KEY_1) == GLFW_PRESS) {
@@ -1030,7 +1006,7 @@ GameObject* Game::FindClosest() {
 
         if (glm::dot(player->GetVelocity(), target->GetPosition() - player->GetPosition()) > 0) { //checks to ensure enemy is in front of player
             float distance = glm::length(player->GetPosition() - target->GetPosition()); //gets distance from player to enemy
-            if (distance < closestDist) { //if the distance is less than the current closes target, update the current closest target
+            if (distance < closestDist && distance < MAX_MISSILE_RANGE) { //if the distance is less than the current closes target, update the current closest target
                 closestDist = distance;
                 closest = target;
             }

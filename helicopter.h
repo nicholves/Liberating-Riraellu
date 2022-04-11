@@ -31,7 +31,6 @@ namespace game {
 		static std::vector<BulletObject*>* bullet_objects_ptr_; //a pointer to game's bullet_objects vector so turrets can create bullets
 		static GLuint* bulletTex_; //the texture of the bullet
 
-
 	}; // Class Helicopter
 
 }
