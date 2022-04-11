@@ -920,8 +920,10 @@ void Game::DamagePlayer (int damage) {
         player->resetIFrame (); //Make player invincible for short time
     }
     else {
-        //gameOver = true;
-        GameOverLoop(); // TODO: flip back to true once gameOver working
+        if (!gameOver) {
+            gameOver = true;
+            GameOverLoop(); // TODO: flip back to true once gameOver working
+        }
     }
 
     float scale = (float)(player->getHealth() / 4.0f);
