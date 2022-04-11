@@ -280,6 +280,11 @@ void Game::MainLoop(void)
 
         // Update other events like input handling
         glfwPollEvents();
+
+
+        if (CheckBasesFinished()) {
+            VictoryLoop();
+        }
     }
 }
 
@@ -412,6 +417,9 @@ void Game::SetAllTextures(void)
     SetTexture(tex_[50], (resources_directory_g + std::string("/textures/red_chevron.png")).c_str(), false);
     SetTexture(tex_[51], (resources_directory_g + std::string("/textures/green_circle.png")).c_str(), false);
 
+    //misc textures
+    SetTexture(tex_[52], (resources_directory_g + std::string("/textures/victory.png")).c_str(), false);
+
 
     //setup number textures:
     for (int i = 18; i < 28; ++i) {
@@ -431,6 +439,16 @@ void Game::SetAllTextures(void)
 
     //setup statics for minimap
     Minimap::Setup(&enemy_objects_, &bases_, &tex_[51], &tex_[50]);
+}
+
+bool Game::CheckBasesFinished() {
+    for (int i = 0; i < bases_.size(); ++i) {
+        if (!bases_[i]->GetAllegiance()) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 
@@ -499,12 +517,6 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
             particle_objects_.push_back(particles);
             //player->addHealth(-1);
         }
-    }
-
-
-    if (glfwGetKey(window_, GLFW_KEY_UP) == GLFW_PRESS && !gameOver) {
-        gameOver = true;
-        GameOverLoop();
     }
 
     if (glfwGetKey(window_, GLFW_KEY_DOWN) == GLFW_PRESS && !gameOver) {
@@ -920,8 +932,10 @@ void Game::DamagePlayer (int damage) {
         player->resetIFrame (); //Make player invincible for short time
     }
     else {
-        //gameOver = true;
-        GameOverLoop(); // TODO: flip back to true once gameOver working
+        if (!gameOver) {
+            gameOver = true;
+            GameOverLoop(); // TODO: flip back to true once gameOver working
+        }
     }
 
     float scale = (float)(player->getHealth() / 4.0f);
@@ -1081,6 +1095,56 @@ void Game::ChooseLoop() {
     delete menu2;
     delete menu3;
 }
+
+void Game::VictoryLoop() {
+    PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
+    glm::vec3 player_pos = player->GetPosition();
+    paused_ = true;
+
+    const int arr_size = 3;
+    int added_ui_count[arr_size] = { 0, 0, 0 };
+
+
+    //vector of extra ui elements to pass into render
+    std::vector<UI_Element*> extras;
+
+    //big square background
+    UI_Element* menu1 = new UI_Element(glm::vec3(player->GetPosition()), tex_[52], 1);
+    menu1->SetAbsolute(true);
+    menu1->SetScale(14.0f);
+
+
+
+
+    //Score value
+    Number* menu2 = new Number(glm::vec3(1.0f, -2.0f, 0), tex_[17], 1, score_);
+    menu2->SetScale(FONT_SIZE * 0.8);
+
+    UI_Element* score_prompt = new UI_Element(glm::vec3(-1.0f, -2.0f, 0), tex_[17], 1);
+    score_prompt->SetScale(FONT_SIZE * 0.8);
+
+
+
+    extras.push_back(score_prompt);
+    extras.push_back(menu2);
+    extras.push_back(menu1);
+
+
+    // Loop while the user did not close the window
+    while (!glfwWindowShouldClose(window_)) {
+        // Update the game
+        Render(extras);
+
+
+
+        // Push buffer drawn in the background onto the display
+        glfwSwapBuffers(window_);
+
+        // Update other events like input handling
+        glfwPollEvents();
+    }
+}
+
 
 void Game::Render(std::vector<UI_Element*> extras) {
     // Clear background
