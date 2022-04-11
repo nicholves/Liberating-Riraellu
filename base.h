@@ -18,8 +18,8 @@ namespace game {
         Base(const glm::vec3& position, GLuint texture, bool collidable, int tiles, int turrets, float scale);
 
         inline void removeTurret() { --active_turrets_; }
-
         inline bool IsCapturable() { return capturable_; }
+        inline bool GetAllegiance() { return is_enemy_; }
 
         inline void SetCapturable(bool value) { capturable_ = value; }
         inline void SetAllegiance(bool value) { is_enemy_ = value; }

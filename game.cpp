@@ -148,61 +148,75 @@ void Game::Setup(void)
     score_value->SetScale(FONT_SIZE);
     ui_objects_.push_back(score_value);
 
-    
     GameObject* background = new GameObject (glm::vec3 (0.0f, 0.0f, 0.0f), tex_[11], false, 1);
     background->SetScale (100.0);
     background_objects_.push_back (background);
 
     // Setup the player object (position, texture, vertex count)
-    // Note that, in this specific implementation, the player object should always be the first object in the game object vector)
+    // Note that, in this specific implementation, the player object should always be the first object in the game object vector
     game_objects_.push_back(new PlayerGameObject(glm::vec3(0.0f, 0.0f, 0.0f), tex_[0],  true, 1, 10));
 
-    //// Setup blades object
-    //game_objects_.push_back (new HelicopterBlades (glm::vec3 (0.0f, 0.13f, 0.0f), tex_[6],  false, 1));
-
-    //HelicopterBlades* blades = (HelicopterBlades*)(game_objects_[1]);
-    //blades->setParent (game_objects_[0]);
-
-
-
     UI_Element::Setup(game_objects_[0]); // setup ui elements object
-    //enemy_objects_.push_back (turret);
 
-    //temporary drone
-    Drone* drone = new Drone(glm::vec3(3.0f, 13.0f, 0.0f), tex_[35], true, 1, 1);
-    drone->SetScale(2.0f);
-    enemy_objects_.push_back(drone);
-
-    Base* base = new Base(glm::vec3(-16.0f, 12.0f, 0.0f), tex_[31], false, 1, 4, 10.0f);
+    // Set up bases
+    Base* base = new Base(glm::vec3(-6.0f, 20.0f, 0.0f), tex_[31], false, 1, 5, 10.0f);
     bases_.push_back(base);
-    
-    // Set up enemy objects
-    Turret* turret = new Turret(glm::vec3(-2.0f, 2.0f, 0.0f), tex_[13], true, 1, 5, bases_[0]); //creates a single turret
+    base = new Base (glm::vec3 (-22.0f, -25.0f, 0.0f), tex_[31], false, 1, 5, 10.0f);
+    bases_.push_back (base);
+    base = new Base (glm::vec3 (10.0f, -26.0f, 0.0f), tex_[31], false, 1, 5, 10.0f);
+    bases_.push_back (base);
+    base = new Base (glm::vec3 (27.0f, 16.0f, 0.0f), tex_[31], false, 1, 5, 10.0f);
+    bases_.push_back (base);
+
+    // Set up turret and bullets
+    Turret* turret = new Turret(glm::vec3(-2.0f, 2.0f, 0.0f), tex_[13], true, 1, 3, bases_[0]); //creates a single turret
     Turret::SetupBullets(&bullet_objects_, &missile_objects_, &particle_objects_, &tex_[7], &tex_[14], &tex_[30], game_objects_[0]); //sets up bullet static variables
     BulletObject::SetDamageBullet(1);
     MissileObject::SetDamageMissile(4);
 
-    Helicopter* helicopter = new Helicopter (glm::vec3 (-2.0f, 2.0f, 0.0f), tex_[38], true, 1, 5);
+    // Set up drones
+    Drone* drone = new Drone (glm::vec3 (-6.0f, 20.0f, 0.0f), tex_[35], true, 1, 1);
+    drone->SetScale (2.0f);
+    enemy_objects_.push_back (drone);
+    drone = new Drone (glm::vec3 (-22.0f, -25.0f, 0.0f), tex_[35], true, 1, 1);
+    drone->SetScale (2.0f);
+    enemy_objects_.push_back (drone);
+    drone = new Drone (glm::vec3 (10.0f, -26.0f, 0.0f), tex_[35], true, 1, 1);
+    drone->SetScale (2.0f);
+    enemy_objects_.push_back (drone);
+
+    // Set up helicopters
+    Helicopter* helicopter = new Helicopter (glm::vec3 (-4.0f, 18.0f, 0.0f), tex_[38], true, 1, 5);
     Helicopter::SetupBullets (&bullet_objects_, &tex_[7], game_objects_[0]);
     HelicopterBlades* blades = new HelicopterBlades (glm::vec3 (0.0f, 0.13f, 0.0f), tex_[6], false, 1);
     blades->setParent (helicopter);
     helicopter->setBlades (blades);
-
+    enemy_objects_.push_back (helicopter);
+    helicopter = new Helicopter (glm::vec3 (-20.0f, 0.0f, 0.0f), tex_[38], true, 1, 5);
+    blades = new HelicopterBlades (glm::vec3 (0.0f, 0.13f, 0.0f), tex_[6], false, 1);
+    blades->setParent (helicopter);
+    helicopter->setBlades (blades);
+    enemy_objects_.push_back (helicopter);
+    helicopter = new Helicopter (glm::vec3 (8.0f, -24.0f, 0.0f), tex_[38], true, 1, 5);
+    blades = new HelicopterBlades (glm::vec3 (0.0f, 0.13f, 0.0f), tex_[6], false, 1);
+    blades->setParent (helicopter);
+    helicopter->setBlades (blades);
     enemy_objects_.push_back (helicopter);
 
-
-
-    // Set up collectibles
-    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (3.0f, 3.0f, 0.0f), tex_[9],  true, 1, 0));
-    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (3.0f, -3.0f, 0.0f), tex_[9],  true, 1, 0));
-    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-3.0f, -3.0f, 0.0f), tex_[9],  true, 1, 0));
-    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-3.0f, 3.0f, 0.0f), tex_[9],  true, 1, 0));
+    // Set up shield packs
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (33.75f, 29.75f, 0.0f), tex_[9],  true, 1, 0));
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-37.0f, -20.0f, 0.0f), tex_[9],  true, 1, 0));
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (20.0f, -10.0f, 0.0f), tex_[9],  true, 1, 0));
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (7.0f, -34.0f, 0.0f), tex_[9],  true, 1, 0));
 
     // Set up health packs
-    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-5.0f, 5.0f, 0.0f), tex_[28], true, 1, 1));
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (4.0f, 35.0f, 0.0f), tex_[28], true, 1, 1));
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-30.0f, -5.0f, 0.0f), tex_[28], true, 1, 1));
 
     // Set up cloakers
-    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (5.0f, -5.0f, 0.0f), tex_[29], true, 1, 2));
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (-15.0f, -35.0f, 0.0f), tex_[29], true, 1, 2));
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (5.0f, -25.0f, 0.0f), tex_[29], true, 1, 2));
+    collectible_objects_.push_back (new CollectibleObject (glm::vec3 (5.0f, 15.0f, 0.0f), tex_[29], true, 1, 2));
 
     for (int i = 0; i < collectible_objects_.size (); ++i) {
         collectible_objects_[i]->SetScale (0.7f);
@@ -280,6 +294,11 @@ void Game::MainLoop(void)
 
         // Update other events like input handling
         glfwPollEvents();
+
+
+        if (CheckBasesFinished()) {
+            VictoryLoop();
+        }
     }
 }
 
@@ -412,6 +431,9 @@ void Game::SetAllTextures(void)
     SetTexture(tex_[50], (resources_directory_g + std::string("/textures/red_chevron.png")).c_str(), false);
     SetTexture(tex_[51], (resources_directory_g + std::string("/textures/green_circle.png")).c_str(), false);
 
+    //misc textures
+    SetTexture(tex_[52], (resources_directory_g + std::string("/textures/victory.png")).c_str(), false);
+
 
     //setup number textures:
     for (int i = 18; i < 28; ++i) {
@@ -431,6 +453,16 @@ void Game::SetAllTextures(void)
 
     //setup statics for minimap
     Minimap::Setup(&enemy_objects_, &bases_, &tex_[51], &tex_[50]);
+}
+
+bool Game::CheckBasesFinished() {
+    for (int i = 0; i < bases_.size(); ++i) {
+        if (!bases_[i]->GetAllegiance()) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 
@@ -497,7 +529,6 @@ void Game::Controls (double delta_time, double* bullet_cooldown)
             particles->SetRotation(90);
             
             particle_objects_.push_back(particles);
-            //player->addHealth(-1);
         }
     }
 
@@ -1084,6 +1115,56 @@ void Game::ChooseLoop() {
     delete menu3;
 }
 
+void Game::VictoryLoop() {
+    PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
+    glm::vec3 player_pos = player->GetPosition();
+    paused_ = true;
+
+    const int arr_size = 3;
+    int added_ui_count[arr_size] = { 0, 0, 0 };
+
+
+    //vector of extra ui elements to pass into render
+    std::vector<UI_Element*> extras;
+
+    //big square background
+    UI_Element* menu1 = new UI_Element(glm::vec3(player->GetPosition()), tex_[52], 1);
+    menu1->SetAbsolute(true);
+    menu1->SetScale(14.0f);
+
+
+
+
+    //Score value
+    Number* menu2 = new Number(glm::vec3(1.0f, -2.0f, 0), tex_[17], 1, score_);
+    menu2->SetScale(FONT_SIZE * 0.8);
+
+    UI_Element* score_prompt = new UI_Element(glm::vec3(-1.0f, -2.0f, 0), tex_[17], 1);
+    score_prompt->SetScale(FONT_SIZE * 0.8);
+
+
+
+    extras.push_back(score_prompt);
+    extras.push_back(menu2);
+    extras.push_back(menu1);
+
+
+    // Loop while the user did not close the window
+    while (!glfwWindowShouldClose(window_)) {
+        // Update the game
+        Render(extras);
+
+
+
+        // Push buffer drawn in the background onto the display
+        glfwSwapBuffers(window_);
+
+        // Update other events like input handling
+        glfwPollEvents();
+    }
+}
+
+
 void Game::Render(std::vector<UI_Element*> extras) {
     // Clear background
     glClearColor(viewport_background_color_g.r,
@@ -1092,7 +1173,7 @@ void Game::Render(std::vector<UI_Element*> extras) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Set view to zoom out, centered by default at 0,0
-    float cameraZoom = 0.175f;
+    float cameraZoom = 0.175f; // 0.175f
 
     // Get player game object
     glm::vec3 curpos = game_objects_[0]->GetPosition();

@@ -78,7 +78,7 @@ namespace game {
 		if (last_bullet_fire_time_ > 0.05) {
 			BulletObject* bullet = new BulletObject(position_ + glm::vec3((-(0.25 * sin((rotation_ + 90.0f) * 3.14159 / 180))), ((0.25 * cos((rotation_ + 90.0f) * 3.14159 / 180))), 0), *bulletTex_, true, 1, rotation_ + 90.0f, 5.0f, "enemy");
 			bullet->SetScale(0.3f);
-			bullet->SetDuration(10.0f); //bullets last 10 seconds
+			bullet->SetDuration(3.0f); //bullets last 3 seconds
 			bullet_objects_ptr_->push_back(bullet);
 			last_bullet_fire_time_ = 0.0f;
 		}

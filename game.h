@@ -60,6 +60,9 @@ namespace game {
             //Increase score for player
             void UpdateScore(int score);
 
+            //victory loop
+            void VictoryLoop();
+
         private:
             // Main window: pointer to the GLFW window structure
             GLFWwindow *window_;
@@ -77,7 +80,7 @@ namespace game {
             int size_;
 
             // References to textures
-#define NUM_TEXTURES 52
+#define NUM_TEXTURES 53
             GLuint tex_[NUM_TEXTURES];
 
             std::vector<GLuint> text_arr_;
@@ -186,6 +189,9 @@ namespace game {
 
             //only renders objects without updating
             void Render(std::vector<UI_Element*> extras);
+
+            //checks for base completion
+            bool CheckBasesFinished();
 
     }; // class Game
 
