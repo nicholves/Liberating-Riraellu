@@ -4,7 +4,7 @@
 #include "game_object.h"
 #define MAX_HEALTH 10
 #define MAX_SHIELD 20
-#define CLOAK_LENGTH 10
+#define CLOAK_LENGTH 15
 #define INVINCIBLE_TIME 2
 #define MAX_SPEED 3.0f
 #define MIN_SPEED 1.0f
