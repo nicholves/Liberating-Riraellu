@@ -30,6 +30,7 @@
 
 
 #define MISSILE_COOLDOWN 5.0f
+#define MAX_MISSILE_RANGE 6.0f
 
 namespace game {
 

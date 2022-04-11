@@ -457,12 +457,12 @@ void Game::SetAllTextures(void)
 
 bool Game::CheckBasesFinished() {
     for (int i = 0; i < bases_.size(); ++i) {
-        if (!bases_[i]->GetAllegiance()) {
-            return true;
+        if (bases_[i]->GetAllegiance()) {
+            return false;
         }
     }
 
-    return false;
+    return true;
 }
 
 
@@ -1032,7 +1032,7 @@ GameObject* Game::FindClosest() {
 
         if (glm::dot(player->GetVelocity(), target->GetPosition() - player->GetPosition()) > 0) { //checks to ensure enemy is in front of player
             float distance = glm::length(player->GetPosition() - target->GetPosition()); //gets distance from player to enemy
-            if (distance < closestDist) { //if the distance is less than the current closes target, update the current closest target
+            if (distance < closestDist && distance < MAX_MISSILE_RANGE) { //if the distance is less than the current closes target, update the current closest target
                 closestDist = distance;
                 closest = target;
             }
