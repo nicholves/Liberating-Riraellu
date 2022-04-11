@@ -553,7 +553,6 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
     BulletObject* current_bullet_object;
     Base* current_base;
     CollectibleObject* current_collectible_object;
-    BuoyObject* current_buoy_object;
     MissileObject* current_missile_object;
     PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
     
@@ -1116,7 +1115,6 @@ void Game::Render(std::vector<UI_Element*> extras) {
     BulletObject* current_bullet_object;
     Base* current_base;
     CollectibleObject* current_collectible_object;
-    BuoyObject* current_buoy_object;
     MissileObject* current_missile_object;
     PlayerGameObject* player = (PlayerGameObject*)game_objects_[0];
 

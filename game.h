@@ -16,7 +16,6 @@
 #include "bullet_object.h"
 #include "missile.h"
 #include "collectible_object.h"
-#include "buoy_object.h"
 #include "turret.h"
 #include "ui_element.h"
 #include "healthbar.h"
