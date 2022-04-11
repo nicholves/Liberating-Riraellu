@@ -668,16 +668,18 @@ void Game::Update (double delta_time, double* time_hold, double* bullet_cooldown
         
         hitTarget = BulletCastCollision(current_missile_object);
         double missileTime = current_missile_object->getTimer();
-        if (missileTime > duration || hitTarget) {         
-            //If the missile hit, create an explosion at it's point of impact            
-            GameObject* explosion = new GameObject(current_missile_object->GetPosition(), explo_arr_[0], false, 1);
-            explosion->SetScale(1.2f);
-            explosion->SetTime(0);
-            explosion_objects_.push_back(explosion);            
-            
-            particle_objects_.erase(particle_objects_.begin() + i);           
-            missile_objects_.erase(missile_objects_.begin() + i); //If the missile time has exceeded its duration, or if it hit something, get rid of it and it's particles
-            --i;
+        if (missileTime > duration || hitTarget) {       
+            if (!gameOver) {
+                //If the missile hit, create an explosion at it's point of impact            
+                GameObject* explosion = new GameObject(current_missile_object->GetPosition(), explo_arr_[0], false, 1);
+                explosion->SetScale(1.2f);
+                explosion->SetTime(0);
+                explosion_objects_.push_back(explosion);
+
+                particle_objects_.erase(particle_objects_.begin() + i);
+                missile_objects_.erase(missile_objects_.begin() + i); //If the missile time has exceeded its duration, or if it hit something, get rid of it and it's particles
+                --i;
+            }
         }
         else {
             current_missile_object->Render(shader_, view_matrix);
